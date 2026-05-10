@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+pydantic
+sqlalchemy
+python-dotenv
+
+# AI Stack
+langchain
+langchain-community
+langchain-openai
+ollama
+pgvector
+psycopg2-binary

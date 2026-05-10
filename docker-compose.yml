@@ -1,0 +1,65 @@
+version: "3.8"
+
+services:
+  # Next.js Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - lexicon_network
+
+  # FastAPI Backend
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/lexicon
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - db
+    networks:
+      - lexicon_network
+
+  # PostgreSQL Database (with pgvector)
+  db:
+    image: ankane/pgvector:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=lexicon
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - lexicon_network
+
+  # Ollama Local AI
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - lexicon_network
+
+networks:
+  lexicon_network:
+    driver: bridge
+
+volumes:
+  pgdata:
+  ollama_data:
