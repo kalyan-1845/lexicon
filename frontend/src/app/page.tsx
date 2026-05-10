@@ -48,9 +48,11 @@ export default function Home() {
         </p>
         
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <button className="px-8 py-4 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold hover:scale-105 hover:shadow-[0_0_30px_rgba(99,102,241,0.4)] transition-all duration-300 w-full sm:w-auto">
-            Get Started
-          </button>
+          <Link href="/workspace" className="w-full sm:w-auto">
+            <button className="px-8 py-4 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold hover:scale-105 hover:shadow-[0_0_30px_rgba(99,102,241,0.4)] transition-all duration-300 w-full sm:w-auto">
+              Get Started
+            </button>
+          </Link>
           <button className="px-8 py-4 rounded-full glass text-white font-semibold hover:bg-white/10 transition-all duration-300 w-full sm:w-auto flex items-center justify-center gap-2">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
