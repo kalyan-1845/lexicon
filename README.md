@@ -5,6 +5,28 @@
 ## Introduction
 Lexicon AI is an open-source AI research and productivity workspace that helps users organize knowledge, analyze documents, automate workflows, and collaborate using intelligent AI systems. Built for developers, researchers, students, and productivity-focused teams.
 
+*[Live Preview Coming Soon! (Vercel & Railway Deployments)]*
+
+## Quick Start
+
+Get Lexicon AI running locally in under 5 minutes:
+
+### 1. Start the Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+### 2. Start the Backend
+```bash
+cd backend
+python -m venv venv
+# Windows: venv\Scripts\activate | Mac/Linux: source venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
 ## One-Line Tagline
 An open-source AI workspace for research, productivity, document intelligence, and team collaboration.
 
