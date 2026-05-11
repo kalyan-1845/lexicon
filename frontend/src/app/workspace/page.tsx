@@ -19,6 +19,7 @@ export default function Workspace() {
         onToggleDocuments={() => setShowDocuments(!showDocuments)}
         showDocuments={showDocuments}
         documentContext={activeContext}
+        onContextUpdate={setActiveContext}
       />
       {showNotes && <SmartNotes onClose={() => setShowNotes(false)} />}
       {showDocuments && <PDFUploader onContextUpdate={setActiveContext} />}
