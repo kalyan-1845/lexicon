@@ -10,7 +10,7 @@
 
 ## Phase 2
 - [ ] Team collaboration
-- [ ] Workspace sharing
+- [x] Workspace sharing
 - [ ] AI memory
 - [ ] Search engine
 - [ ] Research collections
