@@ -12,9 +12,10 @@ type Message = {
 type ChatAreaProps = {
   onToggleNotes?: () => void;
   showNotes?: boolean;
+  documentContext?: string | null;
 };
 
-export default function ChatArea({ onToggleNotes, showNotes }: ChatAreaProps) {
+export default function ChatArea({ onToggleNotes, showNotes, documentContext }: ChatAreaProps) {
   const [query, setQuery] = useState("");
   const [showShareModal, setShowShareModal] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -49,7 +50,10 @@ export default function ChatArea({ onToggleNotes, showNotes }: ChatAreaProps) {
       const response = await fetch("http://localhost:8000/api/chat/message", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userMessage.content })
+        body: JSON.stringify({ 
+          message: userMessage.content,
+          document_context: documentContext
+        }),
       });
 
       if (!response.ok) throw new Error("Failed to send message");

@@ -27,10 +27,16 @@ async def send_message(request: ChatRequest):
         raise HTTPException(status_code=400, detail="Message cannot be empty")
     
     try:
+        # Construct prompt with document context if available
+        system_prompt = "You are Lexicon Assistant, a highly intelligent research AI. Your goal is to help users analyze documents and synthesize complex information. Be professional, helpful, and concise."
+        if request.document_context:
+            system_prompt += f"\n\nContext from active document:\n{request.document_context[:5000]}"
+            system_prompt += "\n\nUse the above context to answer the user's request if relevant."
+        
         completion = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
             messages=[
-                {"role": "system", "content": "You are Lexicon Assistant, a highly intelligent research AI. Your goal is to help users analyze documents and synthesize complex information. Be professional, helpful, and concise."},
+                {"role": "system", "content": system_prompt},
                 {"role": "user", "content": request.message}
             ],
             temperature=0.7,
@@ -55,7 +61,7 @@ async def summarize_document(request: SummarizeRequest):
             model="llama-3.3-70b-versatile",
             messages=[
                 {"role": "system", "content": "You are a professional research assistant. Create a clear, high-level summary of the following document text. Focus on key themes, major findings, and important conclusions. Use bullet points."},
-                {"role": "user", "content": f"Summarize the following text:\n\n{request.text[:15000]}"} # Limit input length for now
+                {"role": "user", "content": f"Summarize the following text:\n\n{request.text[:15000]}"}
             ],
             temperature=0.5,
             max_tokens=800
