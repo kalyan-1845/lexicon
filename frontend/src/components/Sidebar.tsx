@@ -29,14 +29,34 @@ export default function Sidebar() {
         </nav>
       </div>
 
-      <div className="p-4 border-t border-white/5">
+      <div className="p-4 border-t border-white/5 flex flex-col gap-2">
         <Link 
           href="/" 
           aria-label="Navigate back to home"
-          className="block w-full text-left px-3 py-2 rounded-md text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 focus:outline-none"
+          className="flex items-center gap-2 w-full text-left px-3 py-2 rounded-md text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 focus:outline-none mb-2"
         >
-          ← Back to Home
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          Back to Home
         </Link>
+        
+        {/* Auth Profile Mock */}
+        <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/5 border border-white/10 mt-auto hover:bg-white/10 transition-colors cursor-pointer group focus-visible:ring-2 focus-visible:ring-indigo-500" tabIndex={0} role="button" aria-label="User Profile">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-violet-500 flex items-center justify-center text-white font-bold text-xs">
+            U
+          </div>
+          <div className="flex flex-col flex-1 overflow-hidden">
+            <span className="text-sm font-medium text-gray-200 truncate group-hover:text-white transition-colors">Guest User</span>
+            <span className="text-xs text-gray-500 truncate">Sign in to sync</span>
+          </div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-500 group-hover:text-white transition-colors">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
+            <polyline points="10 17 15 12 10 7"></polyline>
+            <line x1="15" y1="12" x2="3" y2="12"></line>
+          </svg>
+        </div>
       </div>
     </aside>
   );

@@ -3,10 +3,10 @@
 ## Phase 1
 - [ ] Authentication
 - [ ] AI chat
-- [ ] PDF upload
+- [x] PDF upload
 - [ ] AI summarization
 - [ ] Smart notes
-- [ ] Responsive UI
+- [x] Responsive UI
 
 ## Phase 2
 - [ ] Team collaboration
