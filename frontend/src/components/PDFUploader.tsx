@@ -103,7 +103,7 @@ export default function PDFUploader({ onContextUpdate }: PDFUploaderProps) {
   };
 
   return (
-    <aside aria-label="Document Sources" className="w-80 border-l border-white/5 bg-[#0a0a0b] h-full flex flex-col hidden lg:flex p-4">
+    <aside aria-label="Document Sources" className="w-80 border-l border-white/5 bg-[#0a0a0b] h-full flex flex-col p-4 shadow-xl z-10">
       <h2 className="font-semibold text-gray-200 mb-4">Document Sources</h2>
       
       {/* Hidden File Input */}
