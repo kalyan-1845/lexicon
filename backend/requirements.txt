@@ -11,3 +11,7 @@ langchain-openai
 ollama
 pgvector
 psycopg2-binary
+
+# File Uploads & PDF Processing
+python-multipart
+PyMuPDF

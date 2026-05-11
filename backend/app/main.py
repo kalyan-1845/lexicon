@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.api import upload
 
 app = FastAPI(
     title="Lexicon AI API",
@@ -20,6 +21,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Register Routers
+app.include_router(upload.router, prefix="/api/upload", tags=["Uploads"])
 
 @app.get("/")
 def read_root():
