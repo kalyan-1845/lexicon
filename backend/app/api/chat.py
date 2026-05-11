@@ -1,8 +1,15 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-import asyncio
+import os
+from groq import Groq
+from dotenv import load_dotenv
+
+load_dotenv()
 
 router = APIRouter()
+
+# Initialize Groq client
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 class ChatRequest(BaseModel):
     message: str
@@ -16,12 +23,21 @@ async def send_message(request: ChatRequest):
     if not request.message:
         raise HTTPException(status_code=400, detail="Message cannot be empty")
     
-    # Simulate AI processing delay
-    await asyncio.sleep(1)
-    
-    # Simple mock AI response logic
-    reply = f"I am your Lexicon AI assistant. I received your message: '{request.message}'."
-    if request.document_context:
-        reply += " I also see you have a document active, but I'm still learning how to read it completely!"
+    try:
+        completion = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {"role": "system", "content": "You are Lexicon Assistant, a highly intelligent research AI. Your goal is to help users analyze documents and synthesize complex information. Be professional, helpful, and concise."},
+                {"role": "user", "content": request.message}
+            ],
+            temperature=0.7,
+            max_tokens=1024,
+            stream=False
+        )
         
-    return ChatResponse(reply=reply)
+        reply = completion.choices[0].message.content
+        return ChatResponse(reply=reply)
+        
+    except Exception as e:
+        print(f"Error calling Groq API: {e}")
+        raise HTTPException(status_code=500, detail=f"AI service error: {str(e)}")
