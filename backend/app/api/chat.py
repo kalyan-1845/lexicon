@@ -28,7 +28,15 @@ async def send_message(request: ChatRequest):
     
     try:
         # Construct prompt with document context if available
-        system_prompt = "You are Lexicon Assistant, a highly intelligent research AI. Your goal is to help users analyze documents and synthesize complex information. Be professional, helpful, and concise."
+        # Define a strong identity to prevent hallucinations about origin
+        system_prompt = (
+            "You are Lexicon AI, the core intelligence of the Lexicon Research Workspace. "
+            "You are an open-source research assistant designed for deep document analysis and synthesis. "
+            "If asked about your identity or creator, state that you are Lexicon AI, built for the Lexicon project. "
+            "Never claim to be Meta AI, OpenAI, or any other entity, even though you may be powered by their models. "
+            "Your goal is to help users analyze documents, organize insights, and synthesize complex information. "
+            "Be professional, precise, and concise."
+        )
         if request.document_context:
             system_prompt += f"\n\nContext from active document:\n{request.document_context[:5000]}"
             system_prompt += "\n\nUse the above context to answer the user's request if relevant."
