@@ -7,6 +7,7 @@ import SmartNotes from "@/components/SmartNotes";
 
 export default function Workspace() {
   const [showNotes, setShowNotes] = useState(false);
+  const [showDocuments, setShowDocuments] = useState(true);
   const [activeContext, setActiveContext] = useState<string | null>(null);
 
   return (
@@ -14,11 +15,13 @@ export default function Workspace() {
       <Sidebar />
       <ChatArea 
         onToggleNotes={() => setShowNotes(!showNotes)} 
-        showNotes={showNotes} 
+        showNotes={showNotes}
+        onToggleDocuments={() => setShowDocuments(!showDocuments)}
+        showDocuments={showDocuments}
         documentContext={activeContext}
       />
       {showNotes && <SmartNotes onClose={() => setShowNotes(false)} />}
-      <PDFUploader onContextUpdate={setActiveContext} />
+      {showDocuments && <PDFUploader onContextUpdate={setActiveContext} />}
     </div>
   );
 }
