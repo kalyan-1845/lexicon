@@ -4,7 +4,7 @@ import Link from "next/link";
 import MemoryModal from "@/components/MemoryModal";
 
 type SidebarProps = {
-  workspaces: string[];
+  workspaces: { name: string; collectionId: string | null }[];
   activeWorkspace: string;
   onWorkspaceChange: (name: string) => void;
   onAddWorkspace: () => void;
@@ -42,7 +42,9 @@ export default function Sidebar({
         <div className="flex-1 overflow-y-auto px-1.5 space-y-4">
           <div>
             <div className="flex items-center justify-between px-2 py-1">
-              <span className="text-[9px] font-black text-gray-600 uppercase tracking-[0.15em]">Workspaces</span>
+              <span className="text-[9px] font-black text-gray-600 uppercase tracking-[0.15em]">
+                {activeCollection ? `In ${activeCollection}` : 'Workspaces'}
+              </span>
               <button 
                 onClick={onAddWorkspace}
                 className="p-1 rounded hover:bg-white/5 text-gray-600 hover:text-white transition-all"
@@ -56,15 +58,18 @@ export default function Sidebar({
             <div className="mt-0.5 space-y-0.5">
               {workspaces.map((item) => (
                 <button 
-                  key={item} 
-                  onClick={() => onWorkspaceChange(item)}
+                  key={item.name} 
+                  onClick={() => onWorkspaceChange(item.name)}
                   className={`w-full text-left px-2 py-0.5 rounded text-[11px] font-medium transition-colors truncate ${
-                    activeWorkspace === item ? "text-white bg-white/[0.04]" : "text-gray-500 hover:text-gray-300 hover:bg-white/[0.02]"
+                    activeWorkspace === item.name ? "text-white bg-white/[0.04]" : "text-gray-500 hover:text-gray-300 hover:bg-white/[0.02]"
                   }`}
                 >
-                  {item}
+                  {item.name}
                 </button>
               ))}
+              {workspaces.length === 0 && (
+                <p className="px-2 py-1 text-[10px] text-gray-700 italic text-center">Empty</p>
+              )}
             </div>
           </div>
 
