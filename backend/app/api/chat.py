@@ -1,8 +1,15 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-import asyncio
+import os
+from groq import Groq
+from dotenv import load_dotenv
+
+load_dotenv()
 
 router = APIRouter()
+
+# Initialize Groq client
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 class ChatRequest(BaseModel):
     message: str
