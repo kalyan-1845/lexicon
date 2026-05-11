@@ -1,54 +1,41 @@
 "use client";
-import { useState, useEffect } from "react";
-
-type AgentTask = {
-  id: string;
-  agent: string;
-  status: "thinking" | "completed" | "error";
-  task: string;
-  color: string;
-};
 
 export default function AgentWorkflow() {
-  const [tasks, setTasks] = useState<AgentTask[]>([
-    { id: "1", agent: "Researcher", status: "completed", task: "Scanning PDF for key entities...", color: "text-blue-400" },
-    { id: "2", agent: "Analyst", status: "thinking", task: "Cross-referencing market trends...", color: "text-purple-400" },
-    { id: "3", agent: "Writer", status: "thinking", task: "Drafting executive summary...", color: "text-emerald-400" },
-  ]);
+  const agents = [
+    { name: "Researcher", status: "Searching Web", active: true, color: "bg-blue-400" },
+    { name: "Analyst", status: "Processing Context", active: true, color: "bg-purple-400" },
+    { name: "Writer", status: "Idle", active: false, color: "bg-gray-600" },
+  ];
 
   return (
-    <div className="p-4 bg-[#0d0d0f] border-t border-white/5 flex flex-col gap-3">
-      <div className="flex items-center justify-between">
-        <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-widest">Active Multi-Agent Workflow</h3>
-        <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">3 Agents Active</span>
-      </div>
-      
-      <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-        {tasks.map((task) => (
-          <div key={task.id} className="min-w-[240px] p-3 rounded-xl bg-white/5 border border-white/5 flex flex-col gap-2 transition-all hover:border-white/10">
-            <div className="flex items-center justify-between">
-              <span className={`text-xs font-bold ${task.color}`}>{task.agent} Agent</span>
-              {task.status === "thinking" ? (
-                <span className="flex gap-1">
-                  <span className="w-1 h-1 rounded-full bg-gray-500 animate-bounce" style={{ animationDelay: '0ms' }} />
-                  <span className="w-1 h-1 rounded-full bg-gray-500 animate-bounce" style={{ animationDelay: '150ms' }} />
-                  <span className="w-1 h-1 rounded-full bg-gray-500 animate-bounce" style={{ animationDelay: '300ms' }} />
-                </span>
-              ) : (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-emerald-500">
-                  <polyline points="20 6 9 17 4 12" />
-                </svg>
-              )}
-            </div>
-            <p className="text-xs text-gray-300 truncate">{task.task}</p>
-            <div className="w-full h-1 bg-gray-800 rounded-full overflow-hidden">
-              <div 
-                className={`h-full ${task.status === 'completed' ? 'bg-emerald-500 w-full' : 'bg-indigo-500 w-1/3 animate-pulse'}`} 
-              />
-            </div>
+    <div className="flex gap-4 items-center justify-center py-4 relative group">
+      <div className="absolute inset-0 bg-white/[0.01] blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+      {agents.map((agent, i) => (
+        <div 
+          key={i} 
+          className={`flex items-center gap-3 px-5 py-3 rounded-[20px] border transition-all duration-500 shadow-xl ${
+            agent.active 
+              ? "bg-white/[0.03] border-white/[0.08] shadow-black/40 scale-100" 
+              : "bg-transparent border-transparent opacity-30 scale-95"
+          }`}
+        >
+          <div className="relative">
+            <div className={`w-2.5 h-2.5 rounded-full ${agent.color} ${agent.active ? 'animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.3)]' : ''}`} />
+            {agent.active && (
+              <div className={`absolute inset-0 rounded-full ${agent.color} animate-ping opacity-20`} />
+            )}
           </div>
-        ))}
-      </div>
+          <div className="flex flex-col">
+            <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest leading-none mb-1">{agent.name}</span>
+            <span className={`text-[12px] font-semibold tracking-tight ${agent.active ? 'text-gray-200' : 'text-gray-600'}`}>
+              {agent.status}
+            </span>
+          </div>
+        </div>
+      ))}
+      
+      {/* Connector lines (simplified) */}
+      <div className="absolute top-1/2 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/[0.05] to-transparent -z-10 pointer-events-none" />
     </div>
   );
 }
