@@ -38,6 +38,7 @@ export default function ChatArea({
     }
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom
@@ -303,6 +304,23 @@ export default function ChatArea({
             />
             
             <button 
+              onClick={() => setIsListening(!isListening)}
+              aria-label="Voice Input" 
+              className={`w-12 h-12 rounded-2xl transition-all flex items-center justify-center shrink-0 ${
+                isListening 
+                  ? 'bg-red-500 text-white animate-pulse shadow-lg shadow-red-500/20' 
+                  : 'text-gray-400 hover:text-white hover:bg-white/10'
+              }`}
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="23"></line>
+                <line x1="8" y1="23" x2="16" y2="23"></line>
+              </svg>
+            </button>
+
+            <button 
               onClick={handleSendMessage}
               disabled={isLoading || !query.trim()}
               aria-label="Send message" 
@@ -314,6 +332,14 @@ export default function ChatArea({
               </svg>
             </button>
           </div>
+          {isListening && (
+            <div className="flex items-center justify-center gap-1.5 animate-zoom-in">
+              <span className="text-[10px] font-bold text-red-500 uppercase tracking-widest mr-2">Listening</span>
+              {[1, 2, 3, 4, 5].map(i => (
+                <div key={i} className="w-1 bg-red-500/40 rounded-full animate-bounce" style={{ height: `${Math.random() * 20 + 10}px`, animationDelay: `${i * 100}ms` }} />
+              ))}
+            </div>
+          )}
           <p className="text-center text-[10px] font-bold text-gray-600 uppercase tracking-widest">
             Lexicon Intelligence Core v1.4 • Groq Powered
           </p>
