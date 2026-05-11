@@ -64,6 +64,26 @@ export default function PDFUploader({ onContextUpdate }: PDFUploaderProps) {
     }
   };
 
+  const handleSummarize = async (doc: Document) => {
+    if (!doc.text) return;
+    
+    try {
+      const response = await fetch("http://localhost:8000/api/chat/summarize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: doc.text }),
+      });
+      
+      if (!response.ok) throw new Error("Summarization failed");
+      
+      const data = await response.json();
+      alert(`Summary of ${doc.name}:\n\n${data.summary}`);
+    } catch (error) {
+      console.error("Summarization error:", error);
+      alert("Failed to summarize document.");
+    }
+  };
+
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
@@ -147,7 +167,7 @@ export default function PDFUploader({ onContextUpdate }: PDFUploaderProps) {
                </div>
                {doc.status.startsWith('Parsed') && (
                  <button 
-                   onClick={() => alert(`Summarizing ${doc.name}... (Backend Hook Pending)`)}
+                   onClick={() => handleSummarize(doc)}
                    className="p-1.5 rounded bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
                    aria-label={`Summarize ${doc.name}`}
                    title="Summarize Document"
