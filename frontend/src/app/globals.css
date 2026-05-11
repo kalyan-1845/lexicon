@@ -2,38 +2,68 @@
 
 @theme {
   --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
-  --color-gray-950: #0a0a0b;
-  --color-gray-900: #121214;
-  --color-gray-800: #27272a;
+  --color-gray-950: #050506;
+  --color-gray-900: #0a0a0b;
+  --color-gray-800: #121214;
+  --color-indigo-500: #6366f1;
+  --color-purple-500: #a855f7;
 }
 
 @layer base {
   :root {
-    --background: #0a0a0b;
-    --foreground: #f4f4f5;
+    --background: #050506;
+    --foreground: #fafafa;
+  }
+  
+  body {
+    @apply bg-[#050506] text-[#fafafa] selection:bg-indigo-500/30 selection:text-white;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
   }
 }
 
 @layer utilities {
   .glass {
-    @apply bg-gray-900/40 backdrop-blur-md border border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.1)];
+    @apply bg-[#0a0a0b]/60 backdrop-blur-xl border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.8)];
+  }
+  
+  .glass-card {
+    @apply bg-white/[0.02] backdrop-blur-md border border-white/[0.05] hover:border-white/[0.1] transition-all duration-300;
   }
   
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400;
+    @apply bg-clip-text text-transparent bg-gradient-to-br from-white via-white to-white/40;
+  }
+
+  .text-indigo-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400;
   }
   
   .animate-float {
-    animation: float 6s ease-in-out infinite;
+    animation: float 8s ease-in-out infinite;
+  }
+
+  .animate-zoom-in {
+    animation: zoomIn 0.3s ease-out forwards;
+  }
+
+  @keyframes zoomIn {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
   }
   
-  .animate-pulse-slow {
-    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
   }
-}
-
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-  100% { transform: translateY(0px); }
 }
