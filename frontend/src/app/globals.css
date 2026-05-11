@@ -2,68 +2,49 @@
 
 @theme {
   --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
-  --color-gray-950: #050506;
-  --color-gray-900: #0a0a0b;
-  --color-gray-800: #121214;
-  --color-indigo-500: #6366f1;
-  --color-purple-500: #a855f7;
+  --color-gray-950: #09090b;
+  --color-gray-900: #18181b;
+  --color-gray-800: #27272a;
 }
 
 @layer base {
   :root {
-    --background: #050506;
+    --background: #09090b;
     --foreground: #fafafa;
   }
   
   body {
-    @apply bg-[#050506] text-[#fafafa] selection:bg-indigo-500/30 selection:text-white;
+    @apply bg-[#09090b] text-[#fafafa] selection:bg-indigo-500/20 antialiased;
   }
 
-  /* Custom Scrollbar */
+  /* Custom Scrollbar - More subtle */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
+    width: 4px;
+    height: 4px;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
+    @apply bg-white/5 rounded-full hover:bg-white/10 transition-colors;
   }
 }
 
 @layer utilities {
-  .glass {
-    @apply bg-[#0a0a0b]/60 backdrop-blur-xl border border-white/[0.08] shadow-[0_8px_32px_0_rgba(0,0,0,0.8)];
+  .border-subtle {
+    @apply border border-white/[0.04];
   }
   
-  .glass-card {
-    @apply bg-white/[0.02] backdrop-blur-md border border-white/[0.05] hover:border-white/[0.1] transition-all duration-300;
+  .surface {
+    @apply bg-[#0c0c0e] border border-white/[0.04];
   }
   
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-br from-white via-white to-white/40;
+  .text-muted {
+    @apply text-gray-500 font-medium;
   }
 
-  .text-indigo-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400;
-  }
-  
-  .animate-float {
-    animation: float 8s ease-in-out infinite;
+  .btn-primary {
+    @apply bg-white text-black hover:bg-gray-200 transition-all font-semibold rounded-lg px-4 py-2 text-sm;
   }
 
-  .animate-zoom-in {
-    animation: zoomIn 0.3s ease-out forwards;
-  }
-
-  @keyframes zoomIn {
-    from { opacity: 0; transform: scale(0.95) translateY(10px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
-  }
-  
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-15px); }
+  .btn-secondary {
+    @apply bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.06] text-gray-300 transition-all rounded-lg px-3 py-1.5 text-xs;
   }
 }
