@@ -15,9 +15,7 @@ type PDFUploaderProps = {
 export default function PDFUploader({ onContextUpdate }: PDFUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [documents, setDocuments] = useState<Document[]>([
-    { name: "Machine_Learning_Ch1.pdf", size: 2.4 * 1024 * 1024, status: "Waiting..." }
-  ]);
+  const [documents, setDocuments] = useState<Document[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleUpload = async (file: File) => {
