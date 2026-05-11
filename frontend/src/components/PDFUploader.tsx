@@ -10,9 +10,10 @@ type Document = {
 
 type PDFUploaderProps = {
   onContextUpdate?: (text: string | null) => void;
+  isEmbedded?: boolean;
 };
 
-export default function PDFUploader({ onContextUpdate }: PDFUploaderProps) {
+export default function PDFUploader({ onContextUpdate, isEmbedded }: PDFUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [documents, setDocuments] = useState<Document[]>([]);
@@ -82,28 +83,16 @@ export default function PDFUploader({ onContextUpdate }: PDFUploaderProps) {
     }
   };
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleUpload(e.dataTransfer.files[0]);
-    }
-  };
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       handleUpload(e.target.files[0]);
     }
   };
 
-  const formatSize = (bytes: number) => {
-    return (bytes / (1024 * 1024)).toFixed(2) + " MB";
-  };
-
-  return (
-    <aside className="w-80 border-l border-white/[0.04] bg-[#09090b] h-full flex flex-col p-6 shrink-0">
+  const content = (
+    <div className="flex-1 flex flex-col p-6 overflow-hidden">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="font-bold text-xs uppercase tracking-widest text-gray-400">Context</h2>
+        <h2 className="font-bold text-xs uppercase tracking-widest text-gray-400">Knowledge</h2>
         <span className="text-[10px] font-bold text-gray-600 bg-white/[0.03] px-1.5 py-0.5 rounded border border-white/[0.05]">{documents.length}</span>
       </div>
       
@@ -111,7 +100,7 @@ export default function PDFUploader({ onContextUpdate }: PDFUploaderProps) {
 
       <button 
         onClick={() => fileInputRef.current?.click()}
-        className="w-full py-6 border border-dashed border-white/10 rounded-xl flex flex-col items-center justify-center gap-2 hover:bg-white/[0.01] transition-all group"
+        className="w-full py-6 border border-dashed border-white/10 rounded-xl flex flex-col items-center justify-center gap-2 hover:bg-white/[0.01] transition-all group shrink-0"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-500 group-hover:text-white transition-colors">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" />
@@ -144,6 +133,14 @@ export default function PDFUploader({ onContextUpdate }: PDFUploaderProps) {
           </div>
         ))}
       </div>
+    </div>
+  );
+
+  if (isEmbedded) return content;
+
+  return (
+    <aside className="w-80 border-l border-white/[0.04] bg-[#09090b] h-full flex flex-col shrink-0">
+      {content}
     </aside>
   );
 }
