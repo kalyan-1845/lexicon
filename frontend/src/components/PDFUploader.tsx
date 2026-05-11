@@ -8,7 +8,11 @@ type Document = {
   text?: string;
 };
 
-export default function PDFUploader() {
+type PDFUploaderProps = {
+  onContextUpdate?: (text: string | null) => void;
+};
+
+export default function PDFUploader({ onContextUpdate }: PDFUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [documents, setDocuments] = useState<Document[]>([
@@ -46,6 +50,10 @@ export default function PDFUploader() {
           text: data.full_text
         } : doc
       ));
+      
+      if (onContextUpdate && data.full_text) {
+        onContextUpdate(data.full_text);
+      }
     } catch (error) {
       console.error("Error uploading file:", error);
       setDocuments(prev => prev.map(doc => 
