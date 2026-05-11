@@ -8,7 +8,6 @@ export default function Sidebar() {
 
   return (
     <>
-    <>
       <aside aria-label="Sidebar" className="w-64 border-r border-white/5 bg-[#050506] h-full flex flex-col hidden md:flex shrink-0">
       <div className="p-6 border-b border-white/5 flex items-center gap-3">
         <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
