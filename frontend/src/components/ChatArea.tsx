@@ -15,6 +15,7 @@ type ChatAreaProps = {
   onToggleDocuments?: () => void;
   showDocuments?: boolean;
   documentContext?: string | null;
+  onContextUpdate?: (text: string | null) => void;
 };
 
 export default function ChatArea({ 
@@ -22,9 +23,12 @@ export default function ChatArea({
   showNotes, 
   onToggleDocuments, 
   showDocuments, 
-  documentContext 
+  documentContext,
+  onContextUpdate 
 }: ChatAreaProps) {
   const [query, setQuery] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [showShareModal, setShowShareModal] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -82,6 +86,50 @@ export default function ChatArea({
     }
   };
 
+  const handleFileUpload = async (file: File) => {
+    if (!file || file.type !== "application/pdf") {
+      alert("Please upload a valid PDF file.");
+      return;
+    }
+
+    setIsLoading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const response = await fetch("http://localhost:8000/api/upload/pdf", {
+        method: "POST",
+        body: formData,
+      });
+      
+      if (!response.ok) throw new Error("Upload failed");
+      
+      const data = await response.json();
+      
+      if (onContextUpdate && data.full_text) {
+        onContextUpdate(data.full_text);
+        setMessages(prev => [...prev, {
+          id: Date.now().toString(),
+          role: "assistant",
+          content: `I've successfully parsed **${file.name}**. You can now ask me questions about its content!`
+        }]);
+      }
+    } catch (error) {
+      console.error("Error uploading file:", error);
+      alert("Failed to upload document.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileUpload(e.dataTransfer.files[0]);
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -90,7 +138,29 @@ export default function ChatArea({
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-[#0a0a0b] relative">
+    <div 
+      className="flex-1 flex flex-col h-full bg-[#0a0a0b] relative"
+      onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+      onDragLeave={() => setIsDragging(false)}
+      onDrop={onDrop}
+    >
+      {/* Drag Overlay */}
+      {isDragging && (
+        <div className="absolute inset-0 z-50 bg-indigo-600/20 backdrop-blur-sm border-2 border-dashed border-indigo-500 flex items-center justify-center pointer-events-none">
+          <div className="bg-[#0a0a0b] p-8 rounded-3xl shadow-2xl flex flex-col items-center gap-4 animate-zoom-in">
+            <div className="w-16 h-16 rounded-full bg-indigo-500 flex items-center justify-center">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="12" y1="18" x2="12" y2="12" />
+                <line x1="9" y1="15" x2="15" y2="15" />
+              </svg>
+            </div>
+            <p className="text-xl font-bold text-white">Drop to Analyze PDF</p>
+            <p className="text-sm text-gray-400">Release to start the research agent</p>
+          </div>
+        </div>
+      )}
       {/* Header */}
       <div className="h-14 border-b border-white/5 flex items-center justify-between px-6 bg-[#0a0a0b]/80 backdrop-blur-md shrink-0">
         <div className="flex items-center gap-3">
@@ -198,10 +268,27 @@ export default function ChatArea({
 
       {/* Input Area */}
       <div className="p-4 border-t border-white/5 bg-[#0a0a0b]/80 backdrop-blur-md">
-        <div className="max-w-4xl mx-auto relative flex items-center">
+        <div className="max-w-4xl mx-auto relative flex items-center gap-3">
           <input 
-            type="text" 
-            value={query}
+            type="file" 
+            ref={fileInputRef} 
+            onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])}
+            accept=".pdf"
+            className="hidden"
+          />
+          <button 
+            onClick={() => fileInputRef.current?.click()}
+            aria-label="Upload PDF"
+            className="p-3 rounded-xl bg-white/5 border border-white/5 text-gray-400 hover:text-white hover:bg-white/10 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
+            </svg>
+          </button>
+          <div className="relative flex-1 flex items-center">
+            <input 
+              type="text" 
+              value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             aria-label="Ask anything about your research..."
