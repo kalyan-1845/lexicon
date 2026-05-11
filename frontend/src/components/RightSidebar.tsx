@@ -1,16 +1,17 @@
 "use client";
-import { useState } from "react";
 import PDFUploader from "./PDFUploader";
 import SmartNotes from "./SmartNotes";
 
 type RightSidebarProps = {
   activeTab: "docs" | "notes";
   setActiveTab: (tab: "docs" | "notes") => void;
+  documents: any[];
+  setDocuments: (docs: any[]) => void;
   onContextUpdate: (text: string | null) => void;
   onClose: () => void;
 };
 
-export default function RightSidebar({ activeTab, setActiveTab, onContextUpdate, onClose }: RightSidebarProps) {
+export default function RightSidebar({ activeTab, setActiveTab, documents, setDocuments, onContextUpdate, onClose }: RightSidebarProps) {
   return (
     <aside className="w-72 border-l border-white/[0.04] bg-[#09090b] h-full flex flex-col shrink-0">
       <div className="h-10 border-b border-white/[0.04] flex items-center px-4 justify-between bg-[#09090b]/50">
@@ -42,7 +43,12 @@ export default function RightSidebar({ activeTab, setActiveTab, onContextUpdate,
 
       <div className="flex-1 overflow-hidden flex flex-col">
         {activeTab === "docs" ? (
-          <PDFUploader onContextUpdate={onContextUpdate} isEmbedded />
+          <PDFUploader 
+            documents={documents}
+            setDocuments={setDocuments}
+            onContextUpdate={onContextUpdate} 
+            isEmbedded 
+          />
         ) : (
           <SmartNotes onClose={onClose} isEmbedded />
         )}
