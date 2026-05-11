@@ -1,9 +1,18 @@
 "use client";
 import { useState, useRef } from "react";
 
-type Document = { name: string; size: number; status: string };
+type Document = { 
+  name: string; 
+  size: number; 
+  status: string;
+  text?: string;
+};
 
-export default function PDFUploader() {
+type PDFUploaderProps = {
+  onContextUpdate?: (text: string | null) => void;
+};
+
+export default function PDFUploader({ onContextUpdate }: PDFUploaderProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [documents, setDocuments] = useState<Document[]>([
@@ -35,8 +44,16 @@ export default function PDFUploader() {
       const data = await response.json();
       
       setDocuments(prev => prev.map(doc => 
-        doc.name === file.name ? { ...doc, status: `Parsed (${data.extracted_character_count} chars)` } : doc
+        doc.name === file.name ? { 
+          ...doc, 
+          status: `Parsed (${data.extracted_character_count} chars)`,
+          text: data.full_text
+        } : doc
       ));
+      
+      if (onContextUpdate && data.full_text) {
+        onContextUpdate(data.full_text);
+      }
     } catch (error) {
       console.error("Error uploading file:", error);
       setDocuments(prev => prev.map(doc => 
