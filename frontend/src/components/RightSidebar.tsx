@@ -12,12 +12,12 @@ type RightSidebarProps = {
 
 export default function RightSidebar({ activeTab, setActiveTab, onContextUpdate, onClose }: RightSidebarProps) {
   return (
-    <aside className="w-80 border-l border-white/[0.04] bg-[#09090b] h-full flex flex-col shrink-0">
-      <div className="h-12 border-b border-white/[0.04] flex items-center px-4 justify-between bg-[#09090b]/50">
+    <aside className="w-72 border-l border-white/[0.04] bg-[#09090b] h-full flex flex-col shrink-0">
+      <div className="h-10 border-b border-white/[0.04] flex items-center px-4 justify-between bg-[#09090b]/50">
         <div className="flex gap-4">
           <button 
             onClick={() => setActiveTab("docs")}
-            className={`text-[10px] font-bold uppercase tracking-widest transition-all ${
+            className={`text-[9px] font-bold uppercase tracking-widest transition-all ${
               activeTab === "docs" ? "text-white" : "text-gray-500 hover:text-gray-300"
             }`}
           >
@@ -25,7 +25,7 @@ export default function RightSidebar({ activeTab, setActiveTab, onContextUpdate,
           </button>
           <button 
             onClick={() => setActiveTab("notes")}
-            className={`text-[10px] font-bold uppercase tracking-widest transition-all ${
+            className={`text-[9px] font-bold uppercase tracking-widest transition-all ${
               activeTab === "notes" ? "text-white" : "text-gray-500 hover:text-gray-300"
             }`}
           >
@@ -33,7 +33,7 @@ export default function RightSidebar({ activeTab, setActiveTab, onContextUpdate,
           </button>
         </div>
         <button onClick={onClose} className="text-gray-600 hover:text-white transition-colors">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
