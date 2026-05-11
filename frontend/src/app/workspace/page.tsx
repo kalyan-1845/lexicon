@@ -7,6 +7,7 @@ import RightSidebar from "@/components/RightSidebar";
 type WorkspaceData = {
   documents: any[];
   messages: any[];
+  collectionId: string | null;
 };
 
 export default function Workspace() {
@@ -14,13 +15,19 @@ export default function Workspace() {
   const [activeTab, setActiveTab] = useState<"docs" | "notes">("docs");
   const [activeContext, setActiveContext] = useState<string | null>(null);
   
-  const [workspaces, setWorkspaces] = useState(['Neural Networks', 'Market Q3', 'Resume Opt']);
+  const [workspaces, setWorkspaces] = useState([
+    { name: 'Neural Networks', collectionId: 'Deep Learning' },
+    { name: 'Market Q3', collectionId: 'Finance' },
+    { name: 'Resume Opt', collectionId: 'Career' },
+    { name: 'Stock Analysis', collectionId: 'Finance' }
+  ]);
   const [activeWorkspace, setActiveWorkspace] = useState("Neural Networks");
   
   const [workspaceData, setWorkspaceData] = useState<Record<string, WorkspaceData>>({
-    "Neural Networks": { documents: [], messages: [{ id: "1", role: "assistant", content: "Welcome to your Neural Networks research lab." }] },
-    "Market Q3": { documents: [], messages: [{ id: "1", role: "assistant", content: "Analyzing Market Q3 trends..." }] },
-    "Resume Opt": { documents: [], messages: [{ id: "1", role: "assistant", content: "Let's optimize your resume." }] },
+    "Neural Networks": { documents: [], messages: [{ id: "1", role: "assistant", content: "Focusing on Deep Learning architectures." }], collectionId: 'Deep Learning' },
+    "Market Q3": { documents: [], messages: [{ id: "1", role: "assistant", content: "Analyzing market trends." }], collectionId: 'Finance' },
+    "Resume Opt": { documents: [], messages: [{ id: "1", role: "assistant", content: "Ready to optimize." }], collectionId: 'Career' },
+    "Stock Analysis": { documents: [], messages: [{ id: "1", role: "assistant", content: "Checking tickers." }], collectionId: 'Finance' },
   });
   
   const [collections, setCollections] = useState(['Deep Learning', 'Finance', 'Career']);
@@ -37,9 +44,13 @@ export default function Workspace() {
 
   const handleAddWorkspace = () => {
     const name = prompt("Enter workspace name:");
-    if (name && !workspaces.includes(name)) {
-      setWorkspaces([...workspaces, name]);
-      setWorkspaceData({ ...workspaceData, [name]: { documents: [], messages: [{ id: "1", role: "assistant", content: `Welcome to ${name}.` }] } });
+    if (name && !workspaceData[name]) {
+      const newWs = { name, collectionId: activeCollection };
+      setWorkspaces([...workspaces, newWs]);
+      setWorkspaceData({ 
+        ...workspaceData, 
+        [name]: { documents: [], messages: [{ id: "1", role: "assistant", content: `New workspace in ${activeCollection || 'General'}.` }], collectionId: activeCollection } 
+      });
       setActiveWorkspace(name);
     }
   };
@@ -51,16 +62,20 @@ export default function Workspace() {
     }));
   };
 
+  const filteredWorkspaces = activeCollection 
+    ? workspaces.filter(w => w.collectionId === activeCollection)
+    : workspaces;
+
   return (
     <div className="flex h-screen w-full bg-[#09090b] overflow-hidden">
       <Sidebar 
-        workspaces={workspaces}
+        workspaces={filteredWorkspaces}
         activeWorkspace={activeWorkspace} 
         onWorkspaceChange={setActiveWorkspace}
         onAddWorkspace={handleAddWorkspace}
         collections={collections}
         activeCollection={activeCollection}
-        onCollectionChange={setActiveCollection}
+        onCollectionChange={(c) => setActiveCollection(c === activeCollection ? null : c)}
         onAddCollection={() => {
           const name = prompt("Enter collection name:");
           if (name) setCollections([...collections, name]);
