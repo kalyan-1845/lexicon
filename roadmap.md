@@ -12,7 +12,7 @@
 - [ ] Team collaboration
 - [ ] Workspace sharing
 - [ ] AI memory
-- [ ] Search engine
+- [x] Search engine
 - [ ] Research collections
 
 ## Phase 3
