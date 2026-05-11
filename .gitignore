@@ -1,0 +1,21 @@
+# Environment variables
+.env
+.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.venv/
+
+# Node.js
+node_modules/
+.next/
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
