@@ -82,6 +82,11 @@ export default function ChatArea({
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
       console.error("Error sending message:", error);
+      setMessages(prev => [...prev, {
+        id: Date.now().toString(),
+        role: "assistant",
+        content: "⚠️ **Error:** I'm having trouble connecting to the Lexicon Engine. Please ensure the backend is running and try again."
+      }]);
     } finally {
       setIsLoading(false);
     }
