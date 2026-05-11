@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${outfit.variable} dark antialiased`}>
+    <html lang="en" className={`${outfit.variable} dark antialiased`} suppressHydrationWarning>
       <body className="min-h-screen bg-[#0a0a0b] text-white font-sans selection:bg-indigo-500/30">
         <div className="relative flex min-h-screen flex-col overflow-hidden supports-[overflow:clip]:overflow-clip">
           {children}
