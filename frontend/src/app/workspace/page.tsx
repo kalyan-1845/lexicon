@@ -8,6 +8,7 @@ export default function Workspace() {
   const [showRightSidebar, setShowRightSidebar] = useState(true);
   const [activeTab, setActiveTab] = useState<"docs" | "notes">("docs");
   const [activeContext, setActiveContext] = useState<string | null>(null);
+  const [activeWorkspace, setActiveWorkspace] = useState("Neural Networks");
 
   const toggleTab = (tab: "docs" | "notes") => {
     if (showRightSidebar && activeTab === tab) {
@@ -20,8 +21,9 @@ export default function Workspace() {
 
   return (
     <div className="flex h-screen w-full bg-[#09090b] overflow-hidden">
-      <Sidebar />
+      <Sidebar activeWorkspace={activeWorkspace} onWorkspaceChange={setActiveWorkspace} />
       <ChatArea 
+        workspaceName={activeWorkspace}
         onToggleNotes={() => toggleTab("notes")} 
         showNotes={showRightSidebar && activeTab === "notes"}
         onToggleDocuments={() => toggleTab("docs")}
