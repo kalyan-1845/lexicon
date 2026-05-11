@@ -9,9 +9,9 @@
 - [x] Responsive UI
 
 ## Phase 2
-- [ ] Team collaboration
+- [x] Team collaboration
 - [x] Workspace sharing
-- [ ] AI memory
+- [x] AI memory
 - [x] Search engine
 - [x] Research collections
 

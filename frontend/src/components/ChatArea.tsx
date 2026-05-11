@@ -85,6 +85,12 @@ export default function ChatArea({ onToggleNotes, showNotes }: ChatAreaProps) {
           <span className="text-sm font-medium text-gray-300">Workspace Active</span>
         </div>
         <div className="flex items-center gap-2">
+          {/* Team Collaboration Avatars */}
+          <div className="flex -space-x-2 mr-4 border-r border-white/10 pr-6">
+            <div className="w-7 h-7 rounded-full bg-blue-500 border-2 border-[#0a0a0b] flex items-center justify-center text-[10px] font-bold text-white z-20 cursor-pointer hover:-translate-y-1 transition-transform" title="Alice">A</div>
+            <div className="w-7 h-7 rounded-full bg-emerald-500 border-2 border-[#0a0a0b] flex items-center justify-center text-[10px] font-bold text-white z-10 cursor-pointer hover:-translate-y-1 transition-transform" title="Bob">B</div>
+            <div className="w-7 h-7 rounded-full bg-gray-800 border-2 border-[#0a0a0b] flex items-center justify-center text-[10px] font-bold text-gray-300 z-0 cursor-pointer hover:-translate-y-1 transition-transform hover:bg-gray-700 hover:text-white" title="Invite Teammate">+</div>
+          </div>
           <button 
             onClick={() => setShowShareModal(true)}
             className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors bg-white/5 text-gray-300 hover:bg-white/10 hover:text-white"
