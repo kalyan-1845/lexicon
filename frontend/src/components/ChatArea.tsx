@@ -11,6 +11,8 @@ type Message = {
 
 type ChatAreaProps = {
   workspaceName?: string;
+  messages: Message[];
+  setMessages: (msgs: Message[]) => void;
   onToggleNotes?: () => void;
   showNotes?: boolean;
   onToggleDocuments?: () => void;
@@ -21,6 +23,8 @@ type ChatAreaProps = {
 
 export default function ChatArea({ 
   workspaceName,
+  messages,
+  setMessages,
   onToggleNotes, 
   showNotes, 
   onToggleDocuments, 
@@ -32,13 +36,6 @@ export default function ChatArea({
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showShareModal, setShowShareModal] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      role: "assistant",
-      content: `Welcome to the **${workspaceName || 'General'}** workspace. Upload a PDF to begin our research.`
-    }
-  ]);
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -50,7 +47,7 @@ export default function ChatArea({
   const handleSendMessage = async () => {
     if (!query.trim()) return;
     const userMessage: Message = { id: Date.now().toString(), role: "user", content: query.trim() };
-    setMessages(prev => [...prev, userMessage]);
+    setMessages([...messages, userMessage]);
     setQuery("");
     setIsLoading(true);
 
@@ -62,9 +59,9 @@ export default function ChatArea({
       });
       if (!response.ok) throw new Error("Failed");
       const data = await response.json();
-      setMessages(prev => [...prev, { id: (Date.now() + 1).toString(), role: "assistant", content: data.reply }]);
+      setMessages([...messages, userMessage, { id: (Date.now() + 1).toString(), role: "assistant", content: data.reply }]);
     } catch (error) {
-      setMessages(prev => [...prev, { id: Date.now().toString(), role: "assistant", content: "⚠️ Connection error." }]);
+      setMessages([...messages, userMessage, { id: Date.now().toString(), role: "assistant", content: "⚠️ Connection error." }]);
     } finally {
       setIsLoading(false);
     }
@@ -81,7 +78,7 @@ export default function ChatArea({
       const data = await response.json();
       if (onContextUpdate && data.full_text) {
         onContextUpdate(data.full_text);
-        setMessages(prev => [...prev, { id: Date.now().toString(), role: "assistant", content: `Parsed **${file.name}**.` }]);
+        setMessages([...messages, { id: Date.now().toString(), role: "assistant", content: `Parsed **${file.name}**.` }]);
       }
     } catch (error) {
       alert("Upload failed.");
