@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import upload
+from app.api import upload, chat
 
 app = FastAPI(
     title="Lexicon AI API",
@@ -24,6 +24,7 @@ app.add_middleware(
 
 # Register Routers
 app.include_router(upload.router, prefix="/api/upload", tags=["Uploads"])
+app.include_router(chat.router, prefix="/api/chat", tags=["Chat"])
 
 @app.get("/")
 def read_root():
