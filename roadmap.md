@@ -1,11 +1,11 @@
 # Lexicon AI Roadmap
 
 ## Phase 1
-- [ ] Authentication
-- [ ] AI chat
+- [x] Authentication
+- [x] AI chat
 - [x] PDF upload
-- [ ] AI summarization
-- [ ] Smart notes
+- [x] AI summarization
+- [x] Smart notes
 - [x] Responsive UI
 
 ## Phase 2
@@ -16,7 +16,7 @@
 - [x] Research collections
 
 ## Phase 3
-- [ ] Multi-agent AI system
+- [x] Multi-agent AI system
 - [ ] Voice AI
 - [ ] Plugin ecosystem
 - [ ] Local AI execution

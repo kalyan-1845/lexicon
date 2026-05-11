@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import ShareModal from "@/components/ShareModal";
+import AgentWorkflow from "@/components/AgentWorkflow";
 
 type Message = {
   id: string;
@@ -165,6 +166,9 @@ export default function ChatArea({ onToggleNotes, showNotes }: ChatAreaProps) {
         )}
         <div ref={messagesEndRef} />
       </div>
+
+      {/* Multi-Agent Workflow Visualization */}
+      <AgentWorkflow />
 
       {/* Input Area */}
       <div className="p-4 border-t border-white/5 bg-[#0a0a0b]/80 backdrop-blur-md">
