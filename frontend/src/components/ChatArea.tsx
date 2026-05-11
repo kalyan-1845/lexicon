@@ -12,10 +12,18 @@ type Message = {
 type ChatAreaProps = {
   onToggleNotes?: () => void;
   showNotes?: boolean;
+  onToggleDocuments?: () => void;
+  showDocuments?: boolean;
   documentContext?: string | null;
 };
 
-export default function ChatArea({ onToggleNotes, showNotes, documentContext }: ChatAreaProps) {
+export default function ChatArea({ 
+  onToggleNotes, 
+  showNotes, 
+  onToggleDocuments, 
+  showDocuments, 
+  documentContext 
+}: ChatAreaProps) {
   const [query, setQuery] = useState("");
   const [showShareModal, setShowShareModal] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -108,6 +116,20 @@ export default function ChatArea({ onToggleNotes, showNotes, documentContext }: 
               <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
             </svg>
             Share
+          </button>
+          <button 
+            onClick={onToggleDocuments}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border ${
+              showDocuments 
+                ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' 
+                : 'bg-white/5 text-gray-400 border-white/5 hover:bg-white/10 hover:text-white'
+            }`}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+            {showDocuments ? 'Hide Docs' : 'Show Docs'}
           </button>
           {onToggleNotes && (
             <button 
