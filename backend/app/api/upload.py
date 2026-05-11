@@ -35,6 +35,7 @@ async def upload_pdf(file: UploadFile = File(...)):
             "status": "success",
             "message": "File successfully uploaded and parsed.",
             "extracted_character_count": len(extracted_text),
+            "full_text": extracted_text,
             "preview": extracted_text[:200] + "..." if len(extracted_text) > 200 else extracted_text
         }
         

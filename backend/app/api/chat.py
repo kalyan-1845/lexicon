@@ -28,7 +28,7 @@ async def send_message(request: ChatRequest):
     
     try:
         # Construct prompt with document context if available
-        system_prompt = "You are Lexicon Assistant, a highly intelligent research AI."
+        system_prompt = "You are Lexicon Assistant, a highly intelligent research AI. Your goal is to help users analyze documents and synthesize complex information. Be professional, helpful, and concise."
         if request.document_context:
             system_prompt += f"\n\nContext from active document:\n{request.document_context[:5000]}"
             system_prompt += "\n\nUse the above context to answer the user's request if relevant."
