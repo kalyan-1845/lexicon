@@ -27,6 +27,26 @@ export default function Sidebar() {
             </button>
           ))}
         </nav>
+
+        <nav aria-labelledby="collections-heading" className="space-y-1 mt-8">
+          <div className="flex items-center justify-between mb-2 px-2">
+            <h2 id="collections-heading" className="text-xs font-medium text-gray-500 uppercase tracking-wider">Collections</h2>
+            <button aria-label="Add new collection" className="text-gray-500 hover:text-white transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 rounded">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+            </button>
+          </div>
+          {['Deep Learning Basics', 'Finance Models', 'Career Prep'].map((item, i) => (
+            <button key={i} aria-label={`Open collection ${item}`} className="w-full flex items-center gap-2 text-left px-3 py-2 rounded-md text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors truncate focus-visible:ring-2 focus-visible:ring-indigo-500 focus:outline-none">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+              </svg>
+              {item}
+            </button>
+          ))}
+        </nav>
       </div>
 
       <div className="p-4 border-t border-white/5 flex flex-col gap-2">

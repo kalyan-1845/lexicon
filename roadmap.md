@@ -12,8 +12,8 @@
 - [ ] Team collaboration
 - [x] Workspace sharing
 - [ ] AI memory
-- [ ] Search engine
-- [ ] Research collections
+- [x] Search engine
+- [x] Research collections
 
 ## Phase 3
 - [ ] Multi-agent AI system
