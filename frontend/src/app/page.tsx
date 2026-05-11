@@ -1,4 +1,7 @@
 import Link from 'next/link';
+import Sidebar from "@/components/Sidebar";
+import ChatArea from "@/components/ChatArea";
+import PDFUploader from "@/components/PDFUploader";
 
 export default function Home() {
   return (
@@ -8,9 +11,9 @@ export default function Home() {
       <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-purple-600/20 blur-[120px] animate-pulse-slow pointer-events-none delay-1000" />
       
       {/* Navigation (Simple) */}
-      <nav className="absolute top-0 w-full max-w-7xl mx-auto flex items-center justify-between p-6 z-10">
+      <nav aria-label="Main Navigation" className="absolute top-0 w-full max-w-7xl mx-auto flex items-center justify-between p-6 z-10">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20" aria-hidden="true">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-white">
               <path d="M12 2L2 7l10 5 10-5-10-5z" />
               <path d="M2 17l10 5 10-5" />
@@ -20,13 +23,11 @@ export default function Home() {
           <span className="font-bold text-xl tracking-tight">Lexicon AI</span>
         </div>
         <div className="flex items-center gap-4">
-          <Link href="https://github.com/kalyan-1845/lexicon" target="_blank" className="text-sm font-medium text-gray-300 hover:text-white transition-colors">
+          <Link href="https://github.com/kalyan-1845/lexicon" target="_blank" aria-label="Lexicon GitHub Repository" className="text-sm font-medium text-gray-300 hover:text-white transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 focus:outline-none rounded-md px-2 py-1">
             GitHub
           </Link>
-          <Link href="https://github.com/kalyan-1845/lexicon" target="_blank">
-            <button className="px-4 py-2 text-sm font-medium rounded-full bg-white text-[#0a0a0b] hover:bg-gray-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-              Star Repo
-            </button>
+          <Link href="https://github.com/kalyan-1845/lexicon" target="_blank" aria-label="Star Lexicon on GitHub" className="px-4 py-2 text-sm font-medium rounded-full bg-white text-[#0a0a0b] hover:bg-gray-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] focus-visible:ring-2 focus-visible:ring-indigo-500 focus:outline-none">
+            Star Repo
           </Link>
         </div>
       </nav>
@@ -48,13 +49,11 @@ export default function Home() {
         </p>
         
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Link href="/workspace" className="w-full sm:w-auto">
-            <button className="px-8 py-4 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold hover:scale-105 hover:shadow-[0_0_30px_rgba(99,102,241,0.4)] transition-all duration-300 w-full sm:w-auto">
-              Get Started
-            </button>
+          <Link href="/workspace" aria-label="Get Started with Workspace" className="px-8 py-4 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold hover:scale-105 hover:shadow-[0_0_30px_rgba(99,102,241,0.4)] transition-all duration-300 w-full sm:w-auto focus-visible:ring-2 focus-visible:ring-white focus:outline-none text-center">
+            Get Started
           </Link>
-          <button className="px-8 py-4 rounded-full glass text-white font-semibold hover:bg-white/10 transition-all duration-300 w-full sm:w-auto flex items-center justify-center gap-2">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <button aria-label="Read Documentation" className="px-8 py-4 rounded-full glass text-white font-semibold hover:bg-white/10 transition-all duration-300 w-full sm:w-auto flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-white focus:outline-none">
+            <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
               <polyline points="7 10 12 15 17 10" />
               <line x1="12" y1="15" x2="12" y2="3" />
@@ -73,24 +72,10 @@ export default function Home() {
           <div className="w-3 h-3 rounded-full bg-green-500/80" />
           <div className="mx-auto text-xs font-medium text-gray-500">app.lexicon.ai</div>
         </div>
-        <div className="h-[400px] w-full bg-[#0a0a0b]/80 flex">
-           {/* Sidebar Mock */}
-           <div className="w-64 border-r border-white/5 p-4 flex flex-col gap-4 hidden md:flex">
-             <div className="h-8 w-3/4 bg-white/5 rounded-md" />
-             <div className="h-8 w-full bg-white/5 rounded-md" />
-             <div className="h-8 w-5/6 bg-white/5 rounded-md" />
-             <div className="h-8 w-4/5 bg-white/5 rounded-md" />
-           </div>
-           {/* Main Content Mock */}
-           <div className="flex-1 p-8 flex flex-col justify-end gap-4 relative">
-             <div className="absolute top-8 left-8 right-8 flex flex-col gap-4">
-                <div className="h-20 w-3/4 glass rounded-xl self-start" />
-                <div className="h-32 w-2/3 bg-indigo-500/10 rounded-xl self-end border border-indigo-500/20" />
-             </div>
-             <div className="h-14 w-full glass rounded-xl flex items-center px-4">
-                <span className="text-gray-500 text-sm">Ask anything about your research...</span>
-             </div>
-           </div>
+        <div className="h-[500px] w-full bg-[#0a0a0b] flex rounded-b-xl overflow-hidden text-left pointer-events-none">
+           <Sidebar />
+           <ChatArea />
+           <PDFUploader />
         </div>
       </div>
     </main>
