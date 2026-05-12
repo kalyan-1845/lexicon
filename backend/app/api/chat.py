@@ -17,6 +17,18 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     reply: str
+    citations: list[dict] | None = None
+
+@router.post("/cite", response_model=ChatResponse)
+async def generate_citation(text: str, source: str):
+    # Simulated citation generation logic
+    return {
+        "reply": f"Fact: {text}",
+        "citations": [
+            {"style": "APA", "text": f"Lexicon AI. (2026). Analysis of {source}. Lexicon Research Hub."},
+            {"style": "MLA", "text": f"Lexicon AI. 'Analysis of {source}.' Lexicon Research Hub, 2026."}
+        ]
+    }
 
 class SummarizeRequest(BaseModel):
     text: str
