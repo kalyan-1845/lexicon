@@ -1,13 +1,23 @@
-# Lexicon AI
+# Lexicon AI — Professional Research Workspace
 
-> Open-source AI workspace for research, productivity, and collaboration.
+> A high-performance, minimalist AI workspace for deep research, document intelligence, and multi-agent workflows.
 
-## Introduction
-Lexicon AI is an open-source AI research and productivity workspace that helps users organize knowledge, analyze documents, automate workflows, and collaborate using intelligent AI systems. Built for developers, researchers, students, and productivity-focused teams.
+![Lexicon AI Banner](https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop)
 
-*[Live Preview Coming Soon! (Vercel & Railway Deployments)]*
+## ⚡ Evolution: The "Expert Mode" Redesign
+Lexicon AI has evolved from a simple prototype into a **professional-grade research environment**. We have moved away from heavy "glassmorphism" in favor of a **Neutral Professional Design System**—inspired by high-end engineering tools like Linear and Raycast.
 
-## Quick Start
+### Key Innovations in V1.2 (Current)
+*   **Ultra-Compact "Expert" UI**: A high-density, minimalist layout that stays out of your way and focuses on the research canvas.
+*   **True Workspace Isolation**: Isolated document libraries and chat histories per research project.
+*   **Hierarchical Organization**: Organize multiple Workspaces inside Collections (Folders) for massive scalability.
+*   **Unified Right Sidebar**: A streamlined, tabbed panel for Knowledge (PDFs) and Insights (Notes).
+*   **Voice AI Integration**: Native "Listening" mode for hands-free AI interaction.
+*   **Granular Access Control**: Toggle between Public and Private workspace sharing with a single click.
+
+---
+
+## 🚀 Quick Start
 
 Get Lexicon AI running locally in under 5 minutes:
 
@@ -27,62 +37,37 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-## One-Line Tagline
-An open-source AI workspace for research, productivity, document intelligence, and team collaboration.
+---
 
-## Project Vision
-Lexicon AI is a modern AI-powered productivity and research platform designed to help students, developers, researchers, startups, and teams work smarter using AI. 
+## 🧠 Core Features
 
-The platform combines:
-- AI document understanding
-- Research assistance
-- Note management
-- Productivity workflows
-- AI chat with files
-- Task organization
-- Knowledge management
+1.  **AI Research Engine**: Ask complex questions across multiple uploaded PDFs. Context-aware RAG ensures precise citations.
+2.  **Dynamic Workspaces**: Create isolated hubs for different topics (e.g., "Neural Networks", "Market Trends").
+3.  **Collection Filtering**: Organize dozens of projects into categorized folders.
+4.  **Smart Insights**: A dedicated markdown editor for capturing AI-generated insights alongside your chat.
+5.  **Multi-Agent Visualization**: Track the status of your research agents (Researcher, Analyst, Writer) in real-time.
+6.  **Secure Sharing**: Generate public research links or keep your workspace 100% private.
 
-into one unified workspace.
+---
 
-The goal is to create a real-world open-source AI ecosystem where contributors can build production-grade features while helping users improve learning, research, and workflow efficiency.
+## 🛠 Tech Stack
 
-## Problem Statement
-Most AI tools today are isolated, expensive, privacy-invasive, difficult to customize, and not open source. Users constantly switch between ChatGPT, Notion, Google Docs, PDF readers, task managers, and bookmarking apps. 
+*   **Frontend**: Next.js 14, React, TypeScript, TailwindCSS (Professional Neutral Theme)
+*   **Backend**: FastAPI, Python 3.10+
+*   **AI Engine**: LangChain, Groq (Llama 3), Ollama (Local LLM Support)
+*   **Processing**: PyPDF2, SpeechRecognition
+*   **Design**: Custom Minimalist Component Library
 
-Lexicon AI solves this by providing:
-- One unified AI workspace
-- Local or cloud AI support
-- Intelligent research tools
-- Productivity automation
-- Collaborative workflows
+---
 
-## Core Features
-1. **AI Research Assistant**: Ask questions from uploaded PDFs, Research summarization, AI-generated notes, Smart references, Context-aware search
-2. **AI Chat Workspace**: Multi-chat sessions, Persistent memory, File-aware conversations, Markdown support, Export chats
-3. **Document Intelligence**: PDF analysis, Resume analysis, Text extraction, AI summaries, Keyword extraction
-4. **Productivity Workspace**: Smart notes, AI task suggestions, Daily planner, Workspace organization, Knowledge storage
-5. **Team Collaboration**: Shared workspaces, Team notes, Research sharing, Collaborative editing, Role-based access
-6. **AI Workflow Automation**: Research pipelines, AI-generated reports, Automated summarization, Multi-agent task handling
+## 🗺 Roadmap Progress
+- [x] Phase 1: Core Chat & PDF RAG
+- [x] Phase 2: Professional UI Overhaul & UX Unification
+- [x] Phase 3: Voice AI & Workspace Persistence
+- [ ] Phase 4: Real-time Multi-Agent Orchestration (In Progress)
+- [ ] Phase 5: Plugin Ecosystem & Public API
 
-## Tech Stack
-- **Frontend**: Next.js, React, TypeScript, TailwindCSS
-- **Backend**: FastAPI, Python
-- **AI Stack**: LangChain, Ollama, OpenAI APIs, Vector Database
-- **Database**: PostgreSQL
-- **Authentication**: Clerk/Auth.js
-- **Deployment**: Docker, Vercel, Railway
+---
 
-## Open Source Contribution Areas
-Check out [CONTRIBUTING.md](./CONTRIBUTING.md) for details on how to contribute.
-
-## Future Scope
-See the roadmap in [roadmap.md](./roadmap.md) and future scope details.
-- AI browser extension
-- Mobile app
-- AI voice assistant
-- Enterprise collaboration
-- Offline AI support
-- AI operating workspace
-
-## License
-MIT License. See [LICENSE](./LICENSE) for more details.
+## 📜 License
+MIT License. Created for the NSoC'26 Competition.

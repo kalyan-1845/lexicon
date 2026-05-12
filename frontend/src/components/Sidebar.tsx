@@ -1,63 +1,135 @@
+"use client";
+import { useState } from "react";
 import Link from "next/link";
+import MemoryModal from "@/components/MemoryModal";
 
-export default function Sidebar() {
+type SidebarProps = {
+  workspaces: { name: string; collectionId: string | null }[];
+  activeWorkspace: string;
+  onWorkspaceChange: (name: string) => void;
+  onAddWorkspace: () => void;
+  collections: string[];
+  activeCollection: string | null;
+  onCollectionChange: (name: string) => void;
+  onAddCollection: () => void;
+};
+
+export default function Sidebar({ 
+  workspaces, 
+  activeWorkspace, 
+  onWorkspaceChange, 
+  onAddWorkspace,
+  collections,
+  activeCollection,
+  onCollectionChange,
+  onAddCollection
+}: SidebarProps) {
+  const [showMemoryModal, setShowMemoryModal] = useState(false);
+
   return (
-    <aside aria-label="Sidebar" className="w-64 border-r border-white/5 bg-[#0a0a0b] h-full flex flex-col hidden md:flex">
-      <div className="p-4 border-b border-white/5 flex items-center gap-2">
-        <div className="w-6 h-6 rounded bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
-          <span className="text-white text-xs font-bold">L</span>
-        </div>
-        <span className="font-bold text-lg tracking-tight">Lexicon AI</span>
-      </div>
-      
-      <div className="p-4 flex-1 overflow-y-auto">
-        <button aria-label="Create New Workspace" className="w-full flex items-center gap-2 px-4 py-2 rounded-lg bg-indigo-600/10 text-indigo-400 hover:bg-indigo-600/20 transition-colors border border-indigo-500/20 mb-6 focus-visible:ring-2 focus-visible:ring-indigo-500 focus:outline-none">
-          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-          <span className="font-medium text-sm">New Workspace</span>
-        </button>
-
-        <nav aria-labelledby="recent-research-heading" className="space-y-1">
-          <h2 id="recent-research-heading" className="text-xs font-medium text-gray-500 mb-2 px-2 uppercase tracking-wider">Recent Research</h2>
-          {['Neural Networks PDF', 'Market Analysis Q3', 'Resume Optimization'].map((item, i) => (
-            <button key={i} aria-label={`Open workspace ${item}`} className="w-full text-left px-3 py-2 rounded-md text-sm text-gray-300 hover:text-white hover:bg-white/5 transition-colors truncate focus-visible:ring-2 focus-visible:ring-indigo-500 focus:outline-none">
-              {item}
-            </button>
-          ))}
-        </nav>
-      </div>
-
-      <div className="p-4 border-t border-white/5 flex flex-col gap-2">
-        <Link 
-          href="/" 
-          aria-label="Navigate back to home"
-          className="flex items-center gap-2 w-full text-left px-3 py-2 rounded-md text-sm text-gray-400 hover:text-white hover:bg-white/5 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 focus:outline-none mb-2"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-          </svg>
-          Back to Home
-        </Link>
-        
-        {/* Auth Profile Mock */}
-        <div className="flex items-center gap-3 px-3 py-2 rounded-lg bg-white/5 border border-white/10 mt-auto hover:bg-white/10 transition-colors cursor-pointer group focus-visible:ring-2 focus-visible:ring-indigo-500" tabIndex={0} role="button" aria-label="User Profile">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 to-violet-500 flex items-center justify-center text-white font-bold text-xs">
-            U
+    <>
+      <aside className="w-52 border-r border-white/[0.04] bg-[#09090b] flex flex-col h-full shrink-0">
+        <div className="p-3 flex items-center gap-2 mb-1">
+          <div className="w-4 h-4 rounded bg-white flex items-center justify-center">
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="5">
+              <path d="M12 2L2 7l10 5 10-5-10-5z" />
+              <path d="M2 17l10 5 10-5" />
+            </svg>
           </div>
-          <div className="flex flex-col flex-1 overflow-hidden">
-            <span className="text-sm font-medium text-gray-200 truncate group-hover:text-white transition-colors">Guest User</span>
-            <span className="text-xs text-gray-500 truncate">Sign in to sync</span>
-          </div>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-500 group-hover:text-white transition-colors">
-            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path>
-            <polyline points="10 17 15 12 10 7"></polyline>
-            <line x1="15" y1="12" x2="3" y2="12"></line>
-          </svg>
+          <span className="font-bold text-[12px] tracking-tight text-white uppercase">Lexicon</span>
         </div>
-      </div>
-    </aside>
+
+        <div className="flex-1 overflow-y-auto px-1.5 space-y-4">
+          <div>
+            <div className="flex items-center justify-between px-2 py-1">
+              <span className="text-[9px] font-black text-gray-600 uppercase tracking-[0.15em]">
+                {activeCollection ? `In ${activeCollection}` : 'Workspaces'}
+              </span>
+              <button 
+                onClick={onAddWorkspace}
+                className="p-1 rounded hover:bg-white/5 text-gray-600 hover:text-white transition-all"
+              >
+                <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+            </div>
+            <div className="mt-0.5 space-y-0.5">
+              {workspaces.map((item) => (
+                <button 
+                  key={item.name} 
+                  onClick={() => onWorkspaceChange(item.name)}
+                  className={`w-full text-left px-2 py-0.5 rounded text-[11px] font-medium transition-colors truncate ${
+                    activeWorkspace === item.name ? "text-white bg-white/[0.04]" : "text-gray-500 hover:text-gray-300 hover:bg-white/[0.02]"
+                  }`}
+                >
+                  {item.name}
+                </button>
+              ))}
+              {workspaces.length === 0 && (
+                <p className="px-2 py-1 text-[10px] text-gray-700 italic text-center">Empty</p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between px-2 py-1">
+              <span className="text-[9px] font-black text-gray-600 uppercase tracking-[0.15em]">Collections</span>
+              <button 
+                onClick={onAddCollection}
+                className="p-1 rounded hover:bg-white/5 text-gray-600 hover:text-white transition-all"
+              >
+                <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              </button>
+            </div>
+            <div className="mt-0.5 space-y-0.5">
+              {collections.map((item) => (
+                <button 
+                  key={item} 
+                  onClick={() => onCollectionChange(item)}
+                  className={`w-full flex items-center gap-2 text-left px-2 py-0.5 rounded text-[11px] font-medium transition-colors truncate ${
+                    activeCollection === item ? "text-white bg-white/[0.04]" : "text-gray-500 hover:text-white hover:bg-white/[0.02]"
+                  }`}
+                >
+                  <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className={activeCollection === item ? "text-white" : "text-gray-700"}>
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                  {item}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="p-1.5 border-t border-white/[0.04] space-y-0.5">
+          <Link href="/" className="flex items-center gap-2 w-full px-2 py-1 rounded text-[11px] font-medium text-gray-500 hover:text-white hover:bg-white/[0.03] transition-all">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            </svg>
+            Home
+          </Link>
+          <button onClick={() => setShowMemoryModal(true)} className="flex items-center gap-2 w-full px-2 py-1 rounded text-[11px] font-medium text-gray-500 hover:text-white hover:bg-white/[0.03] transition-all">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 16v-4M12 8h.01"></path>
+            </svg>
+            Memory
+          </button>
+          
+          <div className="mt-2 p-1 rounded bg-white/[0.02] border border-white/[0.04] flex items-center gap-2 cursor-pointer hover:bg-white/[0.04] transition-all">
+            <div className="w-5 h-5 rounded-full bg-gray-800 flex items-center justify-center text-[8px] font-bold">U</div>
+            <div className="flex flex-col overflow-hidden">
+              <span className="text-[10px] font-semibold text-gray-300 truncate">Guest</span>
+              <span className="text-[7px] text-gray-600 font-black uppercase tracking-tight leading-none">Free</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+      {showMemoryModal && <MemoryModal onClose={() => setShowMemoryModal(false)} />}
+    </>
   );
 }

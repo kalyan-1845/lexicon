@@ -1,7 +1,5 @@
 import Link from 'next/link';
-import Sidebar from "@/components/Sidebar";
-import ChatArea from "@/components/ChatArea";
-import PDFUploader from "@/components/PDFUploader";
+import LandingPreview from "@/components/LandingPreview";
 
 export default function Home() {
   return (
@@ -73,9 +71,7 @@ export default function Home() {
           <div className="mx-auto text-xs font-medium text-gray-500">app.lexicon.ai</div>
         </div>
         <div className="h-[500px] w-full bg-[#0a0a0b] flex rounded-b-xl overflow-hidden text-left pointer-events-none">
-           <Sidebar />
-           <ChatArea />
-           <PDFUploader />
+           <LandingPreview />
         </div>
       </div>
     </main>

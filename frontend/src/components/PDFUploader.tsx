@@ -1,25 +1,30 @@
 "use client";
 import { useState, useRef } from "react";
 
-type Document = { name: string; size: number; status: string };
+type Document = { 
+  name: string; 
+  size: number; 
+  status: string;
+  text?: string;
+};
 
-export default function PDFUploader() {
-  const [isDragging, setIsDragging] = useState(false);
+type PDFUploaderProps = {
+  documents: Document[];
+  setDocuments: (docs: Document[]) => void;
+  onContextUpdate?: (text: string | null) => void;
+  isEmbedded?: boolean;
+};
+
+export default function PDFUploader({ documents, setDocuments, onContextUpdate, isEmbedded }: PDFUploaderProps) {
   const [isUploading, setIsUploading] = useState(false);
-  const [documents, setDocuments] = useState<Document[]>([
-    { name: "Machine_Learning_Ch1.pdf", size: 2.4 * 1024 * 1024, status: "Waiting..." }
-  ]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleUpload = async (file: File) => {
-    if (!file || file.type !== "application/pdf") {
-      alert("Please upload a valid PDF file.");
-      return;
-    }
+    if (!file || file.type !== "application/pdf") return;
 
     setIsUploading(true);
     const newDoc = { name: file.name, size: file.size, status: "Uploading..." };
-    setDocuments(prev => [newDoc, ...prev]);
+    setDocuments([newDoc, ...documents]);
 
     const formData = new FormData();
     formData.append("file", file);
@@ -29,123 +34,87 @@ export default function PDFUploader() {
         method: "POST",
         body: formData,
       });
-      
       if (!response.ok) throw new Error("Upload failed");
-      
       const data = await response.json();
       
-      setDocuments(prev => prev.map(doc => 
-        doc.name === file.name ? { ...doc, status: `Parsed (${data.extracted_character_count} chars)` } : doc
-      ));
+      setDocuments([{ 
+        ...newDoc, 
+        status: `Parsed (${data.extracted_character_count} chars)`,
+        text: data.full_text
+      }, ...documents]);
+      
+      if (onContextUpdate && data.full_text) {
+        onContextUpdate(data.full_text);
+      }
     } catch (error) {
-      console.error("Error uploading file:", error);
-      setDocuments(prev => prev.map(doc => 
-        doc.name === file.name ? { ...doc, status: "Error" } : doc
-      ));
+      setDocuments([{ ...newDoc, status: "Error" }, ...documents]);
     } finally {
       setIsUploading(false);
     }
   };
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleUpload(e.dataTransfer.files[0]);
+  const handleSummarize = async (doc: Document) => {
+    if (!doc.text) return;
+    try {
+      const response = await fetch("http://localhost:8000/api/chat/summarize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: doc.text }),
+      });
+      if (!response.ok) throw new Error("Summarization failed");
+      const data = await response.json();
+      alert(`Summary of ${doc.name}:\n\n${data.summary}`);
+    } catch (error) {
+      alert("Failed to summarize.");
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      handleUpload(e.target.files[0]);
-    }
-  };
+  const content = (
+    <div className="flex-1 flex flex-col p-6 overflow-hidden">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="font-bold text-[10px] uppercase tracking-widest text-gray-500">Knowledge</h2>
+        <span className="text-[9px] font-bold text-gray-700 bg-white/[0.02] px-1.5 py-0.5 rounded border border-white/[0.04]">{documents.length}</span>
+      </div>
+      
+      <input type="file" accept="application/pdf" className="hidden" ref={fileInputRef} onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0])} />
 
-  const formatSize = (bytes: number) => {
-    return (bytes / (1024 * 1024)).toFixed(2) + " MB";
-  };
+      <button onClick={() => fileInputRef.current?.click()} className="w-full py-4 border border-dashed border-white/5 rounded-lg flex flex-col items-center justify-center gap-1 hover:bg-white/[0.01] transition-all group shrink-0">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-gray-600 group-hover:text-white transition-colors">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" />
+        </svg>
+        <span className="text-[10px] font-bold text-gray-500 group-hover:text-white transition-colors uppercase tracking-wider">Add Document</span>
+      </button>
+
+      <div className="mt-6 flex-1 overflow-y-auto space-y-3">
+        {documents.map((doc, idx) => (
+          <div key={idx} className="p-2.5 rounded-lg bg-white/[0.01] border border-white/[0.04] flex items-center gap-2.5 group hover:bg-white/[0.02] transition-all">
+             <div className="w-7 h-7 rounded bg-red-500/10 flex items-center justify-center shrink-0 border border-red-500/5">
+               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-red-500/60">
+                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+               </svg>
+             </div>
+             <div className="flex flex-col overflow-hidden flex-1">
+               <span className="text-[11px] font-semibold text-gray-300 truncate">{doc.name}</span>
+               <span className="text-[9px] font-bold text-gray-600 uppercase tracking-tighter">{doc.status}</span>
+             </div>
+             {doc.status.startsWith('Parsed') && (
+               <button onClick={() => handleSummarize(doc)} className="w-6 h-6 rounded hover:bg-white/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-gray-600 hover:text-white">
+                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                 </svg>
+               </button>
+             )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  if (isEmbedded) return content;
 
   return (
-    <aside aria-label="Document Sources" className="w-80 border-l border-white/5 bg-[#0a0a0b] h-full flex flex-col hidden lg:flex p-4">
-      <h2 className="font-semibold text-gray-200 mb-4">Document Sources</h2>
-      
-      {/* Hidden File Input */}
-      <input 
-        type="file" 
-        accept="application/pdf" 
-        className="hidden" 
-        ref={fileInputRef} 
-        onChange={handleFileChange} 
-      />
-
-      {/* Upload Zone */}
-      <div 
-        role="button"
-        tabIndex={0}
-        aria-label="Upload a PDF. Drag and drop or click to browse."
-        onClick={() => fileInputRef.current?.click()}
-        className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center text-center transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 cursor-pointer ${
-          isDragging ? "border-indigo-500 bg-indigo-500/5" : "border-white/10 hover:border-white/20 hover:bg-white/5"
-        }`}
-        onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-        onDragLeave={() => setIsDragging(false)}
-        onDrop={handleDrop}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            fileInputRef.current?.click();
-          }
-        }}
-      >
-        <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center mb-3">
-          <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`text-gray-400 ${isUploading ? 'animate-pulse' : ''}`}>
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-            <line x1="12" y1="18" x2="12" y2="12"></line>
-            <line x1="9" y1="15" x2="15" y2="15"></line>
-          </svg>
-        </div>
-        <p className="text-sm font-medium text-gray-200 mb-1">{isUploading ? "Uploading..." : "Upload a PDF"}</p>
-        <p className="text-xs text-gray-500 mb-4">Drag and drop or click to browse</p>
-        <button tabIndex={-1} aria-hidden="true" className="px-4 py-2 rounded-lg text-xs font-semibold bg-white text-[#0a0a0b] hover:bg-gray-200 transition-colors pointer-events-none">
-          Browse Files
-        </button>
-      </div>
-
-      {/* Active Documents List */}
-      <nav aria-label="Active Documents" className="mt-6 flex-1 overflow-y-auto pr-2">
-        <h3 className="text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">Active Documents</h3>
-        <ul className="space-y-2">
-          {documents.map((doc, idx) => (
-            <li key={idx} className="p-3 rounded-lg bg-gray-900 border border-white/5 flex items-center gap-3">
-               <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`${doc.status === 'Error' ? 'text-red-500' : 'text-red-400'} shrink-0`}>
-                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                 <polyline points="14 2 14 8 20 8"></polyline>
-               </svg>
-               <div className="flex flex-col overflow-hidden w-full">
-                 <span className="text-sm text-gray-200 truncate" title={doc.name}>{doc.name}</span>
-                 <span className={`text-xs ${doc.status === 'Error' ? 'text-red-400' : 'text-gray-500'}`}>
-                   {formatSize(doc.size)} • {doc.status}
-                 </span>
-               </div>
-               {doc.status.startsWith('Parsed') && (
-                 <button 
-                   onClick={() => alert(`Summarizing ${doc.name}... (Backend Hook Pending)`)}
-                   className="p-1.5 rounded bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
-                   aria-label={`Summarize ${doc.name}`}
-                   title="Summarize Document"
-                 >
-                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                     <line x1="9" y1="10" x2="15" y2="10"></line>
-                     <line x1="12" y1="7" x2="12" y2="13"></line>
-                   </svg>
-                 </button>
-               )}
-            </li>
-          ))}
-        </ul>
-      </nav>
+    <aside className="w-72 border-l border-white/[0.04] bg-[#09090b] h-full flex flex-col shrink-0">
+      {content}
     </aside>
   );
 }
