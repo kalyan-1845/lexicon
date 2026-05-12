@@ -23,8 +23,10 @@ class SummarizeRequest(BaseModel):
 
 @router.post("/message", response_model=ChatResponse)
 async def send_message(request: ChatRequest):
-    if not request.message:
-        raise HTTPException(status_code=400, detail="Message cannot be empty")
+    message_text = request.message.strip()
+    if not message_text:
+        raise HTTPException(status_code=400, detail="Query cannot be empty or just whitespace.")
+
     
     try:
         # Construct prompt with document context if available
