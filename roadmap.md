@@ -6,6 +6,12 @@
 - [x] **Markdown Insights**: Integrated note-taking system for research.
 - [x] **Basic Authentication**: Session-based user persistence.
 
+## Phase 2
+- [ ] Team collaboration
+- [ ] Workspace sharing
+- [ ] AI memory
+- [x] Search engine
+- [ ] Research collections
 ## ✅ Phase 2: Professional Evolution (Completed)
 - [x] **"Pro Minimalist" Design Overhaul**: Replaced glassmorphism with a high-performance neutral theme.
 - [x] **Workspace Isolation**: Real-time state persistence for separate research hubs.
