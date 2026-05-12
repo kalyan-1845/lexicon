@@ -27,17 +27,18 @@ async def upload_pdf(file: UploadFile = File(...)):
         for page in doc:
             extracted_text += page.get_text()
             
-        # TODO: Integrate LangChain to chunk and store the text in pgvector
-        # For now, we return the character count and a preview as a proof of success
+        # Extract metadata
+        metadata = doc.metadata
         
         return {
             "filename": file.filename,
             "status": "success",
             "message": "File successfully uploaded and parsed.",
+            "metadata": metadata,
             "extracted_character_count": len(extracted_text),
-            "full_text": extracted_text,
             "preview": extracted_text[:200] + "..." if len(extracted_text) > 200 else extracted_text
         }
+
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred while processing the PDF: {str(e)}")
