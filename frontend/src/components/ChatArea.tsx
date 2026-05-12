@@ -117,6 +117,16 @@ export default function ChatArea({
         </div>
         
         <div className="flex items-center gap-1">
+          <button 
+            onClick={() => {
+              if (confirm("Are you sure you want to clear this workspace's chat history?")) {
+                setMessages([{ id: Date.now().toString(), role: "assistant", content: "Chat cleared." }]);
+              }
+            }} 
+            className="px-2 py-0.5 text-[10px] font-bold text-gray-500 hover:text-red-400 transition-colors uppercase"
+          >
+            Clear
+          </button>
           <button onClick={() => setShowShareModal(true)} className="px-2 py-0.5 text-[10px] font-bold text-gray-500 hover:text-white transition-colors uppercase">Share</button>
           <button onClick={onToggleDocuments} className={`px-2 py-0.5 text-[10px] font-bold rounded transition-colors uppercase ${showDocuments ? 'text-white' : 'text-gray-500 hover:text-white'}`}>Docs</button>
           <button onClick={onToggleNotes} className={`px-2 py-0.5 text-[10px] font-bold rounded transition-colors uppercase ${showNotes ? 'text-white' : 'text-gray-500 hover:text-white'}`}>Notes</button>
