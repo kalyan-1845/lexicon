@@ -2,6 +2,8 @@
 import { useState, useRef, useEffect } from "react";
 import ShareModal from "@/components/ShareModal";
 import AgentWorkflow from "@/components/AgentWorkflow";
+import { ENDPOINTS } from "@/lib/config";
+
 
 type Message = {
   id: string;
@@ -52,11 +54,12 @@ export default function ChatArea({
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8000/api/chat/message", {
+      const response = await fetch(ENDPOINTS.CHAT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: userMessage.content, document_context: documentContext }),
       });
+
       if (!response.ok) throw new Error("Failed");
       const data = await response.json();
       setMessages([...messages, userMessage, { id: (Date.now() + 1).toString(), role: "assistant", content: data.reply }]);
@@ -73,7 +76,8 @@ export default function ChatArea({
     const formData = new FormData();
     formData.append("file", file);
     try {
-      const response = await fetch("http://localhost:8000/api/upload/pdf", { method: "POST", body: formData });
+      const response = await fetch(ENDPOINTS.UPLOAD, { method: "POST", body: formData });
+
       if (!response.ok) throw new Error("Failed");
       const data = await response.json();
       if (onContextUpdate && data.full_text) {
