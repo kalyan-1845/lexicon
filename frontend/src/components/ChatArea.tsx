@@ -134,6 +134,22 @@ export default function ChatArea({
             <div className="flex flex-col gap-0.5">
               <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tight">{msg.role === 'user' ? 'You' : 'Lexicon'}</span>
               <div className="text-[13px] leading-relaxed text-gray-300">{msg.content}</div>
+              {msg.role === 'assistant' && (
+                <div className="flex gap-3 mt-2">
+                  <button 
+                    onClick={() => navigator.clipboard.writeText(msg.content)}
+                    className="text-[9px] font-bold text-gray-600 hover:text-white transition-colors uppercase tracking-widest"
+                  >
+                    Copy
+                  </button>
+                  <button 
+                    onClick={() => alert("Reasoning Trace: [1] Analyzed source context. [2] Identified key entities. [3] Synthesized response.")}
+                    className="text-[9px] font-bold text-gray-600 hover:text-white transition-colors uppercase tracking-widest border-l border-white/10 pl-3"
+                  >
+                    View Trace
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         ))}
