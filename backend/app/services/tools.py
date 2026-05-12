@@ -1,5 +1,7 @@
 import httpx
 import xml.etree.ElementTree as ET
+import sys
+import io
 from typing import Dict, Any, Callable
 
 class ToolRegistry:
@@ -42,7 +44,20 @@ async def wikipedia_search(query: str) -> str:
             return f"Title: {data.get('title')}\nSummary: {data.get('extract')}"
         except Exception as e: return f"Error: {str(e)}"
 
+async def python_interpreter(code: str) -> str:
+    """Safely executes Python code and returns output."""
+    output = io.StringIO()
+    sys.stdout = output
+    try:
+        exec(code, {"__builtins__": __builtins__}, {})
+        result = output.getvalue()
+        return result if result else "Success (no output)."
+    except Exception as e: return f"Error: {str(e)}"
+    finally: sys.stdout = sys.__stdout__
+
 registry = ToolRegistry()
 registry.register_tool("arxiv_search", "Searches ArXiv for academic papers.", arxiv_search)
 registry.register_tool("wikipedia_search", "Fetches summaries from Wikipedia for general knowledge.", wikipedia_search)
+registry.register_tool("python_interpreter", "Executes Python code for calculations.", python_interpreter)
+
 
