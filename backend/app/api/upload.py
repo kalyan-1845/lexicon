@@ -21,25 +21,33 @@ async def upload_pdf(file: UploadFile = File(...)):
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
             
-        # Extract text using PyMuPDF
-        doc = fitz.open(file_path)
         extracted_text = ""
-        for page in doc:
-            extracted_text += page.get_text()
+        filename = file.filename.lower()
+
+        if filename.endswith('.pdf'):
+            # Extract text using PyMuPDF
+            doc = fitz.open(file_path)
+            for page in doc:
+                extracted_text += page.get_text()
+        elif filename.endswith('.md') or filename.endswith('.txt'):
+            # Read text directly
+            with open(file_path, "r", encoding="utf-8") as f:
+                extracted_text = f.read()
+        else:
+            raise HTTPException(status_code=400, detail="Unsupported format. Use .pdf, .md, or .txt")
             
-        # TODO: Integrate LangChain to chunk and store the text in pgvector
-        # For now, we return the character count and a preview as a proof of success
-        
         return {
             "filename": file.filename,
             "status": "success",
-            "message": "File successfully uploaded and parsed.",
+            "message": "File successfully parsed.",
             "extracted_character_count": len(extracted_text),
             "full_text": extracted_text,
             "preview": extracted_text[:200] + "..." if len(extracted_text) > 200 else extracted_text
         }
         
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"An error occurred while processing the PDF: {str(e)}")
+        if isinstance(e, HTTPException): raise e
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
     finally:
         file.file.close()
