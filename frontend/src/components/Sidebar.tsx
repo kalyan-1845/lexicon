@@ -120,13 +120,20 @@ export default function Sidebar({
             Memory
           </button>
           
-          <div className="mt-2 p-1 rounded bg-white/[0.02] border border-white/[0.04] flex items-center gap-2 cursor-pointer hover:bg-white/[0.04] transition-all">
-            <div className="w-5 h-5 rounded-full bg-gray-800 flex items-center justify-center text-[8px] font-bold">U</div>
+          <div className="mt-2 p-1 rounded bg-white/[0.02] border border-white/[0.04] flex items-center gap-2 cursor-pointer hover:bg-white/[0.04] transition-all group">
+            <div className="relative w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center text-[8px] font-bold text-white overflow-hidden">
+              <img 
+                src="https://api.dicebear.com/7.x/avataaars/svg?seed=lexicon" 
+                alt="Avatar" 
+                className="w-full h-full object-cover"
+              />
+            </div>
             <div className="flex flex-col overflow-hidden">
-              <span className="text-[10px] font-semibold text-gray-300 truncate">Guest</span>
-              <span className="text-[7px] text-gray-600 font-black uppercase tracking-tight leading-none">Free</span>
+              <span className="text-[10px] font-semibold text-gray-300 truncate group-hover:text-white transition-colors">Lexicon Lead</span>
+              <span className="text-[7px] text-gray-600 font-black uppercase tracking-tight leading-none">Pro Plan</span>
             </div>
           </div>
+
         </div>
       </aside>
       {showMemoryModal && <MemoryModal onClose={() => setShowMemoryModal(false)} />}
