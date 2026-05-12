@@ -112,12 +112,35 @@ export default function ChatArea({
 
       <div className="h-10 border-b border-white/[0.04] flex items-center justify-between px-4 bg-[#09090b]/80 backdrop-blur-md shrink-0">
         <div className="flex items-center gap-2">
-          <h1 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{workspaceName || 'General'}</h1>
+          <input 
+            type="text"
+            value={workspaceName || 'General'}
+            onChange={(e) => {
+              // Implementation of renaming logic here
+            }}
+            className="bg-transparent border-none p-0 text-[10px] font-bold text-gray-500 uppercase tracking-widest focus:ring-0 focus:text-white transition-colors cursor-edit"
+          />
           <div className="w-1 h-1 rounded-full bg-green-500/50" />
         </div>
+
         
         <div className="flex items-center gap-1">
+          <button 
+            onClick={() => {
+              const content = messages.map(m => `### ${m.role.toUpperCase()}\n${m.content}\n`).join("\n");
+              const blob = new Blob([content], { type: "text/markdown" });
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = `${workspaceName || 'research'}-export.md`;
+              a.click();
+            }} 
+            className="px-2 py-0.5 text-[10px] font-bold text-gray-500 hover:text-white transition-colors uppercase"
+          >
+            Export
+          </button>
           <button onClick={() => setShowShareModal(true)} className="px-2 py-0.5 text-[10px] font-bold text-gray-500 hover:text-white transition-colors uppercase">Share</button>
+
           <button onClick={onToggleDocuments} className={`px-2 py-0.5 text-[10px] font-bold rounded transition-colors uppercase ${showDocuments ? 'text-white' : 'text-gray-500 hover:text-white'}`}>Docs</button>
           <button onClick={onToggleNotes} className={`px-2 py-0.5 text-[10px] font-bold rounded transition-colors uppercase ${showNotes ? 'text-white' : 'text-gray-500 hover:text-white'}`}>Notes</button>
         </div>
