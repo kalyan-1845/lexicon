@@ -103,7 +103,29 @@ export default function Sidebar({
               ))}
             </div>
           </div>
+
+          <div>
+            <div className="flex items-center justify-between px-2 py-1">
+              <span className="text-[9px] font-black text-gray-600 uppercase tracking-[0.15em]">Recent History</span>
+            </div>
+            <div className="mt-0.5 space-y-0.5">
+              {[
+                { title: "Quantum Decoherence", date: "2h ago" },
+                { title: "SaaS Multi-tenancy", date: "5h ago" },
+                { title: "Pydantic V2 Migration", date: "1d ago" }
+              ].map((item, i) => (
+                <button 
+                  key={i} 
+                  className="w-full flex items-center justify-between px-2 py-0.5 rounded text-[10px] font-medium text-gray-500 hover:text-gray-300 hover:bg-white/[0.02] transition-colors group"
+                >
+                  <span className="truncate">{item.title}</span>
+                  <span className="text-[8px] text-gray-700 font-bold group-hover:text-gray-600">{item.date}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
+
 
         <div className="p-1.5 border-t border-white/[0.04] space-y-0.5">
           <Link href="/" className="flex items-center gap-2 w-full px-2 py-1 rounded text-[11px] font-medium text-gray-500 hover:text-white hover:bg-white/[0.03] transition-all">
