@@ -2,38 +2,49 @@
 
 @theme {
   --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
-  --color-gray-950: #0a0a0b;
-  --color-gray-900: #121214;
+  --color-gray-950: #09090b;
+  --color-gray-900: #18181b;
   --color-gray-800: #27272a;
 }
 
 @layer base {
   :root {
-    --background: #0a0a0b;
-    --foreground: #f4f4f5;
+    --background: #09090b;
+    --foreground: #fafafa;
+  }
+  
+  body {
+    @apply bg-[#09090b] text-[#fafafa] selection:bg-indigo-500/20 antialiased;
+  }
+
+  /* Custom Scrollbar - More subtle */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-white/5 rounded-full hover:bg-white/10 transition-colors;
   }
 }
 
 @layer utilities {
-  .glass {
-    @apply bg-gray-900/40 backdrop-blur-md border border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.1)];
+  .border-subtle {
+    @apply border border-white/[0.04];
   }
   
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400;
+  .surface {
+    @apply bg-[#0c0c0e] border border-white/[0.04];
   }
   
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
+  .text-muted {
+    @apply text-gray-500 font-medium;
   }
-  
-  .animate-pulse-slow {
-    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  }
-}
 
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-20px); }
-  100% { transform: translateY(0px); }
+  .btn-primary {
+    @apply bg-white text-black hover:bg-gray-200 transition-all font-semibold rounded-lg px-4 py-2 text-sm;
+  }
+
+  .btn-secondary {
+    @apply bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.06] text-gray-300 transition-all rounded-lg px-3 py-1.5 text-xs;
+  }
 }
