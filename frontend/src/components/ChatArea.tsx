@@ -134,6 +134,14 @@ export default function ChatArea({
             <div className="flex flex-col gap-0.5">
               <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tight">{msg.role === 'user' ? 'You' : 'Lexicon'}</span>
               <div className="text-[13px] leading-relaxed text-gray-300">{msg.content}</div>
+              {msg.role === 'assistant' && (
+                <button 
+                  onClick={() => navigator.clipboard.writeText(msg.content)}
+                  className="mt-2 text-[9px] font-bold text-gray-600 hover:text-white transition-colors uppercase tracking-widest"
+                >
+                  Copy Response
+                </button>
+              )}
             </div>
           </div>
         ))}
