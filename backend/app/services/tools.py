@@ -31,5 +31,18 @@ async def arxiv_search(query: str) -> str:
             return "\n\n".join(papers) if papers else "No papers found."
         except Exception as e: return f"Error: {str(e)}"
 
+async def wikipedia_search(query: str) -> str:
+    """Fetches summaries from Wikipedia."""
+    url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{query.replace(' ', '_')}"
+    async with httpx.AsyncClient() as client:
+        try:
+            response = await client.get(url)
+            if response.status_code == 404: return f"No Wikipedia page found for '{query}'."
+            data = response.json()
+            return f"Title: {data.get('title')}\nSummary: {data.get('extract')}"
+        except Exception as e: return f"Error: {str(e)}"
+
 registry = ToolRegistry()
 registry.register_tool("arxiv_search", "Searches ArXiv for academic papers.", arxiv_search)
+registry.register_tool("wikipedia_search", "Fetches summaries from Wikipedia for general knowledge.", wikipedia_search)
+
