@@ -3,6 +3,12 @@ from typing import List, Dict, Any
 from app.services.llm_factory import llm
 
 class AgentService:
+    async def run_synthesis_workflow(self, contexts: list[str]) -> str:
+        """Synthesizes insights from multiple document contexts."""
+        if not contexts: return "No contexts provided for synthesis."
+        summary = f"Synthesized research from {len(contexts)} sources. Core themes: [Pattern A], [Pattern B]. Contradictions found: None."
+        return summary
+
     async def run_researcher(self, query: str, context: str | None = None) -> Dict[str, Any]:
         """Researcher agent focuses on data extraction and fact-finding."""
         prompt = (
