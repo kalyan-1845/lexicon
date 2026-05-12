@@ -21,6 +21,29 @@ class ChatResponse(BaseModel):
 class SummarizeRequest(BaseModel):
     text: str
 
+class ResearchSnapshot(BaseModel):
+    id: str
+    title: str
+    author: str
+    content: str
+    steps: list[dict]
+    created_at: str
+
+@router.get("/share/{research_id}", response_model=ResearchSnapshot)
+async def get_public_research(research_id: str):
+    # Simulated database lookup for demo purposes
+    return {
+        "id": research_id,
+        "title": "Quantum Computing Fundamentals Analysis",
+        "author": "Lexicon Research Hub",
+        "content": "This research provides a synthesis of recent breakthroughs in quantum decoherence mitigation...",
+        "steps": [
+            {"agent": "Researcher", "content": "Analyzed 5 academic papers on superconducting qubits."},
+            {"agent": "Analyst", "content": "Critiqued the error-correction overhead projections."}
+        ],
+        "created_at": "2026-05-12T23:05:00Z"
+    }
+
 @router.post("/message", response_model=ChatResponse)
 async def send_message(request: ChatRequest):
     if not request.message:
