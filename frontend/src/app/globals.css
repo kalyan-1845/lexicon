@@ -17,14 +17,29 @@
     @apply bg-[#09090b] text-[#fafafa] selection:bg-indigo-500/20 antialiased;
   }
 
-  /* Custom Scrollbar - More subtle */
+  /* Custom Scrollbar - High Density Expert Styling */
   ::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
+    width: 5px;
+    height: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    @apply bg-white/5 rounded-full hover:bg-white/10 transition-colors;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    transition: background 0.3s ease;
   }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.05) transparent;
+  }
+
 }
 
 @layer utilities {
