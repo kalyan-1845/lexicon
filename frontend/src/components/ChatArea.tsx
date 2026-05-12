@@ -7,7 +7,9 @@ type Message = {
   id: string;
   role: "user" | "assistant";
   content: string;
+  timestamp: string;
 };
+
 
 type ChatAreaProps = {
   workspaceName?: string;
@@ -45,9 +47,14 @@ export default function ChatArea({
   }, [messages]);
 
   const handleSendMessage = async () => {
-    if (!query.trim()) return;
-    const userMessage: Message = { id: Date.now().toString(), role: "user", content: query.trim() };
+    const userMessage: Message = { 
+      id: Date.now().toString(), 
+      role: "user", 
+      content: query.trim(),
+      timestamp: new Date().toLocaleTimeString()
+    };
     setMessages([...messages, userMessage]);
+
     setQuery("");
     setIsLoading(true);
 
@@ -132,9 +139,13 @@ export default function ChatArea({
               <span className="text-[9px] font-black">{msg.role === 'user' ? 'U' : 'L'}</span>
             </div>
             <div className="flex flex-col gap-0.5">
-              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tight">{msg.role === 'user' ? 'You' : 'Lexicon'}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tight">{msg.role === 'user' ? 'You' : 'Lexicon'}</span>
+                <span className="text-[9px] text-gray-700 font-medium">{msg.timestamp}</span>
+              </div>
               <div className="text-[13px] leading-relaxed text-gray-300">{msg.content}</div>
             </div>
+
           </div>
         ))}
         {isLoading && (
