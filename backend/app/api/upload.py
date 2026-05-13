@@ -9,8 +9,16 @@ router = APIRouter()
 UPLOAD_DIR = "app/storage/uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-@router.post("/pdf")
-async def upload_pdf(file: UploadFile = File(...)):
+@router.delete("/delete/{filename}")
+async def delete_file(filename: str):
+    file_path = os.path.join(UPLOAD_DIR, filename)
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        return {"message": f"File {filename} deleted successfully"}
+    raise HTTPException(status_code=404, detail="File not found")
+
+@router.post("/upload")
+async def upload_file(file: UploadFile = File(...)):
     if not file.filename.endswith('.pdf'):
         raise HTTPException(status_code=400, detail="Only PDF files are allowed")
     
