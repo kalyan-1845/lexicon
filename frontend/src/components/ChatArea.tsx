@@ -38,6 +38,8 @@ export default function ChatArea({
   const [showShareModal, setShowShareModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [activeAgent, setActiveAgent] = useState<string | null>(null);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -50,6 +52,8 @@ export default function ChatArea({
     setMessages([...messages, userMessage]);
     setQuery("");
     setIsLoading(true);
+    setActiveAgent(null);
+    setStatusMessage(null);
 
     try {
       const response = await fetch("http://localhost:8000/api/chat/message/stream", {
@@ -62,6 +66,8 @@ export default function ChatArea({
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
       let assistantMessage: Message = { id: (Date.now() + 1).toString(), role: "assistant", content: "" };
+      
+      // Add empty assistant message that we will fill
       setMessages([...messages, userMessage, assistantMessage]);
 
       while (true) {
@@ -71,18 +77,44 @@ export default function ChatArea({
         const lines = chunk.split("\n");
         for (const line of lines) {
           if (line.startsWith("data: ")) {
-            const data = JSON.parse(line.slice(6));
-            if (data.content) {
-              assistantMessage.content += data.content;
-              setMessages([...messages, userMessage, { ...assistantMessage }]);
+            try {
+              const data = JSON.parse(line.slice(6));
+              
+              // Handle Agent Status Packets
+              if (data.status) {
+                setActiveAgent(data.agent);
+                setStatusMessage(data.status);
+                continue;
+              }
+
+              // Handle Content Packets
+              if (data.content) {
+                // When content starts, the final agent is Lexicon
+                setActiveAgent("Lexicon");
+                setStatusMessage("Generating final synthesis...");
+                
+                assistantMessage.content += data.content;
+                setMessages(prev => {
+                  const newMsgs = [...prev];
+                  newMsgs[newMsgs.length - 1] = { ...assistantMessage };
+                  return newMsgs;
+                });
+              }
+            } catch (e) {
+              console.error("Error parsing stream chunk", e);
             }
           }
         }
       }
     } catch (error) {
-      setMessages([...messages, userMessage, { id: Date.now().toString(), role: "assistant", content: "⚠️ Connection error." }]);
+      setMessages(prev => [...prev, { id: Date.now().toString(), role: "assistant", content: "⚠️ Connection error." }]);
     } finally {
       setIsLoading(false);
+      // Don't clear status immediately so user can see it's done
+      setTimeout(() => {
+        setActiveAgent(null);
+        setStatusMessage(null);
+      }, 3000);
     }
   };
 
@@ -190,7 +222,7 @@ export default function ChatArea({
       </div>
 
       <div className="px-4 py-1">
-        <AgentWorkflow />
+        <AgentWorkflow activeAgent={activeAgent} statusMessage={statusMessage} />
       </div>
 
       <div className="px-4 pb-4">
