@@ -1,12 +1,18 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import os
+import hashlib
 from groq import Groq
 from dotenv import load_dotenv
 
 load_dotenv()
 
 router = APIRouter()
+
+# Simple in-memory cache for demo purposes
+prompt_cache = {}
+
+class ChatRequest(BaseModel):
 
 # Initialize Groq client
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
@@ -25,6 +31,11 @@ class SummarizeRequest(BaseModel):
 async def send_message(request: ChatRequest):
     if not request.message:
         raise HTTPException(status_code=400, detail="Message cannot be empty")
+    
+    # Generate cache key
+    cache_key = hashlib.sha256(f"{message_text}:{request.document_context}".encode()).hexdigest()
+    if cache_key in prompt_cache:
+        return ChatResponse(reply=prompt_cache[cache_key])
     
     try:
         # Construct prompt with document context if available
