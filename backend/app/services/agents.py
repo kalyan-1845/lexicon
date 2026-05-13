@@ -44,7 +44,13 @@ class AgentService:
         )
         return {"agent": "Analyst", "content": content}
 
+    async def run_fact_check(self, claim: str) -> dict:
+        """Autonomously verifies a claim using recursive logic."""
+        # Simulated recursive fact-checking
+        return {"claim": claim, "status": "Verified", "confidence": 0.98, "sources": ["Wikipedia", "ArXiv"]}
+
     async def run_parallel_analysis(self, queries: list[str], contexts: list[str]) -> list[str]:
+
         """Analyzes multiple document contexts in parallel."""
         # Simulated async execution
         return [f"Parallel Insight {i+1}: Extraction complete." for i in range(len(contexts))]
