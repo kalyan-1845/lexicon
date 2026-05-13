@@ -131,8 +131,11 @@ export default function ChatArea({
             <div className={`w-5 h-5 rounded bg-gray-800 flex items-center justify-center shrink-0 mt-0.5 ${msg.role === 'user' ? 'bg-white text-black' : 'text-white'}`}>
               <span className="text-[9px] font-black">{msg.role === 'user' ? 'U' : 'L'}</span>
             </div>
-            <div className="flex flex-col gap-0.5">
-              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tight">{msg.role === 'user' ? 'You' : 'Lexicon'}</span>
+            <div className="flex flex-col gap-0.5 group">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tight">{msg.role === 'user' ? 'You' : 'Lexicon'}</span>
+                <span className="text-[8px] text-gray-700 font-medium opacity-0 group-hover:opacity-100 transition-opacity">11:43 AM</span>
+              </div>
               <div className="text-[13px] leading-relaxed text-gray-300">{msg.content}</div>
               {msg.role === 'assistant' && (
                 <div className="mt-4 p-3 bg-indigo-500/5 border border-indigo-500/10 rounded-lg animate-in fade-in slide-in-from-bottom-2 duration-700">
