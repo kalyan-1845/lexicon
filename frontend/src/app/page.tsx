@@ -1,6 +1,7 @@
 "use client";
 import Link from 'next/link';
 import LandingPreview from "@/components/LandingPreview";
+import Logo from "@/components/Logo";
 
 export default function Home() {
   return (
@@ -11,16 +12,7 @@ export default function Home() {
       
       {/* Navigation */}
       <nav className="relative max-w-7xl mx-auto flex items-center justify-between p-8 z-50 animate-in fade-in slide-in-from-top-4 duration-1000">
-        <div className="flex items-center gap-2 group cursor-pointer">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20" aria-hidden="true">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-white">
-              <path d="M12 2L2 7l10 5 10-5-10-5z" />
-              <path d="M2 17l10 5 10-5" />
-              <path d="M2 12l10 5 10-5" />
-            </svg>
-          </div>
-          <span className="font-bold text-xl tracking-tight">Lexicon AI</span>
-        </div>
+        <Logo size={40} />
         <div className="flex items-center gap-6">
           <Link href="https://github.com/kalyan-1845/lexicon" target="_blank" className="text-sm font-bold text-gray-500 hover:text-white transition-colors uppercase tracking-widest">GitHub</Link>
           <Link href="/workspace" className="px-6 py-2.5 text-sm font-black rounded-xl bg-white text-black hover:bg-gray-200 transition-all shadow-xl">Launch App</Link>
