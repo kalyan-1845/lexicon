@@ -1,87 +1,78 @@
 import asyncio
-from typing import List, Dict, Any
+import json
+from typing import List, Dict, Any, AsyncGenerator
 from app.services.llm_factory import llm
 
 class AgentService:
-    async def run_researcher(self, query: str, context: str | None = None) -> Dict[str, Any]:
-        """Researcher agent focuses on data extraction and fact-finding."""
-        prompt = (
-            f"You are the RESEARCHER agent of Lexicon AI. Your goal is to extract facts and data "
-            f"related to the query: '{query}'.\n"
-        )
-        if context:
-            prompt += f"\nUse this document context if relevant:\n{context[:3000]}"
+    async def run_streaming_workflow(self, query: str, context: str | None = None) -> AsyncGenerator[str, None]:
+        """
+        Orchestrates Researcher and Analyst agents in a streaming fashion.
+        Yields JSON strings formatted as SSE data.
+        """
         
-        prompt += "\n\nProvide a detailed, fact-based summary of your findings."
-
-        await asyncio.sleep(1) 
+        # Phase 1: Research
+        yield self._format_status("Researcher", "Fact-finding and context extraction...")
+        await asyncio.sleep(1.5) # Simulate research depth
         
-        content = await llm.chat(
+        research_prompt = (
+            f"You are the RESEARCHER agent. Extract core facts for: '{query}'.\n"
+            f"Context: {context[:3000] if context else 'No document context provided.'}"
+        )
+        
+        research_content = await llm.chat(
             messages=[
-                {"role": "system", "content": "You are a precise data extraction agent. Be factual and detailed."},
-                {"role": "user", "content": prompt}
+                {"role": "system", "content": "You are a precise data extraction agent. Be factual and bulleted."},
+                {"role": "user", "content": research_prompt}
             ],
-            temperature=0.3
+            temperature=0.2
         )
-        return {"agent": "Researcher", "content": content}
-
-    async def run_analyst(self, query: str, research_findings: str) -> Dict[str, Any]:
-        """Analyst agent focuses on synthesis and critique."""
-        prompt = (
-            f"You are the ANALYST agent of Lexicon AI. Synthesize the following research findings "
-            f"for the query: '{query}'.\n\n"
-            f"Findings:\n{research_findings}"
+        
+        # Phase 2: Analysis
+        yield self._format_status("Analyst", "Synthesizing findings and identifying patterns...")
+        await asyncio.sleep(1.2) # Simulate cognitive load
+        
+        analysis_prompt = (
+            f"As the ANALYST, synthesize these findings for the query: '{query}'\n\n"
+            f"Findings:\n{research_content}"
         )
-
-        await asyncio.sleep(1)
-
-        content = await llm.chat(
+        
+        analysis_content = await llm.chat(
             messages=[
-                {"role": "system", "content": "You are a sophisticated analytical agent."},
-                {"role": "user", "content": prompt}
+                {"role": "system", "content": "You are a sophisticated analytical agent. Critical and deep."},
+                {"role": "user", "content": analysis_prompt}
             ],
-            temperature=0.5
+            temperature=0.4
         )
-        return {"agent": "Analyst", "content": content}
-
-    async def run_fact_check(self, claim: str) -> dict:
-        """Autonomously verifies a claim using recursive logic."""
-        # Simulated recursive fact-checking
-        return {"claim": claim, "status": "Verified", "confidence": 0.98, "sources": ["Wikipedia", "ArXiv"]}
-
-    async def run_parallel_analysis(self, queries: list[str], contexts: list[str]) -> list[str]:
-
-        """Analyzes multiple document contexts in parallel."""
-        # Simulated async execution
-        return [f"Parallel Insight {i+1}: Extraction complete." for i in range(len(contexts))]
-
-    async def run_synthesis_workflow(self, contexts: list[str]) -> str:
-        pass
-
-    async def run_multi_agent_workflow(self, query: str, context: str | None = None):
-        """Orchestrates Researcher and Analyst agents."""
-        research_result = await self.run_researcher(query, context)
-        analyst_result = await self.run_analyst(query, research_result["content"])
+        
+        # Phase 3: Final Synthesis & Streaming
+        yield self._format_status("Lexicon", "Finalizing professional response...")
         
         final_prompt = (
             f"User Query: {query}\n\n"
-            f"Research: {research_result['content']}\n\n"
-            f"Analysis: {analyst_result['content']}\n\n"
-            f"As Lexicon AI, combine these into a final professional response."
+            f"Research: {research_content}\n\n"
+            f"Analysis: {analysis_content}\n\n"
+            f"Synthesize the final answer. Be concise and authoritative."
         )
 
-        content = await llm.chat(
-            messages=[
-                {"role": "system", "content": "You are Lexicon AI. Unified research-backed answer."},
-                {"role": "user", "content": final_prompt}
-            ],
-            temperature=0.7
-        )
+        # Stream the final response
+        try:
+            completion = await llm.stream_chat(
+                messages=[
+                    {"role": "system", "content": "You are Lexicon AI. Provide the final unified answer."},
+                    {"role": "user", "content": final_prompt}
+                ],
+                temperature=0.6
+            )
+            
+            async for chunk in completion:
+                if chunk:
+                    yield f"data: {json.dumps({'content': chunk})}\n\n"
+        except Exception as e:
+            yield f"data: {json.dumps({'error': str(e)})}\n\n"
 
-        return {
-            "reply": content,
-            "steps": [
-                research_result,
-                analyst_result
-            ]
-        }
+    def _format_status(self, agent: str, message: str) -> str:
+        return f"data: {json.dumps({'status': message, 'agent': agent})}\n\n"
+
+    async def run_researcher(self, query: str, context: str | None = None) -> Dict[str, Any]:
+        """Researcher agent focuses on data extraction and fact-finding."""
+        return {"agent": "Researcher", "content": "Deprecated in favor of streaming workflow."}
