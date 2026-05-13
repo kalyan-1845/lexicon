@@ -50,14 +50,19 @@ export default function Home() {
           <Link href="/workspace" aria-label="Get Started with Workspace" className="px-8 py-4 rounded-full bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold hover:scale-105 hover:shadow-[0_0_30px_rgba(99,102,241,0.4)] transition-all duration-300 w-full sm:w-auto focus-visible:ring-2 focus-visible:ring-white focus:outline-none text-center">
             Get Started
           </Link>
-          <button aria-label="Read Documentation" className="px-8 py-4 rounded-full glass text-white font-semibold hover:bg-white/10 transition-all duration-300 w-full sm:w-auto flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-white focus:outline-none">
+          <Link 
+            href="https://github.com/kalyan-1845/lexicon#readme" 
+            target="_blank"
+            aria-label="Read Documentation" 
+            className="px-8 py-4 rounded-full glass text-white font-semibold hover:bg-white/10 transition-all duration-300 w-full sm:w-auto flex items-center justify-center gap-2 focus-visible:ring-2 focus-visible:ring-white focus:outline-none"
+          >
             <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
               <polyline points="7 10 12 15 17 10" />
               <line x1="12" y1="15" x2="12" y2="3" />
             </svg>
             Read the Docs
-          </button>
+          </Link>
         </div>
       </div>
 
