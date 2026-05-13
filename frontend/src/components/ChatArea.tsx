@@ -52,14 +52,33 @@ export default function ChatArea({
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:8000/api/chat/message", {
+      const response = await fetch("http://localhost:8000/api/chat/message/stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: userMessage.content, document_context: documentContext }),
       });
       if (!response.ok) throw new Error("Failed");
-      const data = await response.json();
-      setMessages([...messages, userMessage, { id: (Date.now() + 1).toString(), role: "assistant", content: data.reply }]);
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let assistantMessage: Message = { id: (Date.now() + 1).toString(), role: "assistant", content: "" };
+      setMessages([...messages, userMessage, assistantMessage]);
+
+      while (true) {
+        const { done, value } = await reader!.read();
+        if (done) break;
+        const chunk = decoder.decode(value);
+        const lines = chunk.split("\n");
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            const data = JSON.parse(line.slice(6));
+            if (data.content) {
+              assistantMessage.content += data.content;
+              setMessages([...messages, userMessage, { ...assistantMessage }]);
+            }
+          }
+        }
+      }
     } catch (error) {
       setMessages([...messages, userMessage, { id: Date.now().toString(), role: "assistant", content: "⚠️ Connection error." }]);
     } finally {
