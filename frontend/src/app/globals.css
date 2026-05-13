@@ -47,4 +47,24 @@
   .btn-secondary {
     @apply bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.06] text-gray-300 transition-all rounded-lg px-3 py-1.5 text-xs;
   }
+
+  /* Page Transitions */
+  .page-transition-enter {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  .page-transition-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 200ms ease-out, transform 200ms ease-out;
+  }
+  .page-transition-exit {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .page-transition-exit-active {
+    opacity: 0;
+    transform: translateY(-4px);
+    transition: opacity 150ms ease-in, transform 150ms ease-in;
+  }
 }
