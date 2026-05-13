@@ -139,11 +139,18 @@ export default function ChatArea({
             <div className={`w-5 h-5 rounded bg-gray-800 flex items-center justify-center shrink-0 mt-0.5 ${msg.role === 'user' ? 'bg-white text-black' : 'text-white'}`}>
               <span className="text-[9px] font-black">{msg.role === 'user' ? 'U' : 'L'}</span>
             </div>
-            <div className="flex flex-col gap-0.5">
+            <div className="flex flex-col gap-0.5 group">
               <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tight">{msg.role === 'user' ? 'You' : 'Lexicon'}</span>
               <div className="text-[13px] leading-relaxed text-gray-300">{msg.content}</div>
+              {msg.role === 'assistant' && (
+                <div className="flex gap-2 mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button onClick={() => navigator.clipboard.writeText(msg.content)} className="text-[8px] font-bold text-gray-600 hover:text-white uppercase tracking-widest">Copy</button>
+                  <button onClick={() => handleSendMessage()} className="text-[8px] font-bold text-gray-600 hover:text-white uppercase tracking-widest border-l border-white/10 pl-2">Retry</button>
+                </div>
+              )}
             </div>
           </div>
+
         ))}
         {isLoading && (
           <div className="flex gap-3">
