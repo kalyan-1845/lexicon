@@ -9,10 +9,11 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Lexicon AI — Agentic Research Workspace",
-  description: "Next-generation multi-agent research platform for high-density knowledge synthesis.",
+  title: "Lexicon AI | Expert Research Workspace",
+  description: "High-density multi-agent research platform for modern knowledge synthesis.",
   icons: {
-    icon: "/favicon.ico",
+    icon: "/icon.png",
+    apple: "/icon.png",
   }
 };
 
