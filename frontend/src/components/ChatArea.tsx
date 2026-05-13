@@ -133,7 +133,15 @@ export default function ChatArea({
         <div className="flex items-center gap-2">
           <h1 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{workspaceName || 'General'}</h1>
           <div className="w-1 h-1 rounded-full bg-green-500/50" />
+          <div className="flex items-center gap-1.5 ml-2 px-1.5 py-0.5 rounded bg-white/[0.03] border border-white/[0.05]">
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-gray-500">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+            <span className="text-[9px] font-bold text-gray-400">12 Sources</span>
+          </div>
         </div>
+
         
         <div className="flex items-center gap-1">
           <button onClick={() => setShowShareModal(true)} className="px-2 py-0.5 text-[10px] font-bold text-gray-500 hover:text-white transition-colors uppercase">Share</button>
