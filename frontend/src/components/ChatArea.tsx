@@ -114,7 +114,15 @@ export default function ChatArea({
         <div className="flex items-center gap-2">
           <h1 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{workspaceName || 'General'}</h1>
           <div className="w-1 h-1 rounded-full bg-green-500/50" />
+          <div className="flex items-center gap-1.5 ml-2 px-1.5 py-0.5 rounded bg-white/[0.03] border border-white/[0.05]">
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-gray-500">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+            </svg>
+            <span className="text-[9px] font-bold text-gray-400">12 Sources</span>
+          </div>
         </div>
+
         
         <div className="flex items-center gap-1">
           <button onClick={() => setShowShareModal(true)} className="px-2 py-0.5 text-[10px] font-bold text-gray-500 hover:text-white transition-colors uppercase">Share</button>
@@ -131,11 +139,18 @@ export default function ChatArea({
             <div className={`w-5 h-5 rounded bg-gray-800 flex items-center justify-center shrink-0 mt-0.5 ${msg.role === 'user' ? 'bg-white text-black' : 'text-white'}`}>
               <span className="text-[9px] font-black">{msg.role === 'user' ? 'U' : 'L'}</span>
             </div>
-            <div className="flex flex-col gap-0.5">
+            <div className="flex flex-col gap-0.5 group">
               <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tight">{msg.role === 'user' ? 'You' : 'Lexicon'}</span>
               <div className="text-[13px] leading-relaxed text-gray-300">{msg.content}</div>
+              {msg.role === 'assistant' && (
+                <div className="flex gap-2 mt-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button onClick={() => navigator.clipboard.writeText(msg.content)} className="text-[8px] font-bold text-gray-600 hover:text-white uppercase tracking-widest">Copy</button>
+                  <button onClick={() => handleSendMessage()} className="text-[8px] font-bold text-gray-600 hover:text-white uppercase tracking-widest border-l border-white/10 pl-2">Retry</button>
+                </div>
+              )}
             </div>
           </div>
+
         ))}
         {isLoading && (
           <div className="flex gap-3">
