@@ -17,13 +17,16 @@
     @apply bg-[#09090b] text-[#fafafa] selection:bg-indigo-500/20 antialiased;
   }
 
-  /* Custom Scrollbar - More subtle */
+  /* Custom Scrollbar - High Density Expert Styling */
   ::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
+    width: 3px;
+    height: 3px;
   }
   ::-webkit-scrollbar-thumb {
     @apply bg-white/5 rounded-full hover:bg-white/10 transition-colors;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
   }
 }
 
