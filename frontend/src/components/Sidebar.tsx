@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import MemoryModal from "@/components/MemoryModal";
+import Logo from "@/components/Logo";
 
 type SidebarProps = {
   workspaces: { name: string; collectionId: string | null }[];
@@ -29,14 +30,8 @@ export default function Sidebar({
   return (
     <>
       <aside className="w-52 border-r border-white/[0.04] bg-[#09090b] flex flex-col h-full shrink-0">
-        <div className="p-3 flex items-center gap-2 mb-1">
-          <div className="w-4 h-4 rounded bg-white flex items-center justify-center">
-            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="5">
-              <path d="M12 2L2 7l10 5 10-5-10-5z" />
-              <path d="M2 17l10 5 10-5" />
-            </svg>
-          </div>
-          <span className="font-bold text-[12px] tracking-tight text-white uppercase">Lexicon</span>
+        <div className="p-3 mb-1">
+          <Logo size={20} className="scale-90 origin-left" />
         </div>
 
         <div className="flex-1 overflow-y-auto px-1.5 space-y-4">
