@@ -153,6 +153,17 @@ export default function ChatArea({
             <div className="flex flex-col gap-0.5">
               <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tight">{msg.role === 'user' ? 'You' : 'Lexicon'}</span>
               <div className="text-[13px] leading-relaxed text-gray-300">{msg.content}</div>
+              {msg.role === 'assistant' && (
+                <div className="mt-4 p-3 bg-indigo-500/5 border border-indigo-500/10 rounded-lg animate-in fade-in slide-in-from-bottom-2 duration-700">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <div className="w-1 h-3 bg-indigo-500 rounded-full" />
+                    <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Synthesis Summary</span>
+                  </div>
+                  <p className="text-[12px] text-gray-300 font-medium leading-relaxed italic">
+                    Key Insight: Identifies significant patterns in the source documents suggesting a shift toward decentralized agentic workflows.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         ))}
