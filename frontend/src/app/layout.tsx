@@ -9,8 +9,11 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Lexicon AI - Open Source Research Workspace",
-  description: "An open-source AI workspace for research, productivity, document intelligence, and team collaboration.",
+  title: "Lexicon AI — Agentic Research Workspace",
+  description: "Next-generation multi-agent research platform for high-density knowledge synthesis.",
+  icons: {
+    icon: "/favicon.ico",
+  }
 };
 
 export default function RootLayout({
