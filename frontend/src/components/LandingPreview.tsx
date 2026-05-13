@@ -5,7 +5,16 @@ export default function LandingPreview() {
     <div className="h-full w-full bg-[#0a0a0b] flex overflow-hidden">
       {/* Mini Sidebar */}
       <div className="w-16 md:w-56 border-r border-white/5 bg-[#0d0d0f] flex flex-col p-4 gap-6">
-        <div className="w-full h-8 rounded-lg bg-white/5" />
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-md bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-white">
+              <path d="M12 2L2 7l10 5 10-5-10-5z" />
+              <path d="M2 17l10 5 10-5" />
+              <path d="M2 12l10 5 10-5" />
+            </svg>
+          </div>
+          <span className="font-bold text-xs tracking-tight hidden md:block">Lexicon AI</span>
+        </div>
         <div className="flex flex-col gap-3">
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="flex items-center gap-3">
