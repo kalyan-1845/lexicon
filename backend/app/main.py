@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import time
 from app.api import upload, chat
 
 app = FastAPI(
@@ -29,6 +30,11 @@ app.include_router(chat.router, prefix="/api/chat", tags=["Chat"])
 @app.get("/")
 def read_root():
     return {"message": "Welcome to Lexicon AI API"}
+
+@app.post("/api/session/heartbeat")
+async def session_heartbeat(session_id: str):
+    # Log session activity
+    return {"status": "active", "timestamp": time.time()}
 
 @app.get("/health")
 def health_check():
