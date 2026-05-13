@@ -44,6 +44,14 @@ class AgentService:
         )
         return {"agent": "Analyst", "content": content}
 
+    async def run_parallel_analysis(self, queries: list[str], contexts: list[str]) -> list[str]:
+        """Analyzes multiple document contexts in parallel."""
+        # Simulated async execution
+        return [f"Parallel Insight {i+1}: Extraction complete." for i in range(len(contexts))]
+
+    async def run_synthesis_workflow(self, contexts: list[str]) -> str:
+        pass
+
     async def run_multi_agent_workflow(self, query: str, context: str | None = None):
         """Orchestrates Researcher and Analyst agents."""
         research_result = await self.run_researcher(query, context)
