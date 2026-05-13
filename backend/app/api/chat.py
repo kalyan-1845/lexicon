@@ -21,38 +21,19 @@ class ChatResponse(BaseModel):
 class SummarizeRequest(BaseModel):
     text: str
 
-from fastapi.responses import StreamingResponse
-import json
+from app.services.agents import AgentService
+
+agent_service = AgentService()
 
 @router.post("/message/stream")
 async def stream_message(request: ChatRequest):
     if not request.message:
         raise HTTPException(status_code=400, detail="Message cannot be empty")
 
-    async def generate():
-        try:
-            system_prompt = (
-                "You are Lexicon AI, developed by the Lexicon Project team for NSoC'26. "
-                "Provide professional research synthesis."
-            )
-            if request.document_context:
-                system_prompt += f"\n\nContext:\n{request.document_context[:5000]}"
-            
-            completion = client.chat.completions.create(
-                model="llama-3.3-70b-versatile",
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": request.message}
-                ],
-                stream=True
-            )
-            for chunk in completion:
-                if chunk.choices[0].delta.content:
-                    yield f"data: {json.dumps({'content': chunk.choices[0].delta.content})}\n\n"
-        except Exception as e:
-            yield f"data: {json.dumps({'error': str(e)})}\n\n"
-
-    return StreamingResponse(generate(), media_type="text/event-stream")
+    return StreamingResponse(
+        agent_service.run_streaming_workflow(request.message, request.document_context), 
+        media_type="text/event-stream"
+    )
 
 @router.post("/message", response_model=ChatResponse)
 async def send_message(request: ChatRequest):
