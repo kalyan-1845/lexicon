@@ -11,6 +11,15 @@
   :root {
     --background: #09090b;
     --foreground: #fafafa;
+    --card: #0c0c0e;
+    --accent: #6366f1;
+  }
+  
+  [data-theme='titanium'] {
+    --background: #18181b;
+    --foreground: #f4f4f5;
+    --card: #27272a;
+    --accent: #3b82f6;
   }
   
   body {
