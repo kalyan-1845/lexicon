@@ -23,7 +23,7 @@ export default function Home() {
       <div className="max-w-5xl mx-auto text-center pt-24 pb-32 px-6 relative z-10">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.03] border border-white/10 mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
           <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-          <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Open Source NSoC'26 Elite</span>
+          <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Open Source NSoC&apos;26 Elite</span>
         </div>
         
         <h1 className="text-6xl md:text-8xl font-black tracking-tight mb-10 leading-[0.9] animate-in fade-in slide-in-from-bottom-8 duration-1000 fill-mode-both">

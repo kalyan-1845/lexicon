@@ -17,7 +17,7 @@ async def delete_file(filename: str):
         return {"message": f"File {filename} deleted successfully"}
     raise HTTPException(status_code=404, detail="File not found")
 
-@router.post("/upload")
+@router.post("/pdf")
 async def upload_file(file: UploadFile = File(...)):
     if not file.filename.endswith('.pdf'):
         raise HTTPException(status_code=400, detail="Only PDF files are allowed")
