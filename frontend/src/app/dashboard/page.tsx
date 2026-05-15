@@ -11,7 +11,16 @@ export default function Dashboard() {
 
   return (
     <div className="flex h-screen bg-[#09090b] text-white selection:bg-indigo-500/30">
-      <Sidebar />
+      <Sidebar 
+        workspaces={[]} 
+        activeWorkspace="" 
+        onWorkspaceChange={() => {}} 
+        onAddWorkspace={() => {}} 
+        collections={[]} 
+        activeCollection={null} 
+        onCollectionChange={() => {}} 
+        onAddCollection={() => {}} 
+      />
       <main className="flex-1 overflow-y-auto relative">
         {/* Luxury Background Gradients */}
         <div className="absolute top-[-10%] right-[-5%] w-[40%] h-[40%] rounded-full bg-indigo-600/10 blur-[120px] pointer-events-none" />

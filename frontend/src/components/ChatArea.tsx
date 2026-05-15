@@ -65,10 +65,11 @@ export default function ChatArea({
 
       const reader = response.body?.getReader();
       const decoder = new TextDecoder();
-      let assistantMessage: Message = { id: (Date.now() + 1).toString(), role: "assistant", content: "" };
+      const assistantMessage: Message = { id: (Date.now() + 1).toString(), role: "assistant", content: "" };
       
-      // Add empty assistant message that we will fill
-      setMessages([...messages, userMessage, assistantMessage]);
+    let currentMessages = [...messages, userMessage];
+    setMessages([...currentMessages, assistantMessage]);
+    currentMessages = [...currentMessages, assistantMessage];
 
       while (true) {
         const { done, value } = await reader!.read();
@@ -94,20 +95,19 @@ export default function ChatArea({
                 setStatusMessage("Generating final synthesis...");
                 
                 assistantMessage.content += data.content;
-                setMessages(prev => {
-                  const newMsgs = [...prev];
-                  newMsgs[newMsgs.length - 1] = { ...assistantMessage };
-                  return newMsgs;
-                });
+                const updatedMessages = [...currentMessages];
+                updatedMessages[updatedMessages.length - 1] = { ...assistantMessage };
+                setMessages(updatedMessages);
               }
-            } catch (e) {
-              console.error("Error parsing stream chunk", e);
+            } catch (err) {
+              console.error("Error parsing stream chunk", err);
             }
           }
         }
       }
-    } catch (error) {
-      setMessages(prev => [...prev, { id: Date.now().toString(), role: "assistant", content: "⚠️ Connection error." }]);
+    } catch (err) {
+      console.error("Chat error:", err);
+      setMessages([...messages, userMessage, { id: Date.now().toString(), role: "assistant", content: "⚠️ Connection error." }]);
     } finally {
       setIsLoading(false);
       // Don't clear status immediately so user can see it's done
@@ -131,7 +131,8 @@ export default function ChatArea({
         onContextUpdate(data.full_text);
         setMessages([...messages, { id: Date.now().toString(), role: "assistant", content: `Parsed **${file.name}**.` }]);
       }
-    } catch (error) {
+    } catch (err) {
+      console.error("File upload error:", err);
       alert("Upload failed.");
     } finally {
       setIsLoading(false);
@@ -170,7 +171,7 @@ export default function ChatArea({
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
               <polyline points="14 2 14 8 20 8"></polyline>
             </svg>
-            <span className="text-[9px] font-bold text-gray-400">12 Sources</span>
+            <span className="text-[9px] font-bold text-gray-400">Context Active</span>
           </div>
         </div>
 
@@ -193,14 +194,14 @@ export default function ChatArea({
             <div className="flex flex-col gap-0.5">
               <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tight">{msg.role === 'user' ? 'You' : 'Lexicon'}</span>
               <div className="text-[13px] leading-relaxed text-gray-300">{msg.content}</div>
-              {msg.role === 'assistant' && (
+              {msg.role === 'assistant' && msg.content.length > 500 && (
                 <div className="mt-4 p-3 bg-indigo-500/5 border border-indigo-500/10 rounded-lg animate-in fade-in slide-in-from-bottom-2 duration-700">
                   <div className="flex items-center gap-2 mb-1.5">
                     <div className="w-1 h-3 bg-indigo-500 rounded-full" />
-                    <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Synthesis Summary</span>
+                    <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Neural Synthesis</span>
                   </div>
-                  <p className="text-[12px] text-gray-300 font-medium leading-relaxed italic">
-                    Key Insight: Identifies significant patterns in the source documents suggesting a shift toward decentralized agentic workflows.
+                  <p className="text-[11px] text-gray-400 font-medium leading-relaxed italic">
+                    This response was synthesized across multiple research threads for maximum factual density.
                   </p>
                 </div>
               )}

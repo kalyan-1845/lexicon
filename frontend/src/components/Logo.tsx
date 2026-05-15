@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 
 type LogoProps = {
   size?: number;
@@ -16,11 +17,12 @@ const Logo: React.FC<LogoProps> = ({ size = 32, className = "", variant = "full"
         style={{ width: size, height: size }}
       >
         {/* Using the dark-mode optimized Concept 1 master logo */}
-        <img 
+        <Image 
           src="/logo_concept.png" 
           alt="Lexicon AI"
+          width={size}
+          height={size}
           className="w-full h-full object-contain mix-blend-screen brightness-125"
-          style={{ width: size, height: size }}
         />
         
         {/* Subtle Glow Effect */}

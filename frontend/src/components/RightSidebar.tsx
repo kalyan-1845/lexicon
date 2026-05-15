@@ -2,11 +2,18 @@
 import PDFUploader from "./PDFUploader";
 import SmartNotes from "./SmartNotes";
 
+type Document = { 
+  name: string; 
+  size: number; 
+  status: string;
+  text?: string;
+};
+
 type RightSidebarProps = {
   activeTab: "docs" | "notes";
   setActiveTab: (tab: "docs" | "notes") => void;
-  documents: any[];
-  setDocuments: (docs: any[]) => void;
+  documents: Document[];
+  setDocuments: (docs: Document[]) => void;
   onContextUpdate: (text: string | null) => void;
   onClose: () => void;
 };

@@ -46,7 +46,8 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
       if (onContextUpdate && data.full_text) {
         onContextUpdate(data.full_text);
       }
-    } catch (error) {
+    } catch (err) {
+      console.error("Upload error:", err);
       setDocuments([{ ...newDoc, status: "Error" }, ...documents]);
     } finally {
       setIsUploading(false);
@@ -64,7 +65,8 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
       if (!response.ok) throw new Error("Summarization failed");
       const data = await response.json();
       alert(`Summary of ${doc.name}:\n\n${data.summary}`);
-    } catch (error) {
+    } catch (err) {
+      console.error("Summarization error:", err);
       alert("Failed to summarize.");
     }
   };
@@ -78,11 +80,25 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
       
       <input type="file" accept="application/pdf" className="hidden" ref={fileInputRef} onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0])} />
 
-      <button onClick={() => fileInputRef.current?.click()} className="w-full py-4 border border-dashed border-white/5 rounded-lg flex flex-col items-center justify-center gap-1 hover:bg-white/[0.01] transition-all group shrink-0">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-gray-600 group-hover:text-white transition-colors">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" y1="3" x2="12" y2="15" />
+      <button 
+        disabled={isUploading}
+        onClick={() => fileInputRef.current?.click()} 
+        className={`w-full py-4 border border-dashed border-white/5 rounded-lg flex flex-col items-center justify-center gap-1 transition-all group shrink-0 ${isUploading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/[0.01]'}`}
+      >
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`text-gray-600 transition-colors ${isUploading ? 'animate-spin' : 'group-hover:text-white'}`}>
+          {isUploading ? (
+            <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+          ) : (
+            <>
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </>
+          )}
         </svg>
-        <span className="text-[10px] font-bold text-gray-500 group-hover:text-white transition-colors uppercase tracking-wider">Add Document</span>
+        <span className="text-[10px] font-bold text-gray-500 group-hover:text-white transition-colors uppercase tracking-wider">
+          {isUploading ? 'Uploading...' : 'Add Document'}
+        </span>
       </button>
 
       <div className="mt-6 flex-1 overflow-y-auto space-y-3">

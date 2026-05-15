@@ -4,9 +4,27 @@ import Sidebar from "@/components/Sidebar";
 import ChatArea from "@/components/ChatArea";
 import RightSidebar from "@/components/RightSidebar";
 
+type Document = { 
+  name: string; 
+  size: number; 
+  status: string;
+  text?: string;
+};
+
+type Message = {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+};
+
 type WorkspaceData = {
-  documents: any[];
-  messages: any[];
+  documents: Document[];
+  messages: Message[];
+  collectionId: string | null;
+};
+
+type WorkspaceItem = {
+  name: string;
   collectionId: string | null;
 };
 
@@ -15,7 +33,7 @@ export default function Workspace() {
   const [activeTab, setActiveTab] = useState<"docs" | "notes">("docs");
   const [activeContext, setActiveContext] = useState<string | null>(null);
   
-  const [workspaces, setWorkspaces] = useState([
+  const [workspaces, setWorkspaces] = useState<WorkspaceItem[]>([
     { name: 'Neural Networks', collectionId: 'Deep Learning' },
     { name: 'Market Q3', collectionId: 'Finance' },
     { name: 'Resume Opt', collectionId: 'Career' },

@@ -66,7 +66,7 @@ export default function CommandPalette() {
             </>
           ) : (
             <div className="px-4 py-8 text-center text-sm text-gray-500">
-              No results found for "{query}"
+              No results found for &quot;{query}&quot;
             </div>
           )}
         </div>
