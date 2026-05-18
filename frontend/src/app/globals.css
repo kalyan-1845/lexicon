@@ -8,13 +8,73 @@
 }
 
 @layer base {
-  :root {
-    --background: #09090b;
-    --foreground: #fafafa;
+  :root, .theme-obsidian {
+    --theme-bg: #09090b;
+    --theme-surface: #0c0c0e;
+    --theme-accent: #6366f1;
+    --theme-accent-rgb: 99, 102, 241;
+    --theme-border: rgba(255, 255, 255, 0.04);
+  }
+
+  .theme-cyberpunk {
+    --theme-bg: #030303;
+    --theme-surface: #12001c;
+    --theme-accent: #ff007f;
+    --theme-accent-rgb: 255, 0, 127;
+    --theme-border: rgba(255, 0, 127, 0.1);
+  }
+
+  .theme-emerald {
+    --theme-bg: #020b05;
+    --theme-surface: #05140b;
+    --theme-accent: #10b981;
+    --theme-accent-rgb: 16, 185, 129;
+    --theme-border: rgba(16, 185, 129, 0.08);
+  }
+
+  .theme-abyss {
+    --theme-bg: #020712;
+    --theme-surface: #050d22;
+    --theme-accent: #00d2ff;
+    --theme-accent-rgb: 0, 210, 255;
+    --theme-border: rgba(0, 210, 255, 0.08);
   }
   
+  body, aside, .bg-\[\#09090b\], .bg-\[\#09090b\]\/80 {
+    background-color: var(--theme-bg) !important;
+    border-color: var(--theme-border) !important;
+    transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s ease;
+  }
+
+  .bg-\[\#0c0c0e\]\/80, .bg-\[\#0c0c0e\]\/50, .bg-white\/\[0\.01\], .bg-white\/\[0\.02\] {
+    background-color: var(--theme-surface) !important;
+    border-color: var(--theme-border) !important;
+    transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s ease;
+  }
+
+  .text-indigo-400, .text-indigo-500, .text-purple-400 {
+    color: var(--theme-accent) !important;
+    transition: color 0.4s ease;
+  }
+  
+  .bg-indigo-500\/10, .bg-purple-500\/20, .bg-indigo-500\/5, .bg-indigo-500\/10 {
+    background-color: rgba(var(--theme-accent-rgb), 0.1) !important;
+    border-color: rgba(var(--theme-accent-rgb), 0.2) !important;
+    transition: background-color 0.4s ease, border-color 0.4s ease;
+  }
+
+  .border-indigo-500\/20, .border-indigo-500\/10 {
+    border-color: rgba(var(--theme-accent-rgb), 0.2) !important;
+    transition: border-color 0.4s ease;
+  }
+
+  .bg-indigo-500 {
+    background-color: var(--theme-accent) !important;
+    transition: background-color 0.4s ease;
+  }
+
   body {
-    @apply bg-[#09090b] text-[#fafafa] selection:bg-indigo-500/20 antialiased;
+    @apply selection:bg-indigo-500/20 antialiased;
   }
 
   /* Custom Scrollbar - High Density Expert Styling */
