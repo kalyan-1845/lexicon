@@ -29,7 +29,7 @@ export default function Sidebar({
 
   return (
     <>
-      <aside className="w-52 border-r border-white/[0.04] bg-[#09090b] flex flex-col h-full shrink-0">
+      <aside className="hidden md:flex w-52 border-r border-white/[0.04] bg-[#09090b] flex-col h-full shrink-0">
         <div className="p-3 mb-1">
           <Logo size={20} className="scale-90 origin-left" />
         </div>
