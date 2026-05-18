@@ -41,6 +41,13 @@ export default function ChatArea({
   const [activeAgent, setActiveAgent] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  const handleCopy = (id: string, text: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -191,8 +198,26 @@ export default function ChatArea({
             <div className={`w-5 h-5 rounded bg-gray-800 flex items-center justify-center shrink-0 mt-0.5 ${msg.role === 'user' ? 'bg-white text-black' : 'text-white'}`}>
               <span className="text-[9px] font-black">{msg.role === 'user' ? 'U' : 'L'}</span>
             </div>
-            <div className="flex flex-col gap-0.5">
-              <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tight">{msg.role === 'user' ? 'You' : 'Lexicon'}</span>
+            <div className="flex flex-col gap-0.5 flex-1 group">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tight">{msg.role === 'user' ? 'You' : 'Lexicon'}</span>
+                <button 
+                  onClick={() => handleCopy(msg.id, msg.content)}
+                  className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-white/5 text-gray-500 hover:text-white"
+                  title="Copy message"
+                >
+                  {copiedId === msg.id ? (
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="3">
+                      <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                  ) : (
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                  )}
+                </button>
+              </div>
               <div className="text-[13px] leading-relaxed text-gray-300">{msg.content}</div>
               {msg.role === 'assistant' && msg.content.length > 500 && (
                 <div className="mt-4 p-3 bg-indigo-500/5 border border-indigo-500/10 rounded-lg animate-in fade-in slide-in-from-bottom-2 duration-700">
