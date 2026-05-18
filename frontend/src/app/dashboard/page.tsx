@@ -2,13 +2,20 @@
 import { useState, useEffect } from "react";
 import Sidebar from "@/components/Sidebar";
 import ShortcutsCheatSheet from "@/components/ShortcutsCheatSheet";
+import LoadingSkeleton from "@/components/LoadingSkeleton";
 
 export default function Dashboard() {
+  const [isLoading, setIsLoading] = useState(true);
   const [workspaces] = useState([
     { id: "1", name: "Neural Networks", docs: 12, lastActive: "2h ago", color: "from-indigo-500 to-purple-600" },
     { id: "2", name: "Market Trends 2026", docs: 5, lastActive: "5h ago", color: "from-emerald-500 to-teal-600" },
     { id: "3", name: "Quantum Computing", docs: 24, lastActive: "1d ago", color: "from-amber-500 to-orange-600" },
   ]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsLoading(false), 1200);
+    return () => clearTimeout(timer);
+  }, []);
 
   // LEVEL 3 FEATURE: Real-Time Collaborative Ecosystem State
   const [collaborators] = useState([
@@ -55,7 +62,11 @@ export default function Dashboard() {
         <div className="absolute bottom-[-10%] left-[-5%] w-[40%] h-[40%] rounded-full bg-purple-600/5 blur-[120px] pointer-events-none" />
 
         <div className="max-w-6xl mx-auto p-12 relative z-10">
-          <header className="mb-16 flex justify-between items-end">
+          {isLoading ? (
+            <LoadingSkeleton />
+          ) : (
+            <>
+              <header className="mb-16 flex justify-between items-end">
             <div className="animate-in fade-in slide-in-from-left-4 duration-700">
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
@@ -170,6 +181,8 @@ export default function Dashboard() {
               </div>
             </div>
           </section>
+          </>
+          )}
         </div>
       </main>
       <ShortcutsCheatSheet />
