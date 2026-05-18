@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import ShareModal from "@/components/ShareModal";
 import AgentWorkflow from "@/components/AgentWorkflow";
+import ClearHistoryModal from "@/components/ClearHistoryModal";
 
 type Message = {
   id: string;
@@ -42,11 +43,17 @@ export default function ChatArea({
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [showClearModal, setShowClearModal] = useState(false);
 
   const handleCopy = (id: string, text: string) => {
     navigator.clipboard.writeText(text);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleClearHistory = () => {
+    setMessages([]);
+    setShowClearModal(false);
   };
 
   useEffect(() => {
@@ -184,6 +191,7 @@ export default function ChatArea({
 
         
         <div className="flex items-center gap-1">
+          <button onClick={() => setShowClearModal(true)} className="px-2 py-0.5 text-[10px] font-bold text-gray-500 hover:text-red-400 transition-colors uppercase">Clear</button>
           <button onClick={() => setShowShareModal(true)} className="px-2 py-0.5 text-[10px] font-bold text-gray-500 hover:text-white transition-colors uppercase">Share</button>
           <button onClick={onToggleDocuments} className={`px-2 py-0.5 text-[10px] font-bold rounded transition-colors uppercase ${showDocuments ? 'text-white' : 'text-gray-500 hover:text-white'}`}>Docs</button>
           <button onClick={onToggleNotes} className={`px-2 py-0.5 text-[10px] font-bold rounded transition-colors uppercase ${showNotes ? 'text-white' : 'text-gray-500 hover:text-white'}`}>Notes</button>
@@ -191,6 +199,7 @@ export default function ChatArea({
       </div>
 
       {showShareModal && <ShareModal onClose={() => setShowShareModal(false)} />}
+      <ClearHistoryModal isOpen={showClearModal} onClose={() => setShowClearModal(false)} onConfirm={handleClearHistory} />
 
       <div className="flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-6 max-w-2xl mx-auto w-full">
         {messages.map((msg) => (
