@@ -22,9 +22,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+from app.api import upload, chat, notes
+
 # Register Routers
 app.include_router(upload.router, prefix="/api/upload", tags=["Uploads"])
 app.include_router(chat.router, prefix="/api/chat", tags=["Chat"])
+app.include_router(notes.router, prefix="/api/notes", tags=["Notes"])
 
 @app.get("/")
 def read_root():
