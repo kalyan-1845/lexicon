@@ -4,13 +4,37 @@ import { useState } from "react";
 export default function ShareModal({ onClose }: { onClose: () => void }) {
   const [copied, setCopied] = useState(false);
   const [isPublic, setIsPublic] = useState(false);
-  const shareUrl = "https://lexicon.ai/w/b8f9-42a1-xc9";
+  const [shareUrl, setShareUrl] = useState("https://lexicon.ai/w/b8f9-42a1-xc9");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCopy = () => {
     if (!isPublic) return;
     navigator.clipboard.writeText(shareUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleTogglePublic = async () => {
+    const nextPublic = !isPublic;
+    setIsPublic(nextPublic);
+    if (nextPublic) {
+      setIsLoading(true);
+      try {
+        const response = await fetch("http://localhost:8000/api/chat/share", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ workspace_name: "General Workspace", is_public: true }),
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setShareUrl(data.share_url);
+        }
+      } catch (err) {
+        console.error("Public share link generation failed", err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
   };
 
   return (
@@ -35,10 +59,11 @@ export default function ShareModal({ onClose }: { onClose: () => void }) {
               <span className="text-[11px] text-gray-500">Allow anyone with the link to view</span>
             </div>
             <button 
-              onClick={() => setIsPublic(!isPublic)}
+              onClick={handleTogglePublic}
+              disabled={isLoading}
               className={`w-9 h-5 rounded-full transition-all flex items-center px-1 ${
                 isPublic ? 'bg-white' : 'bg-white/5 border border-white/10'
-              }`}
+              } ${isLoading ? 'opacity-50 cursor-wait' : ''}`}
             >
               <div className={`w-3 h-3 rounded-full transition-all ${
                 isPublic ? 'bg-black translate-x-4' : 'bg-gray-600'
