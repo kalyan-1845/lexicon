@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef } from "react";
+import PDFMetadataModal from "@/components/PDFMetadataModal";
 
 type Document = { 
   name: string; 
@@ -17,6 +18,7 @@ type PDFUploaderProps = {
 
 export default function PDFUploader({ documents, setDocuments, onContextUpdate, isEmbedded }: PDFUploaderProps) {
   const [isUploading, setIsUploading] = useState(false);
+  const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleUpload = async (file: File) => {
@@ -114,15 +116,25 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
                <span className="text-[9px] font-bold text-gray-600 uppercase tracking-tighter">{doc.status}</span>
              </div>
              {doc.status.startsWith('Parsed') && (
-               <button onClick={() => handleSummarize(doc)} className="w-6 h-6 rounded hover:bg-white/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
-                 <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-gray-600 hover:text-white">
-                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                 </svg>
-               </button>
+               <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all shrink-0">
+                 <button onClick={() => setSelectedDoc(doc)} className="w-6 h-6 rounded hover:bg-white/5 flex items-center justify-center">
+                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-gray-600 hover:text-white">
+                     <circle cx="12" cy="12" r="10"></circle>
+                     <line x1="12" y1="16" x2="12" y2="12"></line>
+                     <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                   </svg>
+                 </button>
+                 <button onClick={() => handleSummarize(doc)} className="w-6 h-6 rounded hover:bg-white/5 flex items-center justify-center">
+                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-gray-600 hover:text-white">
+                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                   </svg>
+                 </button>
+               </div>
              )}
           </div>
         ))}
       </div>
+      <PDFMetadataModal isOpen={selectedDoc !== null} onClose={() => setSelectedDoc(null)} document={selectedDoc || { name: '', size: 0, status: '' }} />
     </div>
   );
 
