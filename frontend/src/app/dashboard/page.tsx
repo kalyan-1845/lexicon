@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Sidebar from "@/components/Sidebar";
+import ShortcutsCheatSheet from "@/components/ShortcutsCheatSheet";
 
 export default function Dashboard() {
   const [workspaces] = useState([
@@ -171,6 +172,7 @@ export default function Dashboard() {
           </section>
         </div>
       </main>
+      <ShortcutsCheatSheet />
     </div>
   );
 }
