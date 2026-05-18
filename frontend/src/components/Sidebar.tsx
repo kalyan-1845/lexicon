@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import MemoryModal from "@/components/MemoryModal";
 import Logo from "@/components/Logo";
+import ThemeSwitcher from "@/components/ThemeSwitcher";
 
 type SidebarProps = {
   workspaces: { name: string; collectionId: string | null }[];
@@ -114,6 +115,8 @@ export default function Sidebar({
             </svg>
             Memory
           </button>
+          
+          <ThemeSwitcher />
           
           <div className="mt-2 p-1 rounded bg-white/[0.02] border border-white/[0.04] flex items-center gap-2 cursor-pointer hover:bg-white/[0.04] transition-all">
             <div className="w-5 h-5 rounded-full bg-gray-800 flex items-center justify-center text-[8px] font-bold">U</div>
