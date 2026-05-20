@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 type Theme = "obsidian" | "cyberpunk" | "emerald" | "abyss";
 
@@ -7,14 +7,7 @@ export default function ThemeSwitcher() {
   const [theme, setTheme] = useState<Theme>("obsidian");
   const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("lexicon-theme") as Theme;
-    if (savedTheme) {
-      applyTheme(savedTheme);
-    }
-  }, []);
-
-  const applyTheme = (newTheme: Theme) => {
+  const applyTheme = useCallback((newTheme: Theme) => {
     const root = document.documentElement;
     root.classList.remove("theme-obsidian", "theme-cyberpunk", "theme-emerald", "theme-abyss");
     if (newTheme !== "obsidian") {
@@ -22,7 +15,16 @@ export default function ThemeSwitcher() {
     }
     setTheme(newTheme);
     localStorage.setItem("lexicon-theme", newTheme);
-  };
+  }, []);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("lexicon-theme") as Theme;
+    if (!savedTheme) return;
+    const id = requestAnimationFrame(() => {
+      applyTheme(savedTheme);
+    });
+    return () => cancelAnimationFrame(id);
+  }, [applyTheme]);
 
   const themes: { id: Theme; name: string; color: string; accent: string }[] = [
     { id: "obsidian", name: "Obsidian", color: "bg-[#09090b]", accent: "bg-indigo-500" },
