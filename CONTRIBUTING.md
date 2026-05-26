@@ -1,42 +1,37 @@
 # Contributing to Lexicon AI
 
-First off, thank you for considering contributing to Lexicon AI! It's people like you that make Lexicon AI such a great tool.
+First off, thank you for considering contributing to Lexicon AI! It's people like you that make Lexicon a better research tool for everyone.
 
-## Open Source Contribution Areas
+## Code of Conduct
 
-### Beginner Issues
-- UI fixes
-- Responsive design
-- README improvements
-- Dark mode
-- Animations
-- Bug fixes
+By participating in this project, you agree to abide by our Code of Conduct (be respectful, be inclusive, and follow professional standards).
 
-### Intermediate Issues
-- API integrations
-- Authentication
-- PDF parser
-- Search system
-- AI pipelines
+## How Can I Contribute?
 
-### Advanced Issues
-- Multi-agent systems
-- AI memory architecture
-- Vector database optimization
-- Real-time collaboration
-- AI workflow engine
+### Reporting Bugs
+- Before creating a new issue, please check if the bug has already been reported.
+- Use the "Bug Report" template and provide as much detail as possible.
 
-## Contribution Guidelines
-1. Fork the repository
-2. Create feature branches (`git checkout -b feature/AmazingFeature`)
-3. Follow clean commit messages
-4. Submit pull requests with screenshots
-5. Maintain documentation quality
+### Suggesting Enhancements
+- If you have an idea for a new feature or plugin, open an "Enhancement" issue first to discuss it with the maintainers.
 
-### Coding Standards
-- **React/Next.js**: Use functional components, hooks, and strictly adhere to TypeScript typings.
-- **Python/FastAPI**: Follow PEP 8 standards, use Pydantic for validation, and use type hinting.
-- **Styling**: Use Tailwind CSS for all UI components to maintain a consistent, premium design. Avoid ad-hoc CSS.
+### Pull Requests
+1. **Fork the repository** and create your branch from `main`.
+2. **Modularize your changes**: We prefer small, focused pull requests over large, monolithic ones.
+3. **Follow the style guide**: Use TypeScript for frontend and PEP 8 standards for Python.
+4. **Update documentation**: If you add a new feature, update the relevant `README.md` or `docs/` files.
+5. **Write tests**: If possible, include unit or integration tests for your logic.
 
-## Final Vision
-Build an open-source AI ecosystem where productivity, research, and intelligent automation come together in one modern collaborative workspace.
+## Project Structure
+
+- `/frontend`: Next.js 14 research workspace.
+- `/backend`: FastAPI service for AI orchestration and RAG.
+- `/docs`: Project documentation and guides.
+
+## Development Workflow
+
+1. `npm install` in `/frontend`.
+2. `pip install -r requirements.txt` in `/backend`.
+3. Use `npm run dev` and `uvicorn app.main:app --reload` to start development servers.
+
+Thank you for your contributions!
