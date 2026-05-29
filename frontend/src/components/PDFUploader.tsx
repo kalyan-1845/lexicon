@@ -137,18 +137,18 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
   const content = (
     <div className="flex-1 flex flex-col p-6 overflow-hidden">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="font-bold text-[10px] uppercase tracking-widest text-gray-500">Knowledge</h2>
+        <h2 className="font-extrabold text-[12px] text-gray-400">Knowledge Base</h2>
         <div className="flex items-center gap-2">
           {documents.length > 0 && (
             <button 
               onClick={handleExportCitations}
-              className="text-[9px] font-black text-indigo-400 hover:text-indigo-300 uppercase tracking-widest hover:underline cursor-pointer transition-all"
+              className="text-[11px] font-bold text-indigo-400 hover:text-indigo-300 hover:underline cursor-pointer transition-all"
               title="Export Citations (BibTeX)"
             >
-              Export .Bib
+              Export BibTeX
             </button>
           )}
-          <span className="text-[9px] font-bold text-gray-700 bg-white/[0.02] px-1.5 py-0.5 rounded border border-white/[0.04]">{documents.length}</span>
+          <span className="text-[11px] font-bold text-gray-500 bg-white/[0.02] px-2 py-0.5 rounded border border-white/[0.04]">{documents.length}</span>
         </div>
       </div>
       
@@ -157,9 +157,9 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
       <button 
         disabled={isUploading}
         onClick={() => fileInputRef.current?.click()} 
-        className={`w-full py-4 border border-dashed border-white/5 rounded-lg flex flex-col items-center justify-center gap-1 transition-all group shrink-0 ${isUploading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/[0.01]'}`}
+        className={`w-full py-3.5 border border-dashed border-white/5 rounded-xl flex flex-col items-center justify-center gap-1 transition-all group shrink-0 ${isUploading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/[0.01]'}`}
       >
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`text-gray-600 transition-colors ${isUploading ? 'animate-spin' : 'group-hover:text-white'}`}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`text-gray-500 transition-colors ${isUploading ? 'animate-spin' : 'group-hover:text-white'}`}>
           {isUploading ? (
             <path d="M21 12a9 9 0 1 1-6.219-8.56" />
           ) : (
@@ -170,22 +170,22 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
             </>
           )}
         </svg>
-        <span className="text-[10px] font-bold text-gray-500 group-hover:text-white transition-colors uppercase tracking-wider">
+        <span className="text-[12px] font-semibold text-gray-400 group-hover:text-white transition-colors">
           {isUploading ? 'Uploading...' : 'Add Document'}
         </span>
       </button>
 
-      <div className="mt-6 flex-1 overflow-y-auto space-y-3">
+      <div className="mt-5 flex-1 overflow-y-auto space-y-3">
         {documents.map((doc, idx) => (
-          <div key={idx} className="p-2.5 rounded-lg bg-white/[0.01] border border-white/[0.04] flex items-center gap-2.5 group hover:bg-white/[0.02] transition-all">
-             <div className="w-7 h-7 rounded bg-red-500/10 flex items-center justify-center shrink-0 border border-red-500/5">
-               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-red-500/60">
-                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-               </svg>
+          <div key={idx} className="p-3 rounded-xl bg-white/[0.01] border border-white/[0.04] flex items-center gap-3 group hover:bg-white/[0.02] transition-all">
+             <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0 border border-red-500/5">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-red-500/60">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                </svg>
              </div>
              <div className="flex flex-col overflow-hidden flex-1">
-               <span className="text-[11px] font-semibold text-gray-300 truncate">{doc.name}</span>
-               <span className="text-[9px] font-bold text-gray-600 uppercase tracking-tighter">{doc.status}</span>
+                <span className="text-[12px] font-semibold text-gray-300 truncate">{doc.name}</span>
+                <span className="text-[10px] font-semibold text-gray-500">{doc.status}</span>
                {doc.status.startsWith('Uploading') && uploadProgress !== null && (
                  <div className="w-full bg-white/5 rounded-full h-1 mt-1.5 overflow-hidden">
                    <div 

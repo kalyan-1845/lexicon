@@ -15,7 +15,7 @@ export default function Home() {
         <Logo size={40} />
         <div className="flex items-center gap-6">
           <Link href="https://github.com/kalyan-1845/lexicon" target="_blank" className="text-sm font-bold text-gray-500 hover:text-white transition-colors uppercase tracking-widest">GitHub</Link>
-          <Link href="/workspace" className="px-6 py-2.5 text-sm font-black rounded-xl bg-white text-black hover:bg-gray-200 transition-all shadow-xl">Launch App</Link>
+          <Link href="/workspace" className="px-6 py-2.5 text-sm font-bold rounded-xl bg-white text-black hover:bg-gray-200 transition-all shadow-xl">Launch App</Link>
         </div>
       </nav>
 
@@ -23,10 +23,10 @@ export default function Home() {
       <div className="max-w-5xl mx-auto text-center pt-24 pb-32 px-6 relative z-10">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.03] border border-white/10 mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
           <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-          <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Open Source NSoC&apos;26 Elite</span>
+          <span className="text-[10px] font-extrabold text-gray-400 uppercase tracking-[0.2em]">Open Source NSoC&apos;26 Elite</span>
         </div>
         
-        <h1 className="text-6xl md:text-8xl font-black tracking-tight mb-10 leading-[0.9] animate-in fade-in slide-in-from-bottom-8 duration-1000 fill-mode-both">
+        <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-8 leading-[1.1] animate-in fade-in slide-in-from-bottom-8 duration-1000 fill-mode-both">
           Synthesize Knowledge <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-indigo-400">At Agentic Speed</span>
         </h1>
@@ -37,10 +37,10 @@ export default function Home() {
         </p>
         
         <div className="flex flex-col sm:flex-row items-center justify-center gap-5 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-400 fill-mode-both">
-          <Link href="/workspace" className="px-10 py-5 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-black text-lg hover:scale-105 hover:shadow-[0_0_40px_rgba(99,102,241,0.3)] transition-all duration-300 w-full sm:w-auto shadow-2xl">
+          <Link href="/workspace" className="px-10 py-5 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold text-lg hover:scale-105 hover:shadow-[0_0_40px_rgba(99,102,241,0.3)] transition-all duration-300 w-full sm:w-auto shadow-2xl">
             Get Started Free
           </Link>
-          <Link href="https://github.com/kalyan-1845/lexicon#readme" target="_blank" className="px-10 py-5 rounded-2xl bg-white/[0.03] border border-white/10 text-white font-black text-lg hover:bg-white/[0.08] transition-all duration-300 w-full sm:w-auto flex items-center justify-center gap-3 backdrop-blur-md">
+          <Link href="https://github.com/kalyan-1845/lexicon#readme" target="_blank" className="px-10 py-5 rounded-2xl bg-white/[0.03] border border-white/10 text-white font-bold text-lg hover:bg-white/[0.08] transition-all duration-300 w-full sm:w-auto flex items-center justify-center gap-3 backdrop-blur-md">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
               <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
@@ -63,7 +63,7 @@ export default function Home() {
                 <div className="w-2.5 h-2.5 rounded-full bg-white/5" />
                 <div className="w-2.5 h-2.5 rounded-full bg-white/5" />
               </div>
-              <div className="mx-auto text-[10px] font-black text-gray-700 uppercase tracking-[0.3em] pl-6">research.lexicon.ai</div>
+              <div className="mx-auto text-[10px] font-extrabold text-gray-600 uppercase tracking-[0.3em] pl-6">research.lexicon.ai</div>
             </div>
             <div className="h-[600px] w-full bg-[#09090b] relative">
               <LandingPreview />

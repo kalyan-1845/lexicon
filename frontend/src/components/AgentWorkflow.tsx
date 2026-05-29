@@ -70,10 +70,10 @@ export default function AgentWorkflow({ activeAgent, statusMessage }: AgentWorkf
           const time = elapsed[agent.name];
           
           return (
-            <div key={i} className="flex flex-col items-center gap-1.5 z-10 relative">
+            <div key={i} className="flex flex-col items-center gap-2 z-10 relative">
               <button 
                 onClick={() => setExpandedAgent(agent.name)}
-                className={`flex items-center gap-2 px-2.5 py-1 rounded-full border transition-all duration-300 cursor-pointer ${
+                className={`flex items-center gap-2.5 px-4 py-1.5 rounded-full border transition-all duration-300 cursor-pointer ${
                   isActive 
                     ? "bg-indigo-500/10 border-indigo-500/30 text-white scale-105 shadow-[0_0_15px_rgba(99,102,241,0.15)]" 
                     : isDone
@@ -89,11 +89,11 @@ export default function AgentWorkflow({ activeAgent, statusMessage }: AgentWorkf
                       ? "bg-green-500/50"
                       : "bg-gray-800"
                 }`} />
-                <span className="text-[10px] font-black uppercase tracking-wider">{agent.name}</span>
+                <span className="text-[12px] font-bold tracking-tight">{agent.name}</span>
                 
                 {/* Live timer telemetry */}
                 {time > 0 && (
-                  <span className={`text-[8.5px] font-mono font-bold px-1.5 py-0.2 rounded ml-1 border ${
+                  <span className={`text-[10px] font-mono font-semibold px-2 py-0.2 rounded ml-1.5 border ${
                     isActive 
                       ? "bg-indigo-500/20 border-indigo-500/20 text-indigo-400 animate-pulse" 
                       : "bg-white/[0.02] border-white/[0.04] text-gray-500"
@@ -104,7 +104,7 @@ export default function AgentWorkflow({ activeAgent, statusMessage }: AgentWorkf
               </button>
               
               {isActive && statusMessage && (
-                <span className="text-[8.5px] font-bold text-indigo-400 uppercase tracking-tighter animate-bounce absolute top-full mt-1.5 whitespace-nowrap">
+                <span className="text-[10px] font-semibold text-indigo-400 tracking-tight animate-bounce absolute top-full mt-2 whitespace-nowrap">
                   {statusMessage}
                 </span>
               )}
@@ -114,29 +114,29 @@ export default function AgentWorkflow({ activeAgent, statusMessage }: AgentWorkf
       </div>
 
       {/* Spacing gap when active message displays */}
-      {activeAgent && <div className="h-2" />}
+      {activeAgent && <div className="h-3" />}
 
       {/* Dynamic Cognitive Profile Expander Dialog */}
       {expandedAgent && (
-        <div className="mt-3 p-3 bg-white/[0.01] border border-white/[0.04] rounded-lg animate-in fade-in slide-in-from-top-2 duration-300 relative text-left">
+        <div className="mt-3 p-4 bg-white/[0.01] border border-white/[0.04] rounded-xl animate-in fade-in slide-in-from-top-2 duration-300 relative text-left">
           <button 
             onClick={() => setExpandedAgent(null)}
-            className="absolute top-2 right-2 p-1 text-gray-500 hover:text-white transition-colors cursor-pointer"
+            className="absolute top-3 right-3 p-1 text-gray-500 hover:text-white transition-colors cursor-pointer"
           >
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
           </button>
           
           {agents.filter(a => a.name === expandedAgent).map((agent, i) => (
-            <div key={i} className="flex flex-col gap-1 pr-6">
+            <div key={i} className="flex flex-col gap-1.5 pr-6">
               <div className="flex items-center gap-2 mb-0.5">
-                <div className="w-1.5 h-3.5 bg-indigo-500 rounded-full" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-indigo-400">{agent.name} Profile</span>
-                <span className="text-[8.5px] text-gray-500 font-bold uppercase">({agent.label})</span>
+                <div className="w-1.5 h-4 bg-indigo-500 rounded-full" />
+                <span className="text-[13px] font-bold text-indigo-400">{agent.name} Profile</span>
+                <span className="text-[10px] text-gray-500 font-bold uppercase">({agent.label})</span>
               </div>
-              <p className="text-[11px] text-gray-400 font-medium leading-relaxed">
+              <p className="text-[12px] text-gray-400 font-medium leading-relaxed">
                 {agent.description}
               </p>
             </div>

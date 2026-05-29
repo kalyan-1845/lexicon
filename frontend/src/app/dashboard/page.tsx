@@ -70,25 +70,25 @@ export default function Dashboard() {
             <div className="animate-in fade-in slide-in-from-left-4 duration-700">
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
-                <span className="text-[10px] font-black text-indigo-500/80 uppercase tracking-[0.2em]">Collaborative Workspace</span>
+                <span className="text-[10px] font-extrabold text-indigo-500/80 uppercase tracking-[0.2em]">Collaborative Workspace</span>
               </div>
-              <h1 className="text-4xl font-black tracking-tight mb-2">Welcome back, <span className="text-gray-500">Alex</span></h1>
+              <h1 className="text-3xl font-extrabold tracking-tight mb-2">Welcome back, <span className="text-gray-500">Alex</span></h1>
               <p className="text-gray-500 font-medium text-sm">Your agentic workspace is ready for deep analysis.</p>
             </div>
             
             <div className="flex flex-col items-end gap-3">
               <div className="flex gap-4">
-                 <div className="px-4 py-2 bg-white/[0.03] border border-white/[0.06] rounded-xl flex flex-col items-end animate-in fade-in slide-in-from-right-4 duration-700">
-                   <span className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">Global Documents</span>
-                   <span className="text-xl font-black text-gray-200">142</span>
-                 </div>
-                 <div className="px-4 py-2 bg-white/[0.03] border border-white/[0.06] rounded-xl flex flex-col items-end animate-in fade-in slide-in-from-right-4 duration-700 delay-100">
-                   <span className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">Live Sync</span>
-                   <div className="flex items-center gap-2">
-                     <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                     <span className="text-xl font-black text-green-500">Active</span>
-                   </div>
-                 </div>
+                  <div className="px-4 py-2 bg-white/[0.03] border border-white/[0.06] rounded-xl flex flex-col items-end animate-in fade-in slide-in-from-right-4 duration-700">
+                    <span className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">Global Documents</span>
+                    <span className="text-xl font-extrabold text-gray-200">142</span>
+                  </div>
+                  <div className="px-4 py-2 bg-white/[0.03] border border-white/[0.06] rounded-xl flex flex-col items-end animate-in fade-in slide-in-from-right-4 duration-700 delay-100">
+                    <span className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">Live Sync</span>
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                      <span className="text-xl font-extrabold text-green-500">Active</span>
+                    </div>
+                  </div>
               </div>
               
               {/* Active Collaborators Avatar Stack */}
@@ -126,16 +126,16 @@ export default function Dashboard() {
                       </svg>
                     </div>
                     <div className="flex flex-col items-end">
-                      <span className="text-[9px] font-black text-gray-600 uppercase tracking-widest mb-1">Last Active</span>
+                      <span className="text-[9px] font-extrabold text-gray-600 uppercase tracking-widest mb-1">Last Active</span>
                       <span className="text-[10px] font-bold text-gray-400">{ws.lastActive}</span>
                     </div>
                   </div>
-                  <h3 className="font-bold text-xl mb-2 group-hover:text-white transition-colors">{ws.name}</h3>
+                  <h3 className="font-bold text-lg mb-2 group-hover:text-white transition-colors">{ws.name}</h3>
                   <div className="flex items-center gap-3">
                     <div className="h-1 flex-1 bg-white/[0.03] rounded-full overflow-hidden">
                       <div className="h-full bg-white/10 w-2/3 group-hover:bg-white/20 transition-all" />
                     </div>
-                    <span className="text-[10px] font-black text-gray-500 uppercase tracking-tighter">{ws.docs} Sources</span>
+                    <span className="text-[10px] font-extrabold text-gray-500 uppercase tracking-tighter">{ws.docs} Sources</span>
                   </div>
                 </div>
               </div>
@@ -147,14 +147,14 @@ export default function Dashboard() {
                   <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
                 </svg>
               </div>
-              <span className="text-[10px] font-black text-gray-600 uppercase tracking-widest">Initialize New Workspace</span>
+              <span className="text-[10px] font-extrabold text-gray-600 uppercase tracking-widest">Initialize New Workspace</span>
             </button>
           </div>
 
           <section className="animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500 fill-mode-both">
             <div className="flex items-center gap-2 mb-6">
               <div className="w-1 h-3 bg-indigo-500 rounded-full" />
-              <h2 className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">Real-Time Collaboration Pulse</h2>
+              <h2 className="text-[10px] font-extrabold text-gray-500 uppercase tracking-[0.2em]">Real-Time Collaboration Pulse</h2>
             </div>
             
             <div className="bg-[#0c0c0e]/50 backdrop-blur-md border border-white/[0.04] rounded-2xl p-6 relative overflow-hidden">

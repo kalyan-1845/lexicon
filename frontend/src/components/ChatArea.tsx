@@ -455,33 +455,33 @@ export default function ChatArea({
       )}
 
       {/* Header bar and menu items */}
-      <div className="h-10 border-b border-white/[0.04] flex items-center justify-between px-4 bg-[#09090b]/80 backdrop-blur-md shrink-0">
-        <div className="flex items-center gap-2">
+      <div className="h-12 border-b border-white/[0.04] flex items-center justify-between px-4 bg-[#09090b]/80 backdrop-blur-md shrink-0">
+        <div className="flex items-center gap-2.5">
           <button 
             onClick={onToggleSidebar}
-            className="md:hidden p-1 text-gray-500 hover:text-white mr-1 transition-colors"
+            className="md:hidden p-1 text-gray-400 hover:text-white mr-1 transition-colors"
             title="Toggle Sidebar"
           >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <line x1="3" y1="12" x2="21" y2="12"></line>
               <line x1="3" y1="6" x2="21" y2="6"></line>
               <line x1="3" y1="18" x2="21" y2="18"></line>
             </svg>
           </button>
-          <h1 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{workspaceName || 'General'}</h1>
-          <div className="w-1 h-1 rounded-full bg-green-500/50" />
-          <div className="flex items-center gap-1.5 ml-2 px-1.5 py-0.5 rounded bg-white/[0.03] border border-white/[0.05]">
-            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-gray-500">
+          <h1 className="text-[13px] font-bold text-gray-200 tracking-tight">{workspaceName || 'General'}</h1>
+          <div className="w-1.5 h-1.5 rounded-full bg-green-500/80 shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
+          <div className="flex items-center gap-1.5 ml-1.5 px-2 py-0.5 rounded bg-white/[0.03] border border-white/[0.05]">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-gray-500">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
               <polyline points="14 2 14 8 20 8"></polyline>
             </svg>
-            <span className="text-[9px] font-bold text-gray-400">Context Active</span>
+            <span className="text-[10px] font-semibold text-gray-400">Context Active</span>
           </div>
 
           {/* Secure E2EE Vault Status Badge in Header */}
           <button 
             onClick={handleVaultIconClick}
-            className={`flex items-center gap-1 ml-2 px-1.5 py-0.5 rounded border text-[9px] font-bold uppercase transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 ml-1.5 px-2 py-0.5 rounded border text-[10px] font-bold transition-all cursor-pointer ${
               isVaultEnabled 
                 ? isVaultUnlocked 
                   ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' 
@@ -490,7 +490,7 @@ export default function ChatArea({
             }`}
             title={isVaultEnabled ? (isVaultUnlocked ? "Vault Unlocked (Click to lock)" : "Vault Locked (Click to decrypt)") : "Enable E2EE Vault"}
           >
-            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               {isVaultUnlocked ? (
                 <>
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -507,13 +507,20 @@ export default function ChatArea({
           </button>
         </div>
 
-        <div className="flex items-center gap-1 relative">
-          <button onClick={() => setShowClearModal(true)} className="px-2 py-0.5 text-[10px] font-bold text-gray-500 hover:text-red-400 transition-colors uppercase">Clear</button>
+        <div className="flex items-center gap-1.5 relative">
+          <button 
+            onClick={() => setShowClearModal(true)} 
+            className="px-2.5 py-1 text-[12px] font-semibold text-gray-400 hover:text-red-400 hover:bg-white/[0.03] rounded-md transition-colors"
+          >
+            Clear
+          </button>
           
           <div className="relative">
             <button 
               onClick={() => setShowExportDropdown(!showExportDropdown)} 
-              className={`px-2 py-0.5 text-[10px] font-bold uppercase transition-colors cursor-pointer ${showExportDropdown ? 'text-white font-black' : 'text-gray-500 hover:text-white'}`}
+              className={`px-2.5 py-1 text-[12px] font-semibold rounded-md transition-colors cursor-pointer ${
+                showExportDropdown ? 'text-white bg-white/[0.05]' : 'text-gray-400 hover:text-white hover:bg-white/[0.03]'
+              }`}
             >
               Export
             </button>
@@ -521,13 +528,13 @@ export default function ChatArea({
               <div className="absolute right-0 mt-1.5 w-32 bg-[#0c0c0e] border border-white/10 rounded-lg shadow-2xl py-1 z-[60] animate-in fade-in slide-in-from-top-1">
                 <button 
                   onClick={() => handleExport("json")} 
-                  className="w-full text-left px-3 py-1.5 text-[10px] font-bold uppercase text-gray-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer"
+                  className="w-full text-left px-3 py-1.5 text-[11px] font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer"
                 >
                   Export JSON
                 </button>
                 <button 
                   onClick={() => handleExport("md")} 
-                  className="w-full text-left px-3 py-1.5 text-[10px] font-bold uppercase text-gray-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer"
+                  className="w-full text-left px-3 py-1.5 text-[11px] font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer"
                 >
                   Export Markdown
                 </button>
@@ -535,9 +542,34 @@ export default function ChatArea({
             )}
           </div>
 
-          <button onClick={() => setShowShareModal(true)} className="px-2 py-0.5 text-[10px] font-bold text-gray-500 hover:text-white transition-colors uppercase">Share</button>
-          <button onClick={onToggleDocuments} className={`px-2 py-0.5 text-[10px] font-bold rounded transition-colors uppercase ${showDocuments ? 'text-white font-black' : 'text-gray-500 hover:text-white'}`}>Docs</button>
-          <button onClick={onToggleNotes} className={`px-2 py-0.5 text-[10px] font-bold rounded transition-colors uppercase ${showNotes ? 'text-white font-black' : 'text-gray-500 hover:text-white'}`}>Notes</button>
+          <button 
+            onClick={() => setShowShareModal(true)} 
+            className="px-2.5 py-1 text-[12px] font-semibold text-gray-400 hover:text-white hover:bg-white/[0.03] rounded-md transition-colors"
+          >
+            Share
+          </button>
+          
+          <button 
+            onClick={onToggleDocuments} 
+            className={`px-2.5 py-1 text-[12px] font-semibold rounded-md transition-colors border ${
+              showDocuments 
+                ? 'text-white bg-white/[0.06] border-white/10' 
+                : 'text-gray-400 border-transparent hover:text-white hover:bg-white/[0.03]'
+            }`}
+          >
+            Docs
+          </button>
+          
+          <button 
+            onClick={onToggleNotes} 
+            className={`px-2.5 py-1 text-[12px] font-semibold rounded-md transition-colors border ${
+              showNotes 
+                ? 'text-white bg-white/[0.06] border-white/10' 
+                : 'text-gray-400 border-transparent hover:text-white hover:bg-white/[0.03]'
+            }`}
+          >
+            Notes
+          </button>
         </div>
       </div>
 

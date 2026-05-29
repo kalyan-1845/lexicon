@@ -8,11 +8,11 @@ export default function SmartNotes({ isEmbedded }: { onClose?: () => void, isEmb
   const content = (
     <div className="flex-1 flex flex-col p-6 h-full overflow-hidden select-none">
       <div className="flex items-center justify-between mb-4 shrink-0">
-        <h2 className="font-bold text-[10px] uppercase tracking-widest text-gray-500">Insights</h2>
+        <h2 className="font-extrabold text-[12px] text-gray-400">Insights</h2>
         <div className="flex items-center gap-1 bg-white/[0.02] border border-white/[0.04] p-0.5 rounded-lg shrink-0">
           <button 
             onClick={() => setTab("write")} 
-            className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider transition-all cursor-pointer ${
+            className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer ${
               tab === "write" 
                 ? "bg-white/5 text-white" 
                 : "text-gray-500 hover:text-white"
@@ -22,7 +22,7 @@ export default function SmartNotes({ isEmbedded }: { onClose?: () => void, isEmb
           </button>
           <button 
             onClick={() => setTab("preview")} 
-            className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider transition-all cursor-pointer ${
+            className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer ${
               tab === "preview" 
                 ? "bg-indigo-500/10 text-indigo-400 border border-indigo-500/10" 
                 : "text-gray-500 hover:text-white border border-transparent"
@@ -49,9 +49,9 @@ export default function SmartNotes({ isEmbedded }: { onClose?: () => void, isEmb
       </div>
       
       <div className="mt-4 flex justify-between items-center px-2 shrink-0">
-        <span className="text-[10px] font-bold text-gray-600 uppercase">{note.length} chars</span>
-        <button className="text-[10px] font-bold text-gray-400 hover:text-white transition-colors uppercase tracking-widest cursor-pointer">
-          Export
+        <span className="text-[11px] font-semibold text-gray-500">{note.length} characters</span>
+        <button className="text-[11px] font-semibold text-gray-400 hover:text-white transition-colors cursor-pointer">
+          Export Notes
         </button>
       </div>
     </div>
@@ -68,20 +68,20 @@ export default function SmartNotes({ isEmbedded }: { onClose?: () => void, isEmb
 
 // Helper functions to parse and format notes dynamically into lightweight JSX templates
 function formatNotesContent(content: string) {
-  if (!content) return <p className="text-gray-600 italic text-[11px] uppercase tracking-wider">No notes written yet...</p>;
+  if (!content) return <p className="text-gray-500 italic text-[12px]">No notes written yet...</p>;
   
   const lines = content.split("\n");
   
   return lines.map((line, idx) => {
     // 1. Headers (# H1, ## H2, ### H3)
     if (line.startsWith("# ")) {
-      return <h1 key={idx} className="text-sm font-black text-white mt-3 mb-1.5 pb-1 border-b border-white/[0.04]">{line.slice(2)}</h1>;
+      return <h1 key={idx} className="text-sm font-bold text-white mt-3 mb-1.5 pb-1 border-b border-white/[0.04]">{line.slice(2)}</h1>;
     }
     if (line.startsWith("## ")) {
-      return <h2 key={idx} className="text-xs font-black text-white mt-2.5 mb-1.5">{line.slice(3)}</h2>;
+      return <h2 key={idx} className="text-xs font-semibold text-white mt-2.5 mb-1.5">{line.slice(3)}</h2>;
     }
     if (line.startsWith("### ")) {
-      return <h3 key={idx} className="text-[10px] font-black text-gray-400 uppercase tracking-wider mt-2 mb-1">{line.slice(4)}</h3>;
+      return <h3 key={idx} className="text-[11px] font-semibold text-gray-400 mt-2 mb-1">{line.slice(4)}</h3>;
     }
     
     // 2. Bullet list item (* or -)
