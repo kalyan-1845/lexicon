@@ -14,6 +14,8 @@ type SidebarProps = {
   activeCollection: string | null;
   onCollectionChange: (name: string) => void;
   onAddCollection: () => void;
+  showMobileSidebar?: boolean;
+  onMobileSidebarClose?: () => void;
 };
 
 export default function Sidebar({ 
@@ -24,15 +26,39 @@ export default function Sidebar({
   collections,
   activeCollection,
   onCollectionChange,
-  onAddCollection
+  onAddCollection,
+  showMobileSidebar,
+  onMobileSidebarClose
 }: SidebarProps) {
   const [showMemoryModal, setShowMemoryModal] = useState(false);
 
   return (
     <>
-      <aside className="hidden md:flex w-52 border-r border-white/[0.04] bg-[#09090b] flex-col h-full shrink-0">
-        <div className="p-3 mb-1">
+      {/* Mobile Sidebar Backdrop */}
+      {showMobileSidebar && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 md:hidden animate-in fade-in duration-200" 
+          onClick={onMobileSidebarClose}
+        />
+      )}
+      
+      <aside className={`
+        ${showMobileSidebar ? "fixed inset-y-0 left-0 z-50 w-64 md:w-52" : "hidden md:flex w-52"} 
+        border-r border-white/[0.04] bg-[#0c0c0e]/98 md:bg-[#09090b] flex-col h-full shrink-0 transition-all duration-300
+      `}>
+        <div className="p-3 mb-1 flex items-center justify-between">
           <Logo size={20} className="scale-90 origin-left" />
+          {showMobileSidebar && (
+            <button 
+              onClick={onMobileSidebarClose}
+              className="md:hidden p-1 text-gray-500 hover:text-white"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          )}
         </div>
 
         <div className="flex-1 overflow-y-auto px-1.5 space-y-4">

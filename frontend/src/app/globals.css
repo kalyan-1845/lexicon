@@ -14,6 +14,8 @@
     --theme-accent: #6366f1;
     --theme-accent-rgb: 99, 102, 241;
     --theme-border: rgba(255, 255, 255, 0.04);
+    --theme-text: #f4f4f5;
+    --theme-text-muted: #a1a1aa;
   }
 
   .theme-cyberpunk {
@@ -21,7 +23,9 @@
     --theme-surface: #12001c;
     --theme-accent: #ff007f;
     --theme-accent-rgb: 255, 0, 127;
-    --theme-border: rgba(255, 0, 127, 0.1);
+    --theme-border: rgba(255, 0, 127, 0.15);
+    --theme-text: #fdf2f8;
+    --theme-text-muted: #f472b6;
   }
 
   .theme-emerald {
@@ -29,7 +33,9 @@
     --theme-surface: #05140b;
     --theme-accent: #10b981;
     --theme-accent-rgb: 16, 185, 129;
-    --theme-border: rgba(16, 185, 129, 0.08);
+    --theme-border: rgba(16, 185, 129, 0.12);
+    --theme-text: #ecfdf5;
+    --theme-text-muted: #34d399;
   }
 
   .theme-abyss {
@@ -37,19 +43,43 @@
     --theme-surface: #050d22;
     --theme-accent: #00d2ff;
     --theme-accent-rgb: 0, 210, 255;
-    --theme-border: rgba(0, 210, 255, 0.08);
+    --theme-border: rgba(0, 210, 255, 0.12);
+    --theme-text: #f0f9ff;
+    --theme-text-muted: #38bdf8;
+  }
+
+  .theme-light {
+    --theme-bg: #fafafa;
+    --theme-surface: #ffffff;
+    --theme-accent: #2563eb;
+    --theme-accent-rgb: 37, 99, 235;
+    --theme-border: rgba(0, 0, 0, 0.06);
+    --theme-text: #18181b;
+    --theme-text-muted: #71717a;
   }
   
   body, aside, .bg-\[\#09090b\], .bg-\[\#09090b\]\/80 {
     background-color: var(--theme-bg) !important;
     border-color: var(--theme-border) !important;
-    transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s ease;
+    color: var(--theme-text) !important;
+    transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s ease, color 0.4s ease;
   }
 
   .bg-\[\#0c0c0e\]\/80, .bg-\[\#0c0c0e\]\/50, .bg-white\/\[0\.01\], .bg-white\/\[0\.02\] {
     background-color: var(--theme-surface) !important;
     border-color: var(--theme-border) !important;
     transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s ease;
+  }
+
+  /* Map text gray classes to the variable under Light theme context */
+  .theme-light .text-gray-300, .theme-light .text-gray-400 {
+    color: var(--theme-text-muted) !important;
+  }
+  .theme-light .text-gray-500 {
+    color: #a1a1aa !important;
+  }
+  .theme-light .text-white {
+    color: var(--theme-text) !important;
   }
 
   .text-indigo-400, .text-indigo-500, .text-purple-400 {

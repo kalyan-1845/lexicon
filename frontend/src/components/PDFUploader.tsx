@@ -18,41 +18,96 @@ type PDFUploaderProps = {
 
 export default function PDFUploader({ documents, setDocuments, onContextUpdate, isEmbedded }: PDFUploaderProps) {
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const xhrRef = useRef<XMLHttpRequest | null>(null);
 
-  const handleUpload = async (file: File) => {
+  const handleExportCitations = () => {
+    window.open("http://localhost:8000/api/citations/export", "_blank");
+  };
+
+  const handleUpload = (file: File) => {
     if (!file || file.type !== "application/pdf") return;
 
     setIsUploading(true);
-    const newDoc = { name: file.name, size: file.size, status: "Uploading..." };
+    setUploadProgress(0);
+    const newDoc = { name: file.name, size: file.size, status: "Uploading (0%)..." };
     setDocuments([newDoc, ...documents]);
 
     const formData = new FormData();
     formData.append("file", file);
 
-    try {
-      const response = await fetch("http://localhost:8000/api/upload/pdf", {
-        method: "POST",
-        body: formData,
-      });
-      if (!response.ok) throw new Error("Upload failed");
-      const data = await response.json();
-      
-      setDocuments([{ 
-        ...newDoc, 
-        status: `Parsed (${data.extracted_character_count} chars)`,
-        text: data.full_text
-      }, ...documents]);
-      
-      if (onContextUpdate && data.full_text) {
-        onContextUpdate(data.full_text);
+    const xhr = new XMLHttpRequest();
+    xhrRef.current = xhr;
+
+    // Track upload progress dynamically
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const percent = Math.round((event.loaded / event.total) * 100);
+        setUploadProgress(percent);
+        setDocuments(prev => prev.map(d => 
+          d.name === file.name 
+            ? { ...d, status: `Uploading (${percent}%)...` } 
+            : d
+        ));
       }
-    } catch (err) {
-      console.error("Upload error:", err);
-      setDocuments([{ ...newDoc, status: "Error" }, ...documents]);
-    } finally {
+    };
+
+    xhr.onload = () => {
+      if (xhr.status === 200) {
+        try {
+          const data = JSON.parse(xhr.responseText);
+          setDocuments(prev => prev.map(d => 
+            d.name === file.name 
+              ? { 
+                  ...d, 
+                  status: `Parsed (${data.extracted_character_count} chars)`,
+                  text: data.full_text
+                } 
+              : d
+          ));
+          if (onContextUpdate && data.full_text) {
+            onContextUpdate(data.full_text);
+          }
+        } catch {
+          handleError();
+        }
+      } else {
+        handleError();
+      }
+      cleanup();
+    };
+
+    xhr.onerror = () => {
+      handleError();
+      cleanup();
+    };
+
+    xhr.onabort = () => {
+      setDocuments(prev => prev.filter(d => d.name !== file.name));
+      cleanup();
+    };
+
+    const handleError = () => {
+      setDocuments(prev => prev.map(d => 
+        d.name === file.name ? { ...d, status: "Upload Failed" } : d
+      ));
+    };
+
+    const cleanup = () => {
       setIsUploading(false);
+      setUploadProgress(null);
+      xhrRef.current = null;
+    };
+
+    xhr.open("POST", "http://localhost:8000/api/upload/pdf");
+    xhr.send(formData);
+  };
+
+  const cancelUpload = () => {
+    if (xhrRef.current) {
+      xhrRef.current.abort();
     }
   };
 
@@ -77,7 +132,18 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
     <div className="flex-1 flex flex-col p-6 overflow-hidden">
       <div className="flex items-center justify-between mb-4">
         <h2 className="font-bold text-[10px] uppercase tracking-widest text-gray-500">Knowledge</h2>
-        <span className="text-[9px] font-bold text-gray-700 bg-white/[0.02] px-1.5 py-0.5 rounded border border-white/[0.04]">{documents.length}</span>
+        <div className="flex items-center gap-2">
+          {documents.length > 0 && (
+            <button 
+              onClick={handleExportCitations}
+              className="text-[9px] font-black text-indigo-400 hover:text-indigo-300 uppercase tracking-widest hover:underline cursor-pointer transition-all"
+              title="Export Citations (BibTeX)"
+            >
+              Export .Bib
+            </button>
+          )}
+          <span className="text-[9px] font-bold text-gray-700 bg-white/[0.02] px-1.5 py-0.5 rounded border border-white/[0.04]">{documents.length}</span>
+        </div>
       </div>
       
       <input type="file" accept="application/pdf" className="hidden" ref={fileInputRef} onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0])} />
@@ -114,7 +180,29 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
              <div className="flex flex-col overflow-hidden flex-1">
                <span className="text-[11px] font-semibold text-gray-300 truncate">{doc.name}</span>
                <span className="text-[9px] font-bold text-gray-600 uppercase tracking-tighter">{doc.status}</span>
+               {doc.status.startsWith('Uploading') && uploadProgress !== null && (
+                 <div className="w-full bg-white/5 rounded-full h-1 mt-1.5 overflow-hidden">
+                   <div 
+                     className="bg-indigo-500 h-full rounded-full transition-all duration-300" 
+                     style={{ width: `${uploadProgress}%` }}
+                   />
+                 </div>
+               )}
              </div>
+             {doc.status.startsWith('Uploading') && (
+               <div className="flex gap-1 shrink-0">
+                 <button 
+                   onClick={cancelUpload} 
+                   className="w-6 h-6 rounded hover:bg-white/5 flex items-center justify-center text-gray-500 hover:text-red-400 transition-colors"
+                   title="Cancel Upload"
+                 >
+                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                     <line x1="18" y1="6" x2="6" y2="18"></line>
+                     <line x1="6" y1="6" x2="18" y2="18"></line>
+                   </svg>
+                 </button>
+               </div>
+             )}
              {doc.status.startsWith('Parsed') && (
                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all shrink-0">
                  <button onClick={() => setSelectedDoc(doc)} className="w-6 h-6 rounded hover:bg-white/5 flex items-center justify-center">
