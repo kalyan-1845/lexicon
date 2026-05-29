@@ -5,6 +5,18 @@ export default function SmartNotes({ isEmbedded }: { onClose?: () => void, isEmb
   const [note, setNote] = useState("# Research Notes\n\nStart typing your insights here...");
   const [tab, setTab] = useState<"write" | "preview">("write");
 
+  const handleExportNotes = () => {
+    const blob = new Blob([note], { type: "text/markdown" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "lexicon-notes.md";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   const content = (
     <div className="flex-1 flex flex-col p-6 h-full overflow-hidden select-none">
       <div className="flex items-center justify-between mb-4 shrink-0">
@@ -50,7 +62,7 @@ export default function SmartNotes({ isEmbedded }: { onClose?: () => void, isEmb
       
       <div className="mt-4 flex justify-between items-center px-2 shrink-0">
         <span className="text-[11px] font-semibold text-gray-500">{note.length} characters</span>
-        <button className="text-[11px] font-semibold text-gray-400 hover:text-white transition-colors cursor-pointer">
+        <button onClick={handleExportNotes} className="text-[11px] font-semibold text-gray-400 hover:text-white transition-colors cursor-pointer">
           Export Notes
         </button>
       </div>

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 import os
@@ -104,11 +104,12 @@ class ShareRequest(BaseModel):
     is_public: bool
 
 @router.post("/share")
-async def share_workspace(request: ShareRequest):
+async def share_workspace(request: ShareRequest, req: Request):
     import uuid
     share_id = str(uuid.uuid4())[:8]
+    base_url = req.headers.get('origin', req.headers.get('referer', 'http://localhost:3000')).rstrip('/')
     return {
         "workspace_name": request.workspace_name,
         "is_public": request.is_public,
-        "share_url": f"http://localhost:3000/w/share-{share_id}"
+        "share_url": f"{base_url}/w/share-{share_id}"
     }

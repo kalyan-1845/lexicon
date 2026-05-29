@@ -7,6 +7,29 @@ import { showToast } from "@/components/Toast";
 import { encryptText, decryptText } from "@/utils/encryption";
 import { getApiUrl } from "@/utils/api";
 
+interface SpeechRecognitionResultList {
+  length: number;
+  [index: number]: {
+    [index: number]: {
+      transcript: string;
+    };
+  };
+}
+
+interface SpeechRecognitionEvent {
+  results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionInstance {
+  continuous: boolean;
+  interimResults: boolean;
+  onresult: (event: SpeechRecognitionEvent) => void;
+  onend: () => void;
+  onerror: () => void;
+  start: () => void;
+  stop: () => void;
+}
+
 type Message = {
   id: string;
   role: "user" | "assistant";
@@ -56,6 +79,7 @@ export default function ChatArea({
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatScrollRef = useRef<HTMLDivElement>(null);
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null);
   const [showScrollBottom, setShowScrollBottom] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [showClearModal, setShowClearModal] = useState(false);
@@ -439,6 +463,48 @@ export default function ChatArea({
       e.preventDefault(); 
       handleSendMessage(); 
     }
+  };
+
+  const toggleVoiceInput = () => {
+    if (isListening && recognitionRef.current) {
+      recognitionRef.current.stop();
+      recognitionRef.current = null;
+      setIsListening(false);
+      return;
+    }
+
+    const SpeechRecognition = (window as unknown as { SpeechRecognition: new () => SpeechRecognitionInstance; webkitSpeechRecognition: new () => SpeechRecognitionInstance }).SpeechRecognition ||
+                              (window as unknown as { SpeechRecognition: new () => SpeechRecognitionInstance; webkitSpeechRecognition: new () => SpeechRecognitionInstance }).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      showToast("Speech recognition is not supported in this browser.", "warning");
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = true;
+
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
+      let transcript = "";
+      for (let i = 0; i < event.results.length; i++) {
+        transcript += event.results[i][0].transcript;
+      }
+      setQuery((prev) => prev + transcript);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+      recognitionRef.current = null;
+    };
+
+    recognition.onerror = () => {
+      setIsListening(false);
+      recognitionRef.current = null;
+    };
+
+    recognitionRef.current = recognition;
+    recognition.start();
+    setIsListening(true);
   };
 
   return (
@@ -833,7 +899,7 @@ export default function ChatArea({
               </div>
             )}
 
-            <button onClick={() => setIsListening(!isListening)} className={`w-7 h-7 rounded transition-all cursor-pointer ${isListening ? 'text-red-500' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}>
+            <button onClick={toggleVoiceInput} className={`w-7 h-7 rounded transition-all cursor-pointer ${isListening ? 'text-red-500' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path></svg>
             </button>
             <button onClick={handleSendMessage} disabled={isLoading || !query.trim() || query.length > maxChars || isLocked} className="w-7 h-7 rounded bg-white text-black hover:bg-gray-200 disabled:opacity-20 transition-all flex items-center justify-center cursor-pointer">

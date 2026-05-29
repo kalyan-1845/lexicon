@@ -1,9 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 type FilterType = "all" | "docs" | "chats" | "commands";
 
 export default function CommandPalette() {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [history, setHistory] = useState<string[]>([]);
@@ -148,6 +150,10 @@ export default function CommandPalette() {
                   onClick={() => {
                     saveSearch("Upload PDF");
                     setIsOpen(false);
+                    router.push('/workspace');
+                    setTimeout(() => {
+                      window.dispatchEvent(new CustomEvent('lexicon-action', { detail: { type: 'upload-pdf' } }));
+                    }, 100);
                   }}
                   className="w-full flex items-center gap-3 px-2.5 py-2 rounded-lg text-[11px] font-semibold text-gray-300 hover:bg-white/[0.03] hover:text-white transition-all text-left"
                 >
@@ -165,6 +171,10 @@ export default function CommandPalette() {
                   onClick={() => {
                     saveSearch("New AI Chat");
                     setIsOpen(false);
+                    router.push('/workspace');
+                    setTimeout(() => {
+                      window.dispatchEvent(new CustomEvent('lexicon-action', { detail: { type: 'new-chat' } }));
+                    }, 100);
                   }}
                   className="w-full flex items-center gap-3 px-2.5 py-2 rounded-lg text-[11px] font-semibold text-gray-300 hover:bg-white/[0.03] hover:text-white transition-all text-left"
                 >

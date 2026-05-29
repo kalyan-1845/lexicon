@@ -1,10 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import ShortcutsCheatSheet from "@/components/ShortcutsCheatSheet";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
 
 export default function Dashboard() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [workspaces] = useState([
     { id: "1", name: "Neural Networks", docs: 12, lastActive: "2h ago", color: "from-indigo-500 to-purple-600" },
@@ -44,14 +46,27 @@ export default function Dashboard() {
     return () => clearInterval(interval);
   }, []);
 
+  const sidebarWorkspaces = workspaces.map(w => ({
+    name: w.name,
+    collectionId: w.name === "Neural Networks" ? "Deep Learning" : w.name === "Market Trends 2026" ? "Finance" : "Career"
+  }));
+
   return (
     <div className="flex h-screen bg-[#09090b] text-white selection:bg-indigo-500/30">
       <Sidebar 
-        workspaces={[]} 
+        workspaces={sidebarWorkspaces} 
         activeWorkspace="" 
-        onWorkspaceChange={() => {}} 
-        onAddWorkspace={() => {}} 
-        collections={[]} 
+        onWorkspaceChange={(name) => {
+          localStorage.setItem('lexicon-active-workspace', name);
+          router.push('/workspace');
+        }} 
+        onAddWorkspace={() => {
+          router.push('/workspace');
+          setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('lexicon-action', { detail: { type: 'new-chat' } }));
+          }, 100);
+        }} 
+        collections={['Deep Learning', 'Finance', 'Career']} 
         activeCollection={null} 
         onCollectionChange={() => {}} 
         onAddCollection={() => {}} 
@@ -72,7 +87,7 @@ export default function Dashboard() {
                 <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse" />
                 <span className="text-[10px] font-extrabold text-indigo-500/80 uppercase tracking-[0.2em]">Collaborative Workspace</span>
               </div>
-              <h1 className="text-3xl font-extrabold tracking-tight mb-2">Welcome back, <span className="text-gray-500">Alex</span></h1>
+              <h1 className="text-3xl font-extrabold tracking-tight mb-2">Welcome back, <span className="text-gray-500">Kalyan</span></h1>
               <p className="text-gray-500 font-medium text-sm">Your agentic workspace is ready for deep analysis.</p>
             </div>
             
@@ -115,6 +130,7 @@ export default function Dashboard() {
                 key={ws.id} 
                 style={{ animationDelay: `${i * 100}ms` }}
                 className="group relative p-8 bg-[#0c0c0e]/80 backdrop-blur-xl border border-white/[0.04] rounded-2xl hover:border-white/10 transition-all cursor-pointer animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both"
+                onClick={() => router.push('/workspace')}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-white/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl" />
                 <div className="relative z-10">
@@ -141,7 +157,15 @@ export default function Dashboard() {
               </div>
             ))}
             
-            <button className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-white/5 rounded-2xl hover:bg-white/[0.02] hover:border-white/10 transition-all group animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 fill-mode-both">
+            <button 
+              onClick={() => {
+                router.push('/workspace');
+                setTimeout(() => {
+                  window.dispatchEvent(new CustomEvent('lexicon-action', { detail: { type: 'new-chat' } }));
+                }, 100);
+              }}
+              className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-white/5 rounded-2xl hover:bg-white/[0.02] hover:border-white/10 transition-all group animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 fill-mode-both"
+            >
               <div className="w-12 h-12 rounded-full border border-dashed border-white/10 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-white/20 transition-all">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-gray-600 group-hover:text-gray-400 transition-colors">
                   <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
