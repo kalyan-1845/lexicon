@@ -11,7 +11,7 @@ permissions:
 jobs:
   handle_assignment:
     # Do not run on pull request comments, only on issues
-    if: !github.event.issue.pull_request
+    if: ${{ !github.event.issue.pull_request }}
     runs-on: ubuntu-latest
     steps:
       - name: Handle Assignment or Unassignment
