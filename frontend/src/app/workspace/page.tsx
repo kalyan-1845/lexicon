@@ -30,6 +30,7 @@ type WorkspaceItem = {
 
 export default function Workspace() {
   const [showRightSidebar, setShowRightSidebar] = useState(true);
+  const [showLeftSidebar, setShowLeftSidebar] = useState(false);
   const [activeTab, setActiveTab] = useState<"docs" | "notes">("docs");
   const [activeContext, setActiveContext] = useState<string | null>(null);
   
@@ -89,7 +90,10 @@ export default function Workspace() {
       <Sidebar 
         workspaces={filteredWorkspaces}
         activeWorkspace={activeWorkspace} 
-        onWorkspaceChange={setActiveWorkspace}
+        onWorkspaceChange={(name) => {
+          setActiveWorkspace(name);
+          setShowLeftSidebar(false); // close mobile drawer on change
+        }}
         onAddWorkspace={handleAddWorkspace}
         collections={collections}
         activeCollection={activeCollection}
@@ -98,6 +102,8 @@ export default function Workspace() {
           const name = prompt("Enter collection name:");
           if (name) setCollections([...collections, name]);
         }}
+        showMobileSidebar={showLeftSidebar}
+        onMobileSidebarClose={() => setShowLeftSidebar(false)}
       />
       <ChatArea 
         workspaceName={activeWorkspace}
@@ -109,6 +115,7 @@ export default function Workspace() {
         showDocuments={showRightSidebar && activeTab === "docs"}
         documentContext={activeContext}
         onContextUpdate={setActiveContext}
+        onToggleSidebar={() => setShowLeftSidebar(true)}
       />
       {showRightSidebar && (
         <RightSidebar 

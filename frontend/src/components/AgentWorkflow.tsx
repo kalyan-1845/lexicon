@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect, useRef } from "react";
 
 type AgentWorkflowProps = {
   activeAgent?: string | null;
@@ -6,32 +7,142 @@ type AgentWorkflowProps = {
 };
 
 export default function AgentWorkflow({ activeAgent, statusMessage }: AgentWorkflowProps) {
+  const [elapsed, setElapsed] = useState<Record<string, number>>({ Researcher: 0, Analyst: 0, Lexicon: 0 });
+  const [expandedAgent, setExpandedAgent] = useState<string | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   const agents = [
-    { name: "Researcher", label: "Fact-Finding" },
-    { name: "Analyst", label: "Analyzing" },
-    { name: "Lexicon", label: "Finalizing" },
+    { 
+      name: "Researcher", 
+      label: "Fact-Finding", 
+      color: "from-indigo-500 to-indigo-600",
+      description: "Extracts core factual assertions, isolates keywords, and compiles background context from uploaded document layers."
+    },
+    { 
+      name: "Analyst", 
+      label: "Synthesizing", 
+      color: "from-purple-500 to-purple-600",
+      description: "Profiles logical contradictions, matches structural themes, and synthesizes key conceptual patterns from extracted facts."
+    },
+    { 
+      name: "Lexicon", 
+      label: "Finalizing", 
+      color: "from-blue-500 to-blue-600",
+      description: "Consolidates findings into the final unified response, ensuring high factual density, professional tone, and outline structure."
+    },
   ];
 
+  // Live profiling stopwatch
+  useEffect(() => {
+    if (activeAgent && elapsed[activeAgent] === 0) {
+      if (activeAgent === "Researcher") {
+        setTimeout(() => setElapsed({ Researcher: 0, Analyst: 0, Lexicon: 0 }), 0);
+      }
+      
+      const startTime = Date.now();
+      timerRef.current = setInterval(() => {
+        const sec = parseFloat(((Date.now() - startTime) / 1000).toFixed(1));
+        setElapsed(prev => ({
+          ...prev,
+          [activeAgent]: sec
+        }));
+      }, 100);
+    }
+
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+  }, [activeAgent, elapsed]);
+
   return (
-    <div className="flex gap-6 items-center justify-center py-2 border-t border-white/[0.02] bg-white/[0.01]">
-      {agents.map((agent, i) => {
-        const isActive = activeAgent === agent.name;
-        return (
-          <div key={i} className={`flex flex-col items-center gap-1.5 transition-all duration-500 ${isActive ? 'scale-105 opacity-100' : 'opacity-30 scale-95'}`}>
-            <div className="flex items-center gap-2">
-              <div className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-indigo-500 animate-pulse shadow-[0_0_8px_rgba(99,102,241,0.6)]' : 'bg-gray-700'}`} />
-              <span className={`text-[10px] font-black uppercase tracking-widest ${isActive ? 'text-white' : 'text-gray-500'}`}>
-                {agent.name}
-              </span>
+    <div className="flex flex-col gap-3 py-3 px-4 border-t border-b border-white/[0.03] bg-[#0c0c0e]/40 rounded-xl select-none relative w-full overflow-hidden">
+      {/* Visual Graphical Connector Line Layout */}
+      <div className="flex items-center justify-between max-w-lg mx-auto w-full relative">
+        {/* Horizontal Connector bar */}
+        <div className="absolute top-[9px] left-8 right-8 h-0.5 bg-white/[0.03] -z-10" />
+        
+        {agents.map((agent, i) => {
+          const isActive = activeAgent === agent.name;
+          const isDone = !isActive && elapsed[agent.name] > 0;
+          const time = elapsed[agent.name];
+          
+          return (
+            <div key={i} className="flex flex-col items-center gap-1.5 z-10 relative">
+              <button 
+                onClick={() => setExpandedAgent(agent.name)}
+                className={`flex items-center gap-2 px-2.5 py-1 rounded-full border transition-all duration-300 cursor-pointer ${
+                  isActive 
+                    ? "bg-indigo-500/10 border-indigo-500/30 text-white scale-105 shadow-[0_0_15px_rgba(99,102,241,0.15)]" 
+                    : isDone
+                      ? "bg-white/[0.02] border-white/10 text-gray-400"
+                      : "bg-[#09090b] border-white/[0.04] text-gray-600 scale-95"
+                }`}
+              >
+                {/* Visual pulse indicator */}
+                <span className={`w-2 h-2 rounded-full ${
+                  isActive 
+                    ? "bg-indigo-500 animate-pulse" 
+                    : isDone
+                      ? "bg-green-500/50"
+                      : "bg-gray-800"
+                }`} />
+                <span className="text-[10px] font-black uppercase tracking-wider">{agent.name}</span>
+                
+                {/* Live timer telemetry */}
+                {time > 0 && (
+                  <span className={`text-[8.5px] font-mono font-bold px-1.5 py-0.2 rounded ml-1 border ${
+                    isActive 
+                      ? "bg-indigo-500/20 border-indigo-500/20 text-indigo-400 animate-pulse" 
+                      : "bg-white/[0.02] border-white/[0.04] text-gray-500"
+                  }`}>
+                    {time}s
+                  </span>
+                )}
+              </button>
+              
+              {isActive && statusMessage && (
+                <span className="text-[8.5px] font-bold text-indigo-400 uppercase tracking-tighter animate-bounce absolute top-full mt-1.5 whitespace-nowrap">
+                  {statusMessage}
+                </span>
+              )}
             </div>
-            {isActive && statusMessage && (
-              <span className="text-[8px] font-bold text-indigo-400 uppercase tracking-tighter animate-in fade-in slide-in-from-top-1 duration-500">
-                {statusMessage}
-              </span>
-            )}
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
+
+      {/* Spacing gap when active message displays */}
+      {activeAgent && <div className="h-2" />}
+
+      {/* Dynamic Cognitive Profile Expander Dialog */}
+      {expandedAgent && (
+        <div className="mt-3 p-3 bg-white/[0.01] border border-white/[0.04] rounded-lg animate-in fade-in slide-in-from-top-2 duration-300 relative text-left">
+          <button 
+            onClick={() => setExpandedAgent(null)}
+            className="absolute top-2 right-2 p-1 text-gray-500 hover:text-white transition-colors cursor-pointer"
+          >
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+          
+          {agents.filter(a => a.name === expandedAgent).map((agent, i) => (
+            <div key={i} className="flex flex-col gap-1 pr-6">
+              <div className="flex items-center gap-2 mb-0.5">
+                <div className="w-1.5 h-3.5 bg-indigo-500 rounded-full" />
+                <span className="text-[10px] font-black uppercase tracking-widest text-indigo-400">{agent.name} Profile</span>
+                <span className="text-[8.5px] text-gray-500 font-bold uppercase">({agent.label})</span>
+              </div>
+              <p className="text-[11px] text-gray-400 font-medium leading-relaxed">
+                {agent.description}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
