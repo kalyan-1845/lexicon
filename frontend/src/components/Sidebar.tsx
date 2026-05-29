@@ -82,8 +82,10 @@ export default function Sidebar({
                 <button 
                   key={item.name} 
                   onClick={() => onWorkspaceChange(item.name)}
-                  className={`w-full text-left px-2 py-0.5 rounded text-[11px] font-medium transition-colors truncate ${
-                    activeWorkspace === item.name ? "text-white bg-white/[0.04]" : "text-gray-500 hover:text-gray-300 hover:bg-white/[0.02]"
+                  className={`w-full text-left py-0.5 rounded text-[11px] font-medium transition-all duration-300 truncate border-l-2 ${
+                    activeWorkspace === item.name 
+                      ? "text-white bg-[rgba(var(--theme-accent-rgb),0.08)] border-[var(--theme-accent)] pl-1.5" 
+                      : "text-gray-500 hover:text-gray-300 hover:bg-white/[0.02] border-transparent pl-2"
                   }`}
                 >
                   {item.name}
@@ -113,8 +115,10 @@ export default function Sidebar({
                 <button 
                   key={item} 
                   onClick={() => onCollectionChange(item)}
-                  className={`w-full flex items-center gap-2 text-left px-2 py-0.5 rounded text-[11px] font-medium transition-colors truncate ${
-                    activeCollection === item ? "text-white bg-white/[0.04]" : "text-gray-500 hover:text-white hover:bg-white/[0.02]"
+                  className={`w-full flex items-center gap-2 text-left py-0.5 rounded text-[11px] font-medium transition-all duration-300 truncate border-l-2 ${
+                    activeCollection === item 
+                      ? "text-white bg-[rgba(var(--theme-accent-rgb),0.08)] border-[var(--theme-accent)] pl-1.5" 
+                      : "text-gray-500 hover:text-white hover:bg-white/[0.02] border-transparent pl-2"
                   }`}
                 >
                   <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className={activeCollection === item ? "text-white" : "text-gray-700"}>
