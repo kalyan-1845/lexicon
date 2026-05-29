@@ -6,32 +6,53 @@ from app.api import upload, chat, citations
 import time
 from collections import defaultdict
 
-class RateLimitMiddleware(BaseHTTPMiddleware):
+import json
+
+class RateLimitMiddleware:
     def __init__(self, app, limit: int = 60, window: int = 60):
-        super().__init__(app)
+        self.app = app
         self.limit = limit
         self.window = window
         self.requests = defaultdict(list)
 
-    async def dispatch(self, request: Request, call_next):
-        # Allow health checks and root index without rate limits
-        if request.url.path in ["/", "/health", "/docs", "/openapi.json"]:
-            return await call_next(request)
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+
+        path = scope.get("path", "")
+        # Allow health checks, docs, root, and CORS preflight OPTIONS requests
+        if path in ["/", "/health", "/docs", "/openapi.json"] or scope.get("method") == "OPTIONS":
+            await self.app(scope, receive, send)
+            return
             
-        client_ip = request.client.host if request.client else "unknown"
+        client = scope.get("client")
+        client_ip = client[0] if client else "unknown"
         current_time = time.time()
         
         # Clean up old requests outside window
         self.requests[client_ip] = [t for t in self.requests[client_ip] if current_time - t < self.window]
         
         if len(self.requests[client_ip]) >= self.limit:
-            return JSONResponse(
-                status_code=429,
-                content={"detail": f"Rate limit exceeded. Maximum {self.limit} requests per {self.window} seconds allowed."}
-            )
+            response_body = json.dumps({
+                "detail": f"Rate limit exceeded. Maximum {self.limit} requests per {self.window} seconds allowed."
+            }).encode("utf-8")
+            await send({
+                "type": "http.response.start",
+                "status": 429,
+                "headers": [
+                    (b"content-type", b"application/json"),
+                    (b"access-control-allow-origin", b"*"),
+                ]
+            })
+            await send({
+                "type": "http.response.body",
+                "body": response_body,
+            })
+            return
             
         self.requests[client_ip].append(current_time)
-        return await call_next(request)
+        await self.app(scope, receive, send)
 
 app = FastAPI(
     title="Lexicon AI API",
