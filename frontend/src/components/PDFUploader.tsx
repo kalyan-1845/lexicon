@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
 import PDFMetadataModal from "@/components/PDFMetadataModal";
+import { showToast } from "@/components/Toast";
 
 type Document = { 
   name: string; 
@@ -34,6 +35,7 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
     setUploadProgress(0);
     const newDoc = { name: file.name, size: file.size, status: "Uploading (0%)..." };
     setDocuments([newDoc, ...documents]);
+    showToast(`Uploading document: ${file.name}`, "info");
 
     const formData = new FormData();
     formData.append("file", file);
@@ -46,7 +48,7 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
       if (event.lengthComputable) {
         const percent = Math.round((event.loaded / event.total) * 100);
         setUploadProgress(percent);
-        setDocuments(prev => prev.map(d => 
+        setDocuments(documents.map(d => 
           d.name === file.name 
             ? { ...d, status: `Uploading (${percent}%)...` } 
             : d
@@ -58,7 +60,7 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
       if (xhr.status === 200) {
         try {
           const data = JSON.parse(xhr.responseText);
-          setDocuments(prev => prev.map(d => 
+          setDocuments(documents.map(d => 
             d.name === file.name 
               ? { 
                   ...d, 
@@ -70,6 +72,7 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
           if (onContextUpdate && data.full_text) {
             onContextUpdate(data.full_text);
           }
+          showToast(`Successfully parsed and indexed: ${file.name}`, "success");
         } catch {
           handleError();
         }
@@ -85,14 +88,16 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
     };
 
     xhr.onabort = () => {
-      setDocuments(prev => prev.filter(d => d.name !== file.name));
+      setDocuments(documents.filter(d => d.name !== file.name));
+      showToast(`Upload cancelled: ${file.name}`, "warning");
       cleanup();
     };
 
     const handleError = () => {
-      setDocuments(prev => prev.map(d => 
+      setDocuments(documents.map(d => 
         d.name === file.name ? { ...d, status: "Upload Failed" } : d
       ));
+      showToast(`Failed to upload: ${file.name}`, "error");
     };
 
     const cleanup = () => {
