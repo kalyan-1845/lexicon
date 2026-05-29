@@ -20,7 +20,14 @@ type RightSidebarProps = {
 
 export default function RightSidebar({ activeTab, setActiveTab, documents, setDocuments, onContextUpdate, onClose }: RightSidebarProps) {
   return (
-    <aside className="w-72 border-l border-white/[0.04] bg-[#09090b] h-full flex flex-col shrink-0">
+    <>
+      {/* Mobile Backdrop Overlay */}
+      <div 
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden animate-in fade-in duration-200" 
+        onClick={onClose} 
+      />
+      
+      <aside className="fixed lg:static inset-y-0 right-0 z-50 lg:z-auto w-80 lg:w-72 border-l border-white/[0.04] bg-[#0c0c0e]/98 lg:bg-[#09090b] h-full flex flex-col shrink-0 shadow-2xl lg:shadow-none animate-in slide-in-from-right duration-300">
       <div className="h-10 border-b border-white/[0.04] flex items-center px-4 justify-between bg-[#09090b]/50">
         <div className="flex gap-4">
           <button 
@@ -61,5 +68,6 @@ export default function RightSidebar({ activeTab, setActiveTab, documents, setDo
         )}
       </div>
     </aside>
+    </>
   );
 }
