@@ -54,6 +54,28 @@ class RateLimitMiddleware:
         self.requests[client_ip].append(current_time)
         await self.app(scope, receive, send)
 
+class PrefixStrippingMiddleware:
+    def __init__(self, app, prefix: str = "/_/backend"):
+        self.app = app
+        self.prefix = prefix
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] == "http":
+            path = scope.get("path", "")
+            if path.startswith(self.prefix):
+                scope["path"] = path[len(self.prefix):]
+                if not scope["path"]:
+                    scope["path"] = "/"
+                
+                if "raw_path" in scope:
+                    raw_path = scope["raw_path"].decode("utf-8", errors="ignore")
+                    if raw_path.startswith(self.prefix):
+                        new_raw = raw_path[len(self.prefix):]
+                        if not new_raw:
+                            new_raw = "/"
+                        scope["raw_path"] = new_raw.encode("utf-8")
+        await self.app(scope, receive, send)
+
 app = FastAPI(
     title="Lexicon AI API",
     description="Backend API for the Lexicon AI Workspace",
@@ -76,6 +98,7 @@ app.add_middleware(
 )
 
 app.add_middleware(RateLimitMiddleware, limit=60, window=60)
+app.add_middleware(PrefixStrippingMiddleware, prefix="/_/backend")
 
 # Register Routers
 app.include_router(upload.router, prefix="/api/upload", tags=["Uploads"])
