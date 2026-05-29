@@ -2,6 +2,7 @@
 import { useState, useRef } from "react";
 import PDFMetadataModal from "@/components/PDFMetadataModal";
 import { showToast } from "@/components/Toast";
+import { getApiUrl } from "@/utils/api";
 
 type Document = { 
   name: string; 
@@ -25,7 +26,7 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
   const xhrRef = useRef<XMLHttpRequest | null>(null);
 
   const handleExportCitations = () => {
-    window.open("http://localhost:8000/api/citations/export", "_blank");
+    window.open(getApiUrl("/api/citations/export"), "_blank");
   };
 
   const handleUpload = (file: File) => {
@@ -106,7 +107,7 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
       xhrRef.current = null;
     };
 
-    xhr.open("POST", "http://localhost:8000/api/upload/pdf");
+    xhr.open("POST", getApiUrl("/api/upload/pdf"));
     xhr.send(formData);
   };
 
@@ -119,7 +120,7 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
   const handleSummarize = async (doc: Document) => {
     if (!doc.text) return;
     try {
-      const response = await fetch("http://localhost:8000/api/chat/summarize", {
+      const response = await fetch(getApiUrl("/api/chat/summarize"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: doc.text }),
