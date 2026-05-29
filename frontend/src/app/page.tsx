@@ -1,12 +1,26 @@
 "use client";
+import { useState } from 'react';
 import Link from 'next/link';
 import LandingPreview from "@/components/LandingPreview";
 import Logo from "@/components/Logo";
 
 export default function Home() {
+  const [mousePos, setMousePos] = useState({ x: '50%', y: '50%' });
+  
+  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({
+      x: `${e.clientX - rect.left}px`,
+      y: `${e.clientY - rect.top}px`,
+    });
+  };
+
   return (
-    <main className="min-h-screen bg-[#09090b] text-white selection:bg-indigo-500/30 relative overflow-hidden">
-      {/* Premium Background Ambiance */}
+    <main 
+      className="min-h-screen bg-[#09090b] text-white selection:bg-indigo-500/30 relative overflow-hidden cursor-spotlight"
+      onMouseMove={handleMouseMove}
+      style={{ '--mouse-x': mousePos.x, '--mouse-y': mousePos.y } as React.CSSProperties}
+    >      {/* Premium Background Ambiance */}
       <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] rounded-full bg-indigo-600/10 blur-[150px] animate-pulse-slow pointer-events-none" />
       <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] rounded-full bg-purple-600/10 blur-[150px] animate-pulse-slow pointer-events-none delay-1000" />
       

@@ -24,6 +24,7 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const xhrRef = useRef<XMLHttpRequest | null>(null);
+  const [summaryData, setSummaryData] = useState<{name: string; summary: string} | null>(null);
 
   const handleExportCitations = () => {
     window.open(getApiUrl("/api/citations/export"), "_blank");
@@ -127,10 +128,10 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
       });
       if (!response.ok) throw new Error("Summarization failed");
       const data = await response.json();
-      alert(`Summary of ${doc.name}:\n\n${data.summary}`);
+      setSummaryData({ name: doc.name, summary: data.summary });
     } catch (err) {
       console.error("Summarization error:", err);
-      alert("Failed to summarize.");
+      showToast("Failed to summarize document.", "error");
     }
   };
 
@@ -229,6 +230,28 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
         ))}
       </div>
       <PDFMetadataModal isOpen={selectedDoc !== null} onClose={() => setSelectedDoc(null)} document={selectedDoc || { name: '', size: 0, status: '' }} />
+      {summaryData && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[999] flex items-center justify-center p-4">
+          <div className="w-full max-w-lg bg-[#0c0c0e] border border-white/10 rounded-2xl p-6 shadow-2xl animate-in zoom-in-95 duration-200 max-h-[80vh] flex flex-col">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-indigo-400">AI Summary</h3>
+              <button onClick={() => setSummaryData(null)} className="p-1 text-gray-500 hover:text-white transition-colors cursor-pointer">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+            <p className="text-[11px] font-semibold text-gray-500 mb-3">{summaryData.name}</p>
+            <div className="flex-1 overflow-y-auto text-[13px] text-gray-300 leading-relaxed whitespace-pre-wrap">
+              {summaryData.summary}
+            </div>
+            <div className="mt-4 flex justify-end">
+              <button onClick={() => setSummaryData(null)} className="px-4 py-1.5 rounded-lg bg-white/[0.05] border border-white/10 text-[11px] font-bold text-gray-400 hover:text-white transition-colors cursor-pointer">Close</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 

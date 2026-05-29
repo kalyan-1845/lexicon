@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "@/components/Sidebar";
 import ChatArea from "@/components/ChatArea";
 import RightSidebar from "@/components/RightSidebar";
@@ -40,7 +40,13 @@ export default function Workspace() {
     { name: 'Resume Opt', collectionId: 'Career' },
     { name: 'Stock Analysis', collectionId: 'Finance' }
   ]);
-  const [activeWorkspace, setActiveWorkspace] = useState("Neural Networks");
+  const [activeWorkspace, setActiveWorkspace] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('lexicon-active-workspace');
+      if (saved) return saved;
+    }
+    return "Neural Networks";
+  });
   
   const [workspaceData, setWorkspaceData] = useState<Record<string, WorkspaceData>>({
     "Neural Networks": { documents: [], messages: [{ id: "1", role: "assistant", content: "Focusing on Deep Learning architectures." }], collectionId: 'Deep Learning' },
@@ -51,6 +57,40 @@ export default function Workspace() {
   
   const [collections, setCollections] = useState(['Deep Learning', 'Finance', 'Career']);
   const [activeCollection, setActiveCollection] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleLexiconAction = (e: Event) => {
+      const customEvent = e as CustomEvent<{ type: string }>;
+      if (customEvent.detail?.type === 'upload-pdf') {
+        setShowRightSidebar(true);
+        setActiveTab("docs");
+      } else if (customEvent.detail?.type === 'new-chat') {
+        const name = prompt("Enter workspace name:");
+        if (name) {
+          setWorkspaces(prev => {
+            if (prev.some(w => w.name === name)) return prev;
+            return [...prev, { name, collectionId: activeCollection }];
+          });
+          setWorkspaceData(prev => {
+            if (prev[name]) return prev;
+            return {
+              ...prev,
+              [name]: { documents: [], messages: [{ id: "1", role: "assistant", content: `New workspace in ${activeCollection || 'General'}.` }], collectionId: activeCollection }
+            };
+          });
+          setActiveWorkspace(name);
+        }
+      }
+    };
+    window.addEventListener('lexicon-action', handleLexiconAction);
+    return () => window.removeEventListener('lexicon-action', handleLexiconAction);
+  }, [activeCollection]);
+
+  useEffect(() => {
+    if (activeWorkspace) {
+      localStorage.setItem('lexicon-active-workspace', activeWorkspace);
+    }
+  }, [activeWorkspace]);
 
   const toggleTab = (tab: "docs" | "notes") => {
     if (showRightSidebar && activeTab === tab) {
