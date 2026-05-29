@@ -325,13 +325,18 @@ export default function ChatArea({
       currentMessages = [...currentMessages, assistantMessage];
 
       let accumulatedText = "";
+      let buffer = "";
 
       while (true) {
         const { done, value } = await reader!.read();
         if (done) break;
-        const chunk = decoder.decode(value);
-        const lines = chunk.split("\n");
+        buffer += decoder.decode(value, { stream: true });
+        
+        const lines = buffer.split("\n");
+        buffer = lines.pop() || "";
+        
         for (const line of lines) {
+          if (line.trim() === "") continue;
           if (line.startsWith("data: ")) {
             try {
               const data = JSON.parse(line.slice(6));
@@ -355,8 +360,8 @@ export default function ChatArea({
                 updatedMessages[updatedMessages.length - 1] = { ...assistantMessage };
                 setMessages(updatedMessages);
               }
-            } catch {
-              console.error("Error parsing stream chunk");
+            } catch (err) {
+              console.error("Error parsing stream chunk", err, line);
             }
           }
         }
@@ -642,17 +647,20 @@ export default function ChatArea({
           const isLocked = isEncryptedPayload && !isVaultUnlocked;
           
           return (
-            <div key={msg.id} className="flex gap-3">
-              <div className={`w-5 h-5 rounded bg-gray-800 flex items-center justify-center shrink-0 mt-0.5 ${msg.role === 'user' ? 'bg-white text-black' : 'text-white'}`}>
-                <span className="text-[9px] font-black">{msg.role === 'user' ? 'U' : 'L'}</span>
-              </div>
-              <div className="flex flex-col gap-0.5 flex-1 group">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-gray-500 uppercase tracking-tight">{msg.role === 'user' ? 'You' : 'Lexicon'}</span>
+            <div key={msg.id} className={`flex gap-3 w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-3 duration-300 ease-out`}>
+              {msg.role === 'assistant' && (
+                <div className="w-6 h-6 rounded bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/10">
+                  <span className="text-[10px] font-black text-white">L</span>
+                </div>
+              )}
+              
+              <div className={`flex flex-col gap-1 max-w-[85%] group relative ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
+                <div className="flex items-center gap-2 px-1">
+                  <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">{msg.role === 'user' ? 'You' : 'Lexicon'}</span>
                   {!isLocked && (
                     <button 
                       onClick={() => handleCopy(msg.id, isEncryptedPayload ? (decryptedCache[msg.id] || "") : msg.content)}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-white/5 text-gray-500 hover:text-white cursor-pointer"
+                      className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-white/5 text-gray-500 hover:text-white cursor-pointer"
                       title="Copy message"
                     >
                       {copiedId === msg.id ? (
@@ -669,7 +677,11 @@ export default function ChatArea({
                   )}
                 </div>
 
-                <div className="text-[13px] leading-relaxed text-gray-300 flex flex-col gap-2">
+                <div className={`text-[13px] leading-relaxed flex flex-col gap-2 p-4 rounded-2xl border transition-all duration-300 shadow-sm ${
+                  msg.role === 'user' 
+                    ? 'bg-white/[0.02] border-white/[0.05] text-gray-200 hover:border-white/[0.08]' 
+                    : 'bg-[var(--theme-surface)]/40 border-[var(--theme-border)] text-gray-300 hover:border-white/[0.08]'
+                }`}>
                   {isLocked ? (
                     <div className="font-mono text-[10px] text-indigo-400 bg-indigo-950/20 border border-indigo-500/10 px-3 py-2 rounded-lg relative overflow-hidden group/payload select-none">
                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-indigo-500/10 to-transparent -translate-x-full group-hover/payload:translate-x-full duration-1000 transition-transform" />
@@ -690,28 +702,38 @@ export default function ChatArea({
                 </div>
 
                 {msg.role === 'assistant' && msg.content.length > 500 && !isLocked && (
-                  <div className="mt-4 p-3 bg-indigo-500/5 border border-indigo-500/10 rounded-lg animate-in fade-in slide-in-from-bottom-2 duration-700">
+                  <div className="mt-2 p-3 bg-indigo-500/5 border border-indigo-500/10 rounded-xl animate-in fade-in slide-in-from-bottom-2 duration-700 max-w-full">
                     <div className="flex items-center gap-2 mb-1.5">
-                      <div className="w-1 h-3 bg-indigo-500 rounded-full" />
-                      <span className="text-[10px] font-black text-indigo-400 uppercase tracking-widest">Neural Synthesis</span>
+                      <div className="w-1.5 h-3 bg-indigo-500 rounded-full" />
+                      <span className="text-[9px] font-black text-indigo-400 uppercase tracking-widest">Neural Synthesis</span>
                     </div>
-                    <p className="text-[11px] text-gray-400 font-medium leading-relaxed italic">
+                    <p className="text-[10px] text-gray-400 font-medium leading-relaxed italic">
                       This response was synthesized across multiple research threads for maximum factual density.
                     </p>
                   </div>
                 )}
               </div>
+
+              {msg.role === 'user' && (
+                <div className="w-6 h-6 rounded bg-white flex items-center justify-center shrink-0 shadow-lg shadow-white/5 border border-white/10">
+                  <span className="text-[10px] font-black text-black">U</span>
+                </div>
+              )}
             </div>
           );
         })}
         {isLoading && (
-          <div className="flex gap-3">
-            <div className="w-5 h-5 rounded bg-gray-800 flex items-center justify-center shrink-0 mt-0.5">
-              <span className="text-[9px] font-black">L</span>
+          <div className="flex gap-3 justify-start animate-pulse">
+            <div className="w-6 h-6 rounded bg-gray-800 flex items-center justify-center shrink-0">
+              <span className="text-[10px] font-black text-gray-500 font-sans">L</span>
             </div>
-            <div className="flex gap-1 items-center h-4">
-              <span className="w-1 h-1 bg-gray-700 rounded-full animate-pulse" />
-              <span className="w-1 h-1 bg-gray-700 rounded-full animate-pulse delay-75" />
+            <div className="flex flex-col gap-1 max-w-[85%]">
+              <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Lexicon</span>
+              <div className="bg-[var(--theme-surface)]/40 border border-[var(--theme-border)] p-4 rounded-2xl flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 bg-gray-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                <span className="w-1.5 h-1.5 bg-gray-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                <span className="w-1.5 h-1.5 bg-gray-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+              </div>
             </div>
           </div>
         )}
@@ -805,13 +827,13 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
   };
   
   return (
-    <div className="my-3 rounded-lg overflow-hidden border border-white/[0.04] bg-[#0c0c0e] flex flex-col font-mono text-[12px] group/code relative w-full">
+    <div className="my-4 rounded-xl overflow-hidden border border-white/[0.06] bg-[#0c0c0e]/90 flex flex-col font-mono text-[12px] shadow-xl relative w-full animate-in fade-in duration-300">
       {/* Code Header Bar */}
-      <div className="flex items-center justify-between px-3.5 py-1.5 bg-[#09090b]/80 border-b border-white/[0.03] text-gray-500 text-[10px] select-none">
+      <div className="flex items-center justify-between px-4 py-2 bg-[#09090b]/90 border-b border-white/[0.04] text-gray-500 text-[10px] select-none font-sans font-medium">
         <span className="uppercase font-bold tracking-wider">{language || "code"}</span>
         <button 
           onClick={handleCopy}
-          className="flex items-center gap-1.5 px-1.5 py-0.5 rounded hover:bg-white/5 text-gray-500 hover:text-white transition-all font-sans font-semibold text-[10px] cursor-pointer"
+          className="flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-white/5 text-gray-500 hover:text-white transition-all font-sans font-semibold text-[10px] cursor-pointer"
         >
           {copied ? (
             <>
@@ -832,11 +854,204 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
         </button>
       </div>
       {/* Code Content */}
-      <pre className="p-3.5 overflow-x-auto text-[11px] leading-relaxed text-gray-300 select-all whitespace-pre-wrap">
+      <pre className="p-4 overflow-x-auto text-[11px] leading-relaxed text-gray-300 select-all whitespace-pre-wrap bg-black/10">
         <code>{code}</code>
       </pre>
     </div>
   );
+}
+
+function parseInlineMarkdown(text: string): React.ReactNode[] {
+  if (!text) return [];
+  
+  // Format bold (**bold**), italic (*italic* or _italic_), and inline code (`code`)
+  const regex = /(`[^`]+`|\*\*[^*]+\*\*|\*[^*]+\*|_[^_]+_)/g;
+  const parts = text.split(regex);
+  
+  return parts.map((part, idx) => {
+    if (part.startsWith('`') && part.endsWith('`')) {
+      return (
+        <code key={idx} className="bg-white/[0.06] border border-white/[0.04] px-1 py-0.5 rounded text-[11px] font-mono text-indigo-400">
+          {part.slice(1, -1)}
+        </code>
+      );
+    } else if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={idx} className="font-extrabold text-white">{part.slice(2, -2)}</strong>;
+    } else if ((part.startsWith('*') && part.endsWith('*')) || (part.startsWith('_') && part.endsWith('_'))) {
+      return <em key={idx} className="italic text-gray-200">{part.slice(1, -1)}</em>;
+    }
+    return part;
+  });
+}
+
+function parseBlocks(text: string): React.ReactNode[] {
+  const lines = text.split("\n");
+  const blocks: React.ReactNode[] = [];
+  
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i];
+    const trimmed = line.trim();
+    
+    if (trimmed === "") {
+      i++;
+      continue;
+    }
+    
+    // Check for Horizontal Rule
+    if (trimmed === "---" || trimmed === "***" || trimmed === "___") {
+      blocks.push(<hr key={`hr-${i}`} className="my-6 border-white/[0.06]" />);
+      i++;
+      continue;
+    }
+    
+    // Check for Headers
+    if (trimmed.startsWith("#")) {
+      const match = trimmed.match(/^(#{1,6})\s+(.*)$/);
+      if (match) {
+        const level = match[1].length;
+        const headerText = match[2];
+        const inlineContent = parseInlineMarkdown(headerText);
+        if (level === 1) {
+          blocks.push(<h2 key={`h1-${i}`} className="text-base font-extrabold text-white mt-6 mb-3 border-b border-white/[0.04] pb-1.5 tracking-tight">{inlineContent}</h2>);
+        } else if (level === 2) {
+          blocks.push(<h3 key={`h2-${i}`} className="text-sm font-bold text-white mt-5 mb-2 tracking-tight">{inlineContent}</h3>);
+        } else {
+          blocks.push(<h4 key={`h3-${i}`} className="text-[13px] font-semibold text-gray-200 mt-4 mb-1.5">{inlineContent}</h4>);
+        }
+        i++;
+        continue;
+      }
+    }
+    
+    // Check for Blockquote
+    if (trimmed.startsWith(">")) {
+      const quoteLines: string[] = [];
+      while (i < lines.length && lines[i].trim().startsWith(">")) {
+        quoteLines.push(lines[i].trim().replace(/^>\s*/, ""));
+        i++;
+      }
+      blocks.push(
+        <blockquote key={`bq-${i}`} className="border-l-[3px] border-indigo-500 pl-4 py-2 italic bg-indigo-500/[0.03] text-gray-400 rounded-r-lg my-4 leading-relaxed text-xs shadow-inner">
+          {quoteLines.map((ql, qIdx) => (
+            <p key={qIdx} className="my-0.5">{parseInlineMarkdown(ql)}</p>
+          ))}
+        </blockquote>
+      );
+      continue;
+    }
+    
+    // Check for Unordered List
+    if (trimmed.startsWith("* ") || trimmed.startsWith("- ") || trimmed.startsWith("• ")) {
+      const listItems: React.ReactNode[] = [];
+      while (i < lines.length) {
+        const itemTrim = lines[i].trim();
+        const match = itemTrim.match(/^[\*\-\•]\s+(.*)$/);
+        if (!match) break;
+        listItems.push(
+          <li key={`li-${i}`} className="text-[13px] leading-relaxed text-gray-300">
+            {parseInlineMarkdown(match[1])}
+          </li>
+        );
+        i++;
+      }
+      blocks.push(
+        <ul key={`ul-${i}`} className="list-disc pl-5 my-3 space-y-2">
+          {listItems}
+        </ul>
+      );
+      continue;
+    }
+    
+    // Check for Ordered List
+    if (/^\d+\.\s+/.test(trimmed)) {
+      const listItems: React.ReactNode[] = [];
+      while (i < lines.length) {
+        const itemTrim = lines[i].trim();
+        const match = itemTrim.match(/^(\d+)\.\s+(.*)$/);
+        if (!match) break;
+        listItems.push(
+          <li key={`li-${i}`} className="text-[13px] leading-relaxed text-gray-300">
+            {parseInlineMarkdown(match[2])}
+          </li>
+        );
+        i++;
+      }
+      blocks.push(
+        <ol key={`ol-${i}`} className="list-decimal pl-5 my-3 space-y-2">
+          {listItems}
+        </ol>
+      );
+      continue;
+    }
+    
+    // Check for Table
+    if (trimmed.startsWith("|")) {
+      const tableLines: string[][] = [];
+      let separatorFound = false;
+      while (i < lines.length && lines[i].trim().startsWith("|")) {
+        const currentLine = lines[i].trim();
+        if (/^[\|\s\-:\+]+$/.test(currentLine)) {
+          separatorFound = true;
+          i++;
+          continue;
+        }
+        
+        const cols = currentLine.split("|").map(c => c.trim());
+        if (cols[0] === "") cols.shift();
+        if (cols[cols.length - 1] === "") cols.pop();
+        
+        tableLines.push(cols);
+        i++;
+      }
+      
+      if (tableLines.length > 0) {
+        const hasHeader = tableLines.length > 1 || separatorFound;
+        const headers = hasHeader ? tableLines[0] : [];
+        const rows = hasHeader ? tableLines.slice(1) : tableLines;
+        
+        blocks.push(
+          <div key={`table-wrapper-${i}`} className="overflow-hidden my-5 w-full rounded-xl border border-white/[0.06] bg-[#0c0c0e]/80 shadow-lg backdrop-blur-md">
+            <table className="w-full border-collapse text-[12px] text-left">
+              {headers.length > 0 && (
+                <thead>
+                  <tr className="bg-white/[0.03] border-b border-white/[0.08]">
+                    {headers.map((h, hIdx) => (
+                      <th key={hIdx} className="px-4 py-3 font-bold text-white border-r border-white/[0.05] last:border-r-0 tracking-wide uppercase text-[10px]">
+                        {parseInlineMarkdown(h)}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+              )}
+              <tbody>
+                {rows.map((row, rIdx) => (
+                  <tr key={rIdx} className="border-b border-white/[0.04] last:border-b-0 hover:bg-white/[0.01] transition-colors">
+                    {row.map((cell, cIdx) => (
+                      <td key={cIdx} className="px-4 py-2.5 border-r border-white/[0.05] last:border-r-0 text-gray-300">
+                        {parseInlineMarkdown(cell)}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+        continue;
+      }
+    }
+    
+    // Default: normal Paragraph
+    blocks.push(
+      <p key={`p-${i}`} className="text-[13px] leading-relaxed text-gray-300 my-2.5">
+        {parseInlineMarkdown(line)}
+      </p>
+    );
+    i++;
+  }
+  
+  return blocks;
 }
 
 function formatMessageContent(content: string) {
@@ -847,7 +1062,6 @@ function formatMessageContent(content: string) {
   
   return parts.map((part, idx) => {
     if (part.startsWith("```") && part.endsWith("```")) {
-      // It's a code block
       const trimmed = part.slice(3, -3).trim();
       const codeLines = trimmed.split("\n");
       
@@ -864,34 +1078,10 @@ function formatMessageContent(content: string) {
       );
     }
     
-    // Format bold (**) and inline code (`) using dangerouslySetInnerHTML
     return (
-      <span 
-        key={idx} 
-        className="block"
-        dangerouslySetInnerHTML={{ 
-          __html: formatText(part)
-        }} 
-      />
+      <div key={idx} className="flex flex-col w-full">
+        {parseBlocks(part)}
+      </div>
     );
   });
-}
-
-function formatText(text: string) {
-  if (!text) return "";
-  
-  // Escape html to prevent basic injection issues
-  let escaped = text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-    
-  // Format bold (**bold**)
-  escaped = escaped.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-  
-  // Format inline code (`code`)
-  escaped = escaped.replace(/`(.*?)`/g, "<code class='bg-white/[0.06] border border-white/[0.04] px-1 py-0.5 rounded text-[11px] font-mono text-indigo-400'>$1</code>");
-  
-  // Replace newlines with breaks
-  return escaped.replace(/\n/g, "<br />");
 }
