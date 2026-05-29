@@ -5,6 +5,7 @@ import AgentWorkflow from "@/components/AgentWorkflow";
 import ClearHistoryModal from "@/components/ClearHistoryModal";
 import { showToast } from "@/components/Toast";
 import { encryptText, decryptText } from "@/utils/encryption";
+import { getApiUrl } from "@/utils/api";
 
 type Message = {
   id: string;
@@ -308,7 +309,7 @@ export default function ChatArea({
     setStatusMessage(null);
 
     try {
-      const response = await fetch("http://localhost:8000/api/chat/message/stream", {
+      const response = await fetch(getApiUrl("/api/chat/message/stream"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: rawContent, document_context: documentContext }),
@@ -398,7 +399,7 @@ export default function ChatArea({
     const formData = new FormData();
     formData.append("file", file);
     try {
-      const response = await fetch("http://localhost:8000/api/upload/pdf", { method: "POST", body: formData });
+      const response = await fetch(getApiUrl("/api/upload/pdf"), { method: "POST", body: formData });
       if (!response.ok) throw new Error("Failed");
       const data = await response.json();
       if (onContextUpdate && data.full_text) {
