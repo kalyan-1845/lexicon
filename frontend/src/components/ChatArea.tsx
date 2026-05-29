@@ -20,6 +20,7 @@ type ChatAreaProps = {
   showDocuments?: boolean;
   documentContext?: string | null;
   onContextUpdate?: (text: string | null) => void;
+  onToggleSidebar?: () => void;
 };
 
 export default function ChatArea({ 
@@ -31,7 +32,8 @@ export default function ChatArea({
   onToggleDocuments, 
   showDocuments, 
   documentContext,
-  onContextUpdate 
+  onContextUpdate,
+  onToggleSidebar
 }: ChatAreaProps) {
   const [query, setQuery] = useState("");
   const [isDragging, setIsDragging] = useState(false);
@@ -42,8 +44,22 @@ export default function ChatArea({
   const [activeAgent, setActiveAgent] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatScrollRef = useRef<HTMLDivElement>(null);
+  const [showScrollBottom, setShowScrollBottom] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [showClearModal, setShowClearModal] = useState(false);
+
+  const handleScroll = () => {
+    const container = chatScrollRef.current;
+    if (!container) return;
+    const { scrollTop, scrollHeight, clientHeight } = container;
+    const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+    setShowScrollBottom(distanceFromBottom > 300);
+  };
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const handleCopy = (id: string, text: string) => {
     navigator.clipboard.writeText(text);
@@ -178,6 +194,18 @@ export default function ChatArea({
 
       <div className="h-10 border-b border-white/[0.04] flex items-center justify-between px-4 bg-[#09090b]/80 backdrop-blur-md shrink-0">
         <div className="flex items-center gap-2">
+          {/* Hamburger Menu Toggle for Mobile Sidebar */}
+          <button 
+            onClick={onToggleSidebar}
+            className="md:hidden p-1 text-gray-500 hover:text-white mr-1 transition-colors"
+            title="Toggle Sidebar"
+          >
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
           <h1 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">{workspaceName || 'General'}</h1>
           <div className="w-1 h-1 rounded-full bg-green-500/50" />
           <div className="flex items-center gap-1.5 ml-2 px-1.5 py-0.5 rounded bg-white/[0.03] border border-white/[0.05]">
@@ -201,7 +229,7 @@ export default function ChatArea({
       {showShareModal && <ShareModal onClose={() => setShowShareModal(false)} />}
       <ClearHistoryModal isOpen={showClearModal} onClose={() => setShowClearModal(false)} onConfirm={handleClearHistory} />
 
-      <div className="flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-6 max-w-2xl mx-auto w-full">
+      <div ref={chatScrollRef} onScroll={handleScroll} className="flex-1 overflow-y-auto px-4 py-6 flex flex-col gap-6 max-w-2xl mx-auto w-full">
         {messages.map((msg) => (
           <div key={msg.id} className="flex gap-3">
             <div className={`w-5 h-5 rounded bg-gray-800 flex items-center justify-center shrink-0 mt-0.5 ${msg.role === 'user' ? 'bg-white text-black' : 'text-white'}`}>
@@ -227,7 +255,9 @@ export default function ChatArea({
                   )}
                 </button>
               </div>
-              <div className="text-[13px] leading-relaxed text-gray-300">{msg.content}</div>
+              <div className="text-[13px] leading-relaxed text-gray-300 flex flex-col gap-2">
+                {formatMessageContent(msg.content)}
+              </div>
               {msg.role === 'assistant' && msg.content.length > 500 && (
                 <div className="mt-4 p-3 bg-indigo-500/5 border border-indigo-500/10 rounded-lg animate-in fade-in slide-in-from-bottom-2 duration-700">
                   <div className="flex items-center gap-2 mb-1.5">
@@ -256,6 +286,19 @@ export default function ChatArea({
         <div ref={messagesEndRef} />
       </div>
 
+      {showScrollBottom && (
+        <button
+          onClick={scrollToBottom}
+          className="absolute bottom-20 right-8 z-30 p-2.5 rounded-full bg-[#18181b] border border-white/10 hover:border-white/20 hover:bg-white/[0.04] text-gray-400 hover:text-white transition-all shadow-xl animate-in fade-in duration-200"
+          title="Scroll to bottom"
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="animate-bounce">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <polyline points="19 12 12 19 5 12"></polyline>
+          </svg>
+        </button>
+      )}
+
       <div className="px-4 py-1">
         <AgentWorkflow activeAgent={activeAgent} statusMessage={statusMessage} />
       </div>
@@ -281,3 +324,106 @@ export default function ChatArea({
     </div>
   );
 }
+
+// Custom sub-components and helper functions to parse and format code/bold/ticks markdown features
+function CodeBlock({ code, language }: { code: string; language: string }) {
+  const [copied, setCopied] = useState(false);
+  
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  
+  return (
+    <div className="my-3 rounded-lg overflow-hidden border border-white/[0.04] bg-[#0c0c0e] flex flex-col font-mono text-[12px] group/code relative w-full">
+      {/* Code Header Bar */}
+      <div className="flex items-center justify-between px-3.5 py-1.5 bg-[#09090b]/80 border-b border-white/[0.03] text-gray-500 text-[10px] select-none">
+        <span className="uppercase font-bold tracking-wider">{language || "code"}</span>
+        <button 
+          onClick={handleCopy}
+          className="flex items-center gap-1.5 px-1.5 py-0.5 rounded hover:bg-white/5 text-gray-500 hover:text-white transition-all font-sans font-semibold text-[10px]"
+        >
+          {copied ? (
+            <>
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="4">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span className="text-[#10b981]">Copied</span>
+            </>
+          ) : (
+            <>
+              <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span>Copy</span>
+            </>
+          )}
+        </button>
+      </div>
+      {/* Code Content */}
+      <pre className="p-3.5 overflow-x-auto text-[11px] leading-relaxed text-gray-300 select-all whitespace-pre-wrap">
+        <code>{code}</code>
+      </pre>
+    </div>
+  );
+}
+
+function formatMessageContent(content: string) {
+  if (!content) return null;
+  
+  // Split the content by triple backticks to isolate code blocks
+  const parts = content.split(/(```[\s\S]*?```)/g);
+  
+  return parts.map((part, idx) => {
+    if (part.startsWith("```") && part.endsWith("```")) {
+      // It's a code block
+      const trimmed = part.slice(3, -3).trim();
+      const codeLines = trimmed.split("\n");
+      
+      let language = "code";
+      let code = trimmed;
+      
+      if (codeLines[0] && !codeLines[0].includes(" ") && codeLines[0].length < 15) {
+        language = codeLines[0];
+        code = codeLines.slice(1).join("\n");
+      }
+      
+      return (
+        <CodeBlock key={idx} code={code} language={language} />
+      );
+    }
+    
+    // Format bold (**) and inline code (`) using dangerouslySetInnerHTML
+    return (
+      <span 
+        key={idx} 
+        className="block"
+        dangerouslySetInnerHTML={{ 
+          __html: formatText(part)
+        }} 
+      />
+    );
+  });
+}
+
+function formatText(text: string) {
+  if (!text) return "";
+  
+  // Escape html to prevent basic injection issues
+  let escaped = text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+    
+  // Format bold (**bold**)
+  escaped = escaped.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  
+  // Format inline code (`code`)
+  escaped = escaped.replace(/`(.*?)`/g, "<code class='bg-white/[0.06] border border-white/[0.04] px-1 py-0.5 rounded text-[11px] font-mono text-indigo-400'>$1</code>");
+  
+  // Replace newlines with breaks
+  return escaped.replace(/\n/g, "<br />");
+}
+
