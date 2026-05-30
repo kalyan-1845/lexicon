@@ -5,7 +5,7 @@
 [![CrewAI](https://img.shields.io/badge/CrewAI-Agentic-blue?style=flat-square)](https://github.com/joaomdmoura/crewai)
 [![ChromaDB](https://img.shields.io/badge/ChromaDB-VectorStore-orange?style=flat-square)](https://www.trychroma.com/)
 
-A high-performance, minimalist, privacy-first AI workspace designed for deep literature research, multi-agent orchestration, and localized retrieval-augmented generation (RAG).
+A high-performance, minimalist, privacy-first AI workspace designed for literature research, multi-agent orchestration, and localized retrieval-augmented generation (RAG).
 
 ```mermaid
 graph TD
