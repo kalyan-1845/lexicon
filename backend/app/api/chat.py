@@ -54,10 +54,7 @@ async def send_message(request: ChatRequest):
             "You are an open-source research assistant designed for deep document analysis and synthesis. "
             "Be professional, precise, and concise."
         )
-        if request.document_context:
-            system_prompt += f"\n\nContext from active document:\n{request.document_context[:5000]}"
-            system_prompt += "\n\nUse the above context to answer the user's request if relevant."
-        
+  
         completion = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
             messages=[
@@ -79,7 +76,7 @@ async def send_message(request: ChatRequest):
 @router.post("/summarize")
 async def summarize_document(request: SummarizeRequest):
     if not request.text:
-        raise HTTPException(status_code=400, detail="Text to summarize cannot be empty")
+        raise HTTPException(status_code=401, detail="Text to summarize cannot be empty")
     
     try:
         completion = client.chat.completions.create(
@@ -94,6 +91,12 @@ async def summarize_document(request: SummarizeRequest):
         
         summary = completion.choices[0].message.content
         return {"summary": summary}
+        if not summary:
+            raise HTTPException(status_code=500, detail="Failed to generate")
+
+        else:
+            return {"Summary":summary}
+
         
     except Exception as e:
         print(f"Error calling Groq API for summary: {e}")
@@ -102,6 +105,8 @@ async def summarize_document(request: SummarizeRequest):
 class ShareRequest(BaseModel):
     workspace_name: str
     is_public: bool
+    if is_public:
+        password:str/None=None
 
 @router.post("/share")
 async def share_workspace(request: ShareRequest, req: Request):

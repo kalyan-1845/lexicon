@@ -9,6 +9,7 @@ class UserProfile(Base):
     full_name = Column(String)
     preferences = Column(JSON, default={})
     memory_context = Column(String, default="")  # Long-term agent memory
+    returned_results= clolumn(JSON ,default-[])
 
 class ResearchHistory(Base):
     __tablename__ = "research_history"
