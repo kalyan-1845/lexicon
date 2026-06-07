@@ -30,8 +30,9 @@ type WorkspaceItem = {
 
 export default function Workspace() {
   const [showRightSidebar, setShowRightSidebar] = useState(true);
-  const [activeTab, setActiveTab] = useState<"docs" | "notes">("docs");
-  const [activeContext, setActiveContext] = useState<string | null>(null);
+const [showSidebar, setShowSidebar] = useState(false);
+const [activeTab, setActiveTab] = useState<"docs" | "notes">("docs");
+const [activeContext, setActiveContext] = useState<string | null>(null);
   
   const [workspaces, setWorkspaces] = useState<WorkspaceItem[]>([
     { name: 'Neural Networks', collectionId: 'Deep Learning' },
@@ -85,8 +86,16 @@ export default function Workspace() {
     : workspaces;
 
   return (
-    <div className="flex h-screen w-full bg-[#09090b] overflow-hidden">
-      <Sidebar 
+    <div className="flex h-screen w-full bg-[#09090b] overflow-hidden relative">
+    
+      <button
+  className="fixed top-4 left-4 z-[9999] bg-black text-white px-3 py-2 rounded"
+  onClick={() => setShowSidebar(!showSidebar)}
+>
+  ☰
+</button>
+      {showSidebar && (
+  <Sidebar
         workspaces={filteredWorkspaces}
         activeWorkspace={activeWorkspace} 
         onWorkspaceChange={setActiveWorkspace}
@@ -98,7 +107,7 @@ export default function Workspace() {
           const name = prompt("Enter collection name:");
           if (name) setCollections([...collections, name]);
         }}
-      />
+      />)}
       <ChatArea 
         workspaceName={activeWorkspace}
         messages={workspaceData[activeWorkspace]?.messages || []}
