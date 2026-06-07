@@ -1,10 +1,9 @@
-  "use client";
-  import { useState, useEffect } from "react";
-  import Sidebar from "@/components/Sidebar";
-  import ChatArea from "@/components/ChatArea";
-  import RightSidebar from "@/components/RightSidebar";
-  import ShortcutsCheatSheet from "@/components/ShortcutsCheatSheet";
-
+"use client";
+import { useState, useEffect } from "react";
+import Sidebar from "@/components/Sidebar";
+import ChatArea from "@/components/ChatArea";
+import RightSidebar from "@/components/RightSidebar";
+import ShortcutsCheatSheet from "@/components/ShortcutsCheatSheet";
 
   type Document = { 
     name: string; 
@@ -134,7 +133,7 @@
           activeWorkspace={activeWorkspace} 
           onWorkspaceChange={(name) => {
             setActiveWorkspace(name);
-            setShowLeftSidebar(false); // close mobile drawer on change
+            setShowLeftSidebar(false);
           }}
           onAddWorkspace={handleAddWorkspace}
           collections={collections}
@@ -159,7 +158,7 @@
           onContextUpdate={setActiveContext}
           onToggleSidebar={() => setShowLeftSidebar(true)}
         />
-              {showRightSidebar && (
+        {showRightSidebar && (
           <RightSidebar
             activeTab={activeTab}
             setActiveTab={setActiveTab}
