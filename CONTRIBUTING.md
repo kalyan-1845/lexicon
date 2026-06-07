@@ -2,6 +2,30 @@
 
 First off, thank you for considering contributing to Lexicon AI! It's people like you that make Lexicon AI such a great tool.
 
+## 🌟 NSoC'26 Contributors
+
+Welcome to Lexicon's NSoC'26 program! Follow these steps to contribute:
+
+### How to Get Assigned
+1. Browse our [open issues](https://github.com/kalyan-1845/lexicon/issues) labeled `nsoc26`
+2. Comment `/assign` on the issue you want to work on
+3. Wait for the bot to confirm your assignment
+4. You can have a maximum of **3 active assignments** at a time
+
+### Submitting Your PR
+1. Fork the repository and create a new branch
+2. Make your changes following our code style
+3. Use the **NSoC PR template** when creating your pull request
+4. Reference the issue number in your PR (e.g., `Closes #123`)
+5. Add the appropriate level label (`level-1`, `level-2`, or `level-3`)
+
+### Points System
+| Level | Points | Difficulty |
+|-------|--------|------------|
+| Level 1 | 3 pts | Beginner - UI tweaks, docs, small fixes |
+| Level 2 | 5 pts | Intermediate - API, logic, features |
+| Level 3 | 10 pts | Advanced - Architecture, security, performance |
+
 ## Open Source Contribution Areas
 
 ### Beginner Issues
