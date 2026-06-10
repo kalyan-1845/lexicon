@@ -5,6 +5,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from app.api import upload, chat, citations
 import time
 from collections import defaultdict
+from app.services.cache_service import cache
 
 import json
 
@@ -111,4 +112,5 @@ def read_root():
 
 @app.get("/health")
 def health_check():
-    return {"status": "healthy"}
+    return {"status": "healthy",
+        "cache": "connected" if cache.is_available else "unavailable (fallback active)",}
