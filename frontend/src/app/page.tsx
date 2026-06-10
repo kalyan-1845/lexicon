@@ -1,8 +1,23 @@
 "use client";
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState, useEffect } from "react";
+import Link from "next/link";
 import LandingPreview from "@/components/LandingPreview";
 import Logo from "@/components/Logo";
+import LoadingSkeleton from "@/components/LoadingSkeleton";
+
+export default function Home() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate async data fetch (e.g., API call)
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return <LoadingSkeleton />;
+  }
+}
 
 export default function Home() {
   const [mousePos, setMousePos] = useState({ x: '50%', y: '50%' });
