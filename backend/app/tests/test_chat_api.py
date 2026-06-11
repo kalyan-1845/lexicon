@@ -1,7 +1,7 @@
 # backend/tests/test_chat_api.py
 import pytest
 from httpx import AsyncClient
-from backend.app.main import app  # adjust if your FastAPI app is in a different path
+from app.main import app  # adjust if your FastAPI app is in a different path
 
 @pytest.mark.asyncio
 async def test_chat_message_valid():
