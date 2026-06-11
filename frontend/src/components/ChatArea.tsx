@@ -1253,3 +1253,16 @@ function formatMessageContent(content: string) {
   });
 }
 
+export default function WorkspaceChat({ workspaceId }) {
+  useEffect(() => {
+    const ws = new WebSocket(`ws://localhost:8000/api/chat/ws/${workspaceId}`);
+
+    ws.onopen = () => console.log("Connected to workspace");
+    ws.onmessage = (event) => console.log("Message:", event.data);
+    ws.onclose = () => console.log("Disconnected");
+
+    return () => ws.close();
+  }, [workspaceId]);
+
+  return <div>Collaborative Workspace Chat</div>;
+}

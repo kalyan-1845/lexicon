@@ -6,8 +6,27 @@ from app.api import upload, chat, citations
 import time
 from collections import defaultdict
 from app.api import chat
+from fastapi import WebSocket, WebSocketDisconnect
+from app.websocket_manager import ConnectionManager
 
 import json
+
+manager = ConnectionManager()
+
+app = FastAPI()
+app.include_router(chat.router, prefix="/api/chat")
+
+@router.websocket("/ws/{workspace_id}")
+async def websocket_endpoint(websocket: WebSocket, workspace_id: str):
+    await manager.connect(workspace_id, websocket)
+    try:
+        while True:
+            data = await websocket.receive_text()
+            # Broadcast to all clients in the workspace
+            await manager.broadcast(workspace_id, f"Message: {data}")
+    except WebSocketDisconnect:
+        manager.disconnect(workspace_id, websocket)
+        await manager.broadcast(workspace_id, "A user disconnected")
 
 class RateLimitMiddleware:
     def __init__(self, app, limit: int = 60, window: int = 60):
