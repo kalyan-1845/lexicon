@@ -547,9 +547,30 @@ const handleExportMarkdown = () => {
   URL.revokeObjectURL(url);
 };
 
+  const handleExportToNotion = async () => {
+  const res = await fetch("/api/chat/export/notion", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      database_id: "YOUR_NOTION_DATABASE_ID", // replace with actual DB ID
+      markdown: currentTranscript, // your chat history or markdown state
+    }),
+  });
+
+  const data = await res.json();
+  if (data.status === "success") {
+    alert(`Exported successfully! View in Notion: ${data.notion_url}`);
+  } else {
+    alert("Export failed: " + data.detail);
+  }
+};
+
+const currentTranscript = messages
+  .map((msg) => `### ${msg.role}\n\n${msg.content}\n`)
+  .join("\n");
 
   return (
-    <div 
+     <div 
       className="flex-1 flex flex-col h-full bg-[#09090b] relative"
       onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
       onDragLeave={() => setIsDragging(false)}
@@ -949,6 +970,13 @@ const handleExportMarkdown = () => {
           </div>
           {isListening && <div className="mt-1 flex items-center justify-center gap-1"><div className="w-0.5 h-2 bg-red-500/50 rounded-full animate-bounce" /></div>}
         </div>
+        <button
+          onClick={handleExportToNotion}
+          className="px-4 py-2 text-sm font-bold rounded-xl bg-green-600 text-white hover:bg-green-700 transition-all"
+        >
+          Export to Notion
+        </button>
+
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from app.api import upload, chat, citations
 import time
 from collections import defaultdict
+from app.api import chat
 
 import json
 
@@ -112,3 +113,5 @@ def read_root():
 @app.get("/health")
 def health_check():
     return {"status": "healthy"}
+
+app.include_router(chat.router, prefix="/api/chat")
