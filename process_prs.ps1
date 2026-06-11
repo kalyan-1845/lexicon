@@ -14,10 +14,10 @@ foreach ($pr in $prs) {
     
     if ($LASTEXITCODE -eq 0) {
         # 3. Add labels
-        gh pr edit $num --add-label "gssoc:approved,level:intermediate,quality:clean"
+        gh pr edit $num --add-label "nsoc:approved,nsoc26,quality:clean,level-2"
         
         # 4. Add the star request comment
-        $comment = "Great work! 🎉 Your PR has been merged.`n`nTo help us win **GSSoC'26**, please ⭐ **Star this repository** ⭐! Your support makes a huge difference for the team."
+        $comment = "Great work! 🎉 Your PR has been merged.`n`nTo help us win **NSoC'26**, please ⭐ **Star this repository** ⭐! Your support makes a huge difference for the team."
         gh pr comment $num --body $comment
         
         Write-Host "Successfully reviewed, merged, labeled, and commented on PR #$num"

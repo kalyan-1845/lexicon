@@ -65,7 +65,7 @@ print(f"Contributors: {contributors}")
 print(f"Unassigned issues count: {len(unassigned_issues)}")
 print(f"Users wanting issues: {users_wanting_issues}")
 
-leaderboard_msg = "Hi @{user} 🚀! Just a quick heads-up: to climb to the top of the GSSoC leaderboard, be sure to take on and complete more issues faster! Let us know if you need any guidance."
+leaderboard_msg = "Hi @{user} 🚀! Just a quick heads-up: to climb to the top of the NSoC leaderboard, be sure to take on and complete more issues faster! Let us know if you need any guidance."
 
 # Message all contributors
 for user in contributors:
