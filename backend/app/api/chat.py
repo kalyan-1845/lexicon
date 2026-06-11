@@ -60,7 +60,7 @@ async def send_message(request: ChatRequest):
         raise HTTPException(status_code=400, detail="Message cannot be empty")
     
     # Generate cache key
-    cache_key = hashlib.sha256(f"{message_text}:{request.document_context}".encode()).hexdigest()
+    cache_key = hashlib.sha256(f"{request.message}:{request.document_context}".encode()).hexdigest()
     if cache_key in prompt_cache:
         return ChatResponse(reply=prompt_cache[cache_key])
     

@@ -1,4 +1,9 @@
 {
+    "functions": {
+        "backend/app/main.py": {
+            "maxDuration": 60
+        }
+    },
     "experimentalServices": {
         "frontend": {
             "entrypoint": "frontend",

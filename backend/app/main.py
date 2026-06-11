@@ -27,8 +27,17 @@ class RateLimitMiddleware:
             await self.app(scope, receive, send)
             return
             
-        client = scope.get("client")
-        client_ip = client[0] if client else "unknown"
+        # Get client IP, checking x-forwarded-for for proxies like Vercel
+        client_ip = None
+        for header_name, header_value in scope.get("headers", []):
+            if header_name == b"x-forwarded-for":
+                client_ip = header_value.decode("utf-8").split(",")[0].strip()
+                break
+        
+        if not client_ip:
+            client = scope.get("client")
+            client_ip = client[0] if client else "unknown"
+            
         current_time = time.time()
         
         # Clean up old requests outside window
