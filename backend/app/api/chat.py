@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 import os
+import hashlib
 from groq import Groq
 from dotenv import load_dotenv
 from app.services.notion_exporter import export_markdown_to_notion
@@ -10,6 +11,11 @@ from app.api.schemas import NotionExportRequest
 load_dotenv()
 
 router = APIRouter()
+
+# Simple in-memory cache for demo purposes
+prompt_cache = {}
+
+class ChatRequest(BaseModel):
 
 # Initialize Groq client
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
@@ -20,6 +26,18 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     reply: str
+    citations: list[dict] | None = None
+
+@router.post("/cite", response_model=ChatResponse)
+async def generate_citation(text: str, source: str):
+    # Simulated citation generation logic
+    return {
+        "reply": f"Fact: {text}",
+        "citations": [
+            {"style": "APA", "text": f"Lexicon AI. (2026). Analysis of {source}. Lexicon Research Hub."},
+            {"style": "MLA", "text": f"Lexicon AI. 'Analysis of {source}.' Lexicon Research Hub, 2026."}
+        ]
+    }
 
 class SummarizeRequest(BaseModel):
     text: str
@@ -42,6 +60,11 @@ async def stream_message(request: ChatRequest):
 async def send_message(request: ChatRequest):
     if not request.message:
         raise HTTPException(status_code=400, detail="Message cannot be empty")
+    
+    # Generate cache key
+    cache_key = hashlib.sha256(f"{message_text}:{request.document_context}".encode()).hexdigest()
+    if cache_key in prompt_cache:
+        return ChatResponse(reply=prompt_cache[cache_key])
     
     try:
         # Construct prompt with document context if available
