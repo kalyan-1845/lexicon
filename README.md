@@ -26,7 +26,7 @@
 </p>
 
 <p align="center">
-  🔗 <a href="https://lexicon-kohl.vercel.app/"><strong>Live Demo</strong></a> •
+  🔗 <a href="https://lexicon-sooty.vercel.app/"><strong>Live Demo</strong></a> •
   📖 <a href="https://github.com/kalyan-1845/lexicon/wiki"><strong>Documentation</strong></a> •
   🐛 <a href="https://github.com/kalyan-1845/lexicon/issues/new?template=bug_report.yml"><strong>Report Bug</strong></a> •
   💡 <a href="https://github.com/kalyan-1845/lexicon/issues/new?template=feature_request.yml"><strong>Request Feature</strong></a>

@@ -8,6 +8,7 @@ from collections import defaultdict
 from app.api import chat
 from fastapi import WebSocket, WebSocketDisconnect
 from app.websocket_manager import ConnectionManager
+from app.services.cache_service import cache
 
 import json
 
@@ -134,3 +135,5 @@ def health_check():
     return {"status": "healthy"}
 
 app.include_router(chat.router, prefix="/api/chat")
+    return {"status": "healthy",
+        "cache": "connected" if cache.is_available else "unavailable (fallback active)",}
