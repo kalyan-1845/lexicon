@@ -13,8 +13,6 @@ router = APIRouter()
 # Simple in-memory cache for demo purposes
 prompt_cache = {}
 
-class ChatRequest(BaseModel):
-
 # Initialize Groq client
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
@@ -128,8 +126,7 @@ async def summarize_document(request: SummarizeRequest):
 class ShareRequest(BaseModel):
     workspace_name: str
     is_public: bool
-    if is_public:
-        password:str/None=None
+    password: str | None = None
 
 @router.post("/share")
 async def share_workspace(request: ShareRequest, req: Request):
