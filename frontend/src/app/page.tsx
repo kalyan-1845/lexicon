@@ -7,6 +7,7 @@ import LoadingSkeleton from "@/components/LoadingSkeleton";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
+  const [mousePos, setMousePos] = useState({ x: '50%', y: '50%' });
 
   useEffect(() => {
     // Simulate async data fetch (e.g., API call)
@@ -14,14 +15,6 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
-  if (loading) {
-    return <LoadingSkeleton />;
-  }
-}
-
-export default function Home() {
-  const [mousePos, setMousePos] = useState({ x: '50%', y: '50%' });
-  
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     setMousePos({
@@ -29,6 +22,10 @@ export default function Home() {
       y: `${e.clientY - rect.top}px`,
     });
   };
+
+  if (loading) {
+    return <LoadingSkeleton />;
+  }
 
   return (
     <main 

@@ -507,45 +507,7 @@ export default function ChatArea({
     setIsListening(true);
   };
 
-  <button
-  onClick={handleExportMarkdown}
-  className="px-4 py-2 text-sm font-bold rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition-all"
->
-  Export
-</button>
 
-
-const handleExportMarkdown = () => {
-  // Example chat history array
-  const chatHistory = [
-    { role: "User", content: "Hello AI" },
-    { role: "Assistant", content: "Hi! How can I help you today?" },
-  ];
-
-  // Convert to Markdown
-  const markdownContent = chatHistory
-    .map(
-      (msg) =>
-        `### ${msg.role}\n\n${msg.content}\n`
-    )
-    .join("\n");
-
-  // Create file blob
-  const blob = new Blob([markdownContent], { type: "text/markdown" });
-  const url = URL.createObjectURL(blob);
-
-  // File name with date
-  const fileName = `lexicon-transcript-${new Date()
-    .toISOString()
-    .split("T")[0]}.md`;
-
-  // Trigger download
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = fileName;
-  a.click();
-  URL.revokeObjectURL(url);
-};
 
 
   return (
