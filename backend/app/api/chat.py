@@ -5,6 +5,8 @@ import os
 import hashlib
 from groq import Groq
 from dotenv import load_dotenv
+from app.services.notion_exporter import export_markdown_to_notion
+from app.api.schemas import NotionExportRequest
 
 load_dotenv()
 
@@ -138,3 +140,11 @@ async def share_workspace(request: ShareRequest, req: Request):
         "is_public": request.is_public,
         "share_url": f"{base_url}/w/share-{share_id}"
     }
+
+@router.post("/export/notion")
+async def export_to_notion(request: NotionExportRequest):
+    try:
+        result = export_markdown_to_notion(request.database_id, request.markdown)
+        return {"status": "success", "notion_url": result["url"]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Notion export error: {str(e)}")
