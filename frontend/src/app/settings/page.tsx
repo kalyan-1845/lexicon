@@ -1,15 +1,48 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 
 export default function SettingsPage() {
+  const router = useRouter();
+  const [workspaces, setWorkspaces] = useState([
+    { name: 'Neural Networks', collectionId: 'Deep Learning' },
+    { name: 'Market Q3', collectionId: 'Finance' },
+    { name: 'Resume Opt', collectionId: 'Career' },
+    { name: 'Stock Analysis', collectionId: 'Finance' }
+  ]);
+  const [activeWorkspace, setActiveWorkspace] = useState("Neural Networks");
+  const [collections, setCollections] = useState(['Deep Learning', 'Finance', 'Career']);
+  const [activeCollection, setActiveCollection] = useState<string | null>(null);
+
   const [modelProvider, setModelProvider] = useState("groq");
   const [apiKey, setApiKey] = useState("");
   const [isLocalMode, setIsLocalMode] = useState(false);
 
   return (
     <div className="flex h-screen bg-[#09090b] text-white">
-      <Sidebar />
+      <Sidebar 
+        workspaces={activeCollection ? workspaces.filter(w => w.collectionId === activeCollection) : workspaces}
+        activeWorkspace={activeWorkspace}
+        onWorkspaceChange={(name) => {
+          setActiveWorkspace(name);
+          localStorage.setItem('lexicon-active-workspace', name);
+          router.push('/workspace');
+        }}
+        onAddWorkspace={() => {
+          router.push('/workspace');
+          setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('lexicon-action', { detail: { type: 'new-chat' } }));
+          }, 100);
+        }}
+        collections={collections}
+        activeCollection={activeCollection}
+        onCollectionChange={(c) => setActiveCollection(c === activeCollection ? null : c)}
+        onAddCollection={() => {
+          const name = prompt("Enter collection name:");
+          if (name) setCollections([...collections, name]);
+        }}
+      />
       <main className="flex-1 overflow-y-auto p-12">
         <div className="max-w-2xl mx-auto">
           <header className="mb-12">

@@ -15,8 +15,6 @@ router = APIRouter()
 # Simple in-memory cache for demo purposes
 prompt_cache = {}
 
-class ChatRequest(BaseModel):
-
 # Initialize Groq client
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
@@ -62,7 +60,7 @@ async def send_message(request: ChatRequest):
         raise HTTPException(status_code=400, detail="Message cannot be empty")
     
     # Generate cache key
-    cache_key = hashlib.sha256(f"{message_text}:{request.document_context}".encode()).hexdigest()
+    cache_key = hashlib.sha256(f"{request.message}:{request.document_context}".encode()).hexdigest()
     if cache_key in prompt_cache:
         return ChatResponse(reply=prompt_cache[cache_key])
     
@@ -130,8 +128,7 @@ async def summarize_document(request: SummarizeRequest):
 class ShareRequest(BaseModel):
     workspace_name: str
     is_public: bool
-    if is_public:
-        password:str/None=None
+    password: str | None = None
 
 @router.post("/share")
 async def share_workspace(request: ShareRequest, req: Request):
