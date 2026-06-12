@@ -19,3 +19,8 @@ build/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Untracked leaderboard boost files
+boost_leaderboard.py
+nsoc_boost_collab_progress.txt
+nsoc_boost_progress.txt

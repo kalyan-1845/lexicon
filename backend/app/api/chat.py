@@ -1,13 +1,19 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 import os
+import hashlib
 from groq import Groq
 from dotenv import load_dotenv
+from app.services.notion_exporter import export_markdown_to_notion
+from app.api.schemas import NotionExportRequest
 
 load_dotenv()
 
 router = APIRouter()
+
+# Simple in-memory cache for demo purposes
+prompt_cache = {}
 
 # Initialize Groq client
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
@@ -18,6 +24,18 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     reply: str
+    citations: list[dict] | None = None
+
+@router.post("/cite", response_model=ChatResponse)
+async def generate_citation(text: str, source: str):
+    # Simulated citation generation logic
+    return {
+        "reply": f"Fact: {text}",
+        "citations": [
+            {"style": "APA", "text": f"Lexicon AI. (2026). Analysis of {source}. Lexicon Research Hub."},
+            {"style": "MLA", "text": f"Lexicon AI. 'Analysis of {source}.' Lexicon Research Hub, 2026."}
+        ]
+    }
 
 class SummarizeRequest(BaseModel):
     text: str
@@ -41,6 +59,11 @@ async def send_message(request: ChatRequest):
     if not request.message:
         raise HTTPException(status_code=400, detail="Message cannot be empty")
     
+    # Generate cache key
+    cache_key = hashlib.sha256(f"{request.message}:{request.document_context}".encode()).hexdigest()
+    if cache_key in prompt_cache:
+        return ChatResponse(reply=prompt_cache[cache_key])
+    
     try:
         # Construct prompt with document context if available
         # Define a strong identity to prevent hallucinations about origin
@@ -54,10 +77,7 @@ async def send_message(request: ChatRequest):
             "You are an open-source research assistant designed for deep document analysis and synthesis. "
             "Be professional, precise, and concise."
         )
-        if request.document_context:
-            system_prompt += f"\n\nContext from active document:\n{request.document_context[:5000]}"
-            system_prompt += "\n\nUse the above context to answer the user's request if relevant."
-        
+  
         completion = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
             messages=[
@@ -79,7 +99,7 @@ async def send_message(request: ChatRequest):
 @router.post("/summarize")
 async def summarize_document(request: SummarizeRequest):
     if not request.text:
-        raise HTTPException(status_code=400, detail="Text to summarize cannot be empty")
+        raise HTTPException(status_code=401, detail="Text to summarize cannot be empty")
     
     try:
         completion = client.chat.completions.create(
@@ -94,7 +114,37 @@ async def summarize_document(request: SummarizeRequest):
         
         summary = completion.choices[0].message.content
         return {"summary": summary}
+        if not summary:
+            raise HTTPException(status_code=500, detail="Failed to generate")
+
+        else:
+            return {"Summary":summary}
+
         
     except Exception as e:
         print(f"Error calling Groq API for summary: {e}")
         raise HTTPException(status_code=500, detail=f"Summarization error: {str(e)}")
+
+class ShareRequest(BaseModel):
+    workspace_name: str
+    is_public: bool
+    password: str | None = None
+
+@router.post("/share")
+async def share_workspace(request: ShareRequest, req: Request):
+    import uuid
+    share_id = str(uuid.uuid4())[:8]
+    base_url = req.headers.get('origin', req.headers.get('referer', 'http://localhost:3000')).rstrip('/')
+    return {
+        "workspace_name": request.workspace_name,
+        "is_public": request.is_public,
+        "share_url": f"{base_url}/w/share-{share_id}"
+    }
+
+@router.post("/export/notion")
+async def export_to_notion(request: NotionExportRequest):
+    try:
+        result = export_markdown_to_notion(request.database_id, request.markdown)
+        return {"status": "success", "notion_url": result["url"]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Notion export error: {str(e)}")

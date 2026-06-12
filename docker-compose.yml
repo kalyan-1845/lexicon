@@ -25,10 +25,13 @@ services:
       - "8000:8000"
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/lexicon
+      - REDIS_HOST=redis        
+      - REDIS_PORT=6379  
     volumes:
       - ./backend:/app
     depends_on:
       - db
+      - redis 
     networks:
       - lexicon_network
 
@@ -56,6 +59,17 @@ services:
     networks:
       - lexicon_network
 
+      # Redis Cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    networks:
+      - lexicon_network
+
 networks:
   lexicon_network:
     driver: bridge
@@ -63,3 +77,4 @@ networks:
 volumes:
   pgdata:
   ollama_data:
+  redis_data:
