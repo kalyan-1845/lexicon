@@ -1,0 +1,1 @@
+Automated points validation sequence #595 for issue #1395

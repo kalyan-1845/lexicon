@@ -1,0 +1,63 @@
+name: Welcome Contributor
+
+on:
+  pull_request_target:
+    types: [opened]
+  issues:
+    types: [opened]
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  welcome:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Welcome New Contributor
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const isPR = !!context.payload.pull_request;
+            const creator = isPR ? context.payload.pull_request.user.login : context.payload.issue.user.login;
+            
+            // Check if this is the first issue or PR by the user
+            const repo = {
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            };
+            
+            let query = `is:pr author:${creator} repo:${repo.owner}/${repo.repo}`;
+            if (!isPR) {
+              query = `is:issue author:${creator} repo:${repo.owner}/${repo.repo}`;
+            }
+            
+            const searchResults = await github.rest.search.issuesAndPullRequests({
+              q: query
+            });
+            
+            // If this is their first contribution, post a welcome message!
+            if (searchResults.data.total_count <= 1) {
+              let message = '';
+              if (isPR) {
+                message = `🎉 **Welcome to Lexicon AI, @${creator}!** 🎉\n\nThank you for opening your first Pull Request! We really appreciate you taking the time to contribute. One of our maintainers will review your changes shortly. 🚀\n\nMake sure to check out our [CONTRIBUTING.md](https://github.com/${repo.owner}/${repo.repo}/blob/main/CONTRIBUTING.md) if you haven't already.`;
+              } else {
+                message = `🎉 **Welcome to Lexicon AI, @${creator}!** 🎉\n\nThank you for opening your first issue! Your feedback is highly valuable to us. We will look into it as soon as possible. 🚀\n\nIf you would like to work on this issue, please comment \`/assign\` to request assignment!`;
+              }
+              
+              if (isPR) {
+                await github.rest.issues.createComment({
+                  owner: repo.owner,
+                  repo: repo.repo,
+                  issue_number: context.payload.pull_request.number,
+                  body: message
+                });
+              } else {
+                await github.rest.issues.createComment({
+                  owner: repo.owner,
+                  repo: repo.repo,
+                  issue_number: context.payload.issue.number,
+                  body: message
+                });
+              }
+            }
