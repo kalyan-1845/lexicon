@@ -13,7 +13,6 @@ class AgentService:
         
         # Phase 1: Research
         yield self._format_status("Researcher", "Scanning document context and extracting factual nodes...")
-        await asyncio.sleep(1.2) # Simulate research depth
         
         research_prompt = (
             f"You are the RESEARCHER agent. Extract core facts, key metrics, and supporting evidence for: '{query}'.\n"
@@ -36,7 +35,6 @@ class AgentService:
         
         # Phase 2: Analysis
         yield self._format_status("Analyst", "Critiquing evidence, resolving gaps, and synthesizing insights...")
-        await asyncio.sleep(1.0) # Simulate cognitive load
         
         analysis_prompt = (
             f"As the ANALYST, critically evaluate and synthesize the research findings for the user query: '{query}'\n\n"

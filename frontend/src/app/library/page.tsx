@@ -1,8 +1,20 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 
 export default function KnowledgeLibrary() {
+  const router = useRouter();
+  const [workspaces, setWorkspaces] = useState([
+    { name: 'Neural Networks', collectionId: 'Deep Learning' },
+    { name: 'Market Q3', collectionId: 'Finance' },
+    { name: 'Resume Opt', collectionId: 'Career' },
+    { name: 'Stock Analysis', collectionId: 'Finance' }
+  ]);
+  const [activeWorkspace, setActiveWorkspace] = useState("Neural Networks");
+  const [collections, setCollections] = useState(['Deep Learning', 'Finance', 'Career']);
+  const [activeCollection, setActiveCollection] = useState<string | null>(null);
+
   const [documents] = useState([
     { id: "1", name: "Q1-Strategy-Report.pdf", workspace: "Neural Networks", size: "2.4 MB", date: "May 12, 2026" },
     { id: "2", name: "Market-Trends-Analysis.pdf", workspace: "Market Trends", size: "1.1 MB", date: "May 10, 2026" },
@@ -14,7 +26,28 @@ export default function KnowledgeLibrary() {
 
   return (
     <div className="flex h-screen bg-[#09090b] text-white">
-      <Sidebar />
+      <Sidebar 
+        workspaces={activeCollection ? workspaces.filter(w => w.collectionId === activeCollection) : workspaces}
+        activeWorkspace={activeWorkspace}
+        onWorkspaceChange={(name) => {
+          setActiveWorkspace(name);
+          localStorage.setItem('lexicon-active-workspace', name);
+          router.push('/workspace');
+        }}
+        onAddWorkspace={() => {
+          router.push('/workspace');
+          setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('lexicon-action', { detail: { type: 'new-chat' } }));
+          }, 100);
+        }}
+        collections={collections}
+        activeCollection={activeCollection}
+        onCollectionChange={(c) => setActiveCollection(c === activeCollection ? null : c)}
+        onAddCollection={() => {
+          const name = prompt("Enter collection name:");
+          if (name) setCollections([...collections, name]);
+        }}
+      />
       <main className="flex-1 overflow-y-auto p-12">
         <div className="max-w-5xl mx-auto">
           <header className="mb-12 flex justify-between items-end">
