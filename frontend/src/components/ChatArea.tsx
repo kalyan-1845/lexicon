@@ -1216,7 +1216,7 @@ function formatMessageContent(content: string) {
   });
 }
 
-export default function WorkspaceChat({ workspaceId }) {
+export function WorkspaceChat({ workspaceId }: { workspaceId: string }) {
   useEffect(() => {
     const ws = new WebSocket(`ws://localhost:8000/api/chat/ws/${workspaceId}`);
 
