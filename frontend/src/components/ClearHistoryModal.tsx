@@ -11,7 +11,7 @@ export default function ClearHistoryModal({ isOpen, onClose, onConfirm }: ClearH
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="w-full max-w-sm bg-[#0c0c0e] border border-white/[0.06] rounded-2xl p-6 shadow-2xl relative overflow-hidden animate-in zoom-in-95 duration-200">
+      <div className="w-full max-w-sm bg-[var(--theme-surface)] border border-[var(--theme-border)] rounded-2xl p-6 shadow-2xl relative overflow-hidden animate-in zoom-in-95 duration-200">
         <div className="absolute top-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-red-500/5 blur-[60px] pointer-events-none" />
 
         <div className="flex items-center gap-3 mb-4">
@@ -23,19 +23,19 @@ export default function ClearHistoryModal({ isOpen, onClose, onConfirm }: ClearH
             </svg>
           </div>
           <div>
-            <h3 className="text-sm font-black tracking-tight text-white uppercase">Clear Chat History</h3>
-            <p className="text-[10px] text-gray-500 font-bold tracking-tight">This action cannot be undone</p>
+            <h3 className="text-sm font-black tracking-tight text-[var(--theme-text)] uppercase">Clear Chat History</h3>
+            <p className="text-[10px] text-[var(--theme-text-muted)] font-bold tracking-tight">This action cannot be undone</p>
           </div>
         </div>
 
-        <p className="text-xs text-gray-400 font-medium leading-relaxed mb-6">
+        <p className="text-xs text-[var(--theme-text-muted)] font-medium leading-relaxed mb-6">
           Are you sure you want to clear all messages in this research workspace? Your documents and memory profiles will remain intact.
         </p>
 
         <div className="flex gap-3 justify-end">
           <button 
             onClick={onClose}
-            className="px-3.5 py-2 rounded-lg bg-white/[0.02] border border-white/[0.04] text-xs font-bold text-gray-400 hover:text-white hover:bg-white/[0.06] transition-all"
+            className="px-3.5 py-2 rounded-lg bg-white/[0.02] border border-[var(--theme-border)] text-xs font-bold text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] hover:bg-white/[0.06] transition-all"
           >
             Cancel
           </button>

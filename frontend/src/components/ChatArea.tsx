@@ -534,23 +534,23 @@ const currentTranscript = messages
 
   return (
      <div 
-      className="flex-1 flex flex-col h-full bg-[#09090b] relative"
+      className="flex-1 flex flex-col h-full bg-[var(--theme-bg)] relative"
       onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
       onDragLeave={() => setIsDragging(false)}
       onDrop={onDrop}
     >
       {isDragging && (
-        <div className="absolute inset-0 z-50 bg-white/[0.02] backdrop-blur-sm border-2 border-dashed border-white/10 flex items-center justify-center pointer-events-none transition-all">
-          <p className="text-xs font-bold text-white">Drop to analyze</p>
+        <div className="absolute inset-0 z-50 bg-white/[0.02] backdrop-blur-sm border-2 border-dashed border-[var(--theme-border)] flex items-center justify-center pointer-events-none transition-all">
+          <p className="text-xs font-bold text-[var(--theme-text)]">Drop to analyze</p>
         </div>
       )}
 
       {/* Header bar and menu items */}
-      <div className="h-12 border-b border-white/[0.04] flex items-center justify-between px-4 bg-[#09090b]/80 backdrop-blur-md shrink-0">
+      <div className="h-12 border-b border-[var(--theme-border)] flex items-center justify-between px-4 bg-[var(--theme-bg)]/80 backdrop-blur-md shrink-0">
         <div className="flex items-center gap-2.5">
           <button 
             onClick={onToggleSidebar}
-            className="md:hidden p-1 text-gray-400 hover:text-white mr-1 transition-colors"
+            className="md:hidden p-1 text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] mr-1 transition-colors"
             title="Toggle Sidebar"
           >
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -559,14 +559,14 @@ const currentTranscript = messages
               <line x1="3" y1="18" x2="21" y2="18"></line>
             </svg>
           </button>
-          <h1 className="text-[13px] font-bold text-gray-200 tracking-tight">{workspaceName || 'General'}</h1>
+          <h1 className="text-[13px] font-bold text-[var(--theme-text)] tracking-tight">{workspaceName || 'General'}</h1>
           <div className="w-1.5 h-1.5 rounded-full bg-green-500/80 shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
-          <div className="flex items-center gap-1.5 ml-1.5 px-2 py-0.5 rounded bg-white/[0.03] border border-white/[0.05]">
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-gray-500">
+          <div className="flex items-center gap-1.5 ml-1.5 px-2 py-0.5 rounded bg-white/[0.03] border border-[var(--theme-border)]">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-[var(--theme-text-muted)]">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
               <polyline points="14 2 14 8 20 8"></polyline>
             </svg>
-            <span className="text-[10px] font-semibold text-gray-400">Context Active</span>
+            <span className="text-[10px] font-semibold text-[var(--theme-text-muted)]">Context Active</span>
           </div>
 
           {/* Secure E2EE Vault Status Badge in Header */}
@@ -577,7 +577,7 @@ const currentTranscript = messages
                 ? isVaultUnlocked 
                   ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' 
                   : 'bg-amber-500/10 border-amber-500/20 text-amber-400'
-                : 'bg-white/5 border-white/10 text-gray-400 hover:text-white hover:bg-white/[0.02]'
+                : 'bg-white/5 border-[var(--theme-border)] text-gray-400 hover:text-white hover:bg-white/[0.02]'
             }`}
             title={isVaultEnabled ? (isVaultUnlocked ? "Vault Unlocked (Click to lock)" : "Vault Locked (Click to decrypt)") : "Enable E2EE Vault"}
           >
@@ -601,7 +601,7 @@ const currentTranscript = messages
         <div className="flex items-center gap-1.5 relative">
           <button 
             onClick={() => setShowClearModal(true)} 
-            className="px-2.5 py-1 text-[12px] font-semibold text-gray-400 hover:text-red-400 hover:bg-white/[0.03] rounded-md transition-colors"
+            className="px-2.5 py-1 text-[12px] font-semibold text-[var(--theme-text-muted)] hover:text-red-400 hover:bg-white/[0.03] rounded-md transition-colors"
           >
             Clear
           </button>
@@ -610,22 +610,22 @@ const currentTranscript = messages
             <button 
               onClick={() => setShowExportDropdown(!showExportDropdown)} 
               className={`px-2.5 py-1 text-[12px] font-semibold rounded-md transition-colors cursor-pointer ${
-                showExportDropdown ? 'text-white bg-white/[0.05]' : 'text-gray-400 hover:text-white hover:bg-white/[0.03]'
+                showExportDropdown ? 'text-[var(--theme-text)] bg-white/[0.05]' : 'text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] hover:bg-white/[0.03]'
               }`}
             >
               Export
             </button>
             {showExportDropdown && (
-              <div className="absolute right-0 mt-1.5 w-32 bg-[#0c0c0e] border border-white/10 rounded-lg shadow-2xl py-1 z-[60] animate-in fade-in slide-in-from-top-1">
+              <div className="absolute right-0 mt-1.5 w-32 bg-[var(--theme-surface)] border border-[var(--theme-border)] rounded-lg shadow-2xl py-1 z-[60] animate-in fade-in slide-in-from-top-1">
                 <button 
                   onClick={() => handleExport("json")} 
-                  className="w-full text-left px-3 py-1.5 text-[11px] font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer"
+                  className="w-full text-left px-3 py-1.5 text-[11px] font-semibold text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] hover:bg-[var(--theme-border)] transition-all cursor-pointer"
                 >
                   Export JSON
                 </button>
                 <button 
                   onClick={() => handleExport("md")} 
-                  className="w-full text-left px-3 py-1.5 text-[11px] font-semibold text-gray-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer"
+                  className="w-full text-left px-3 py-1.5 text-[11px] font-semibold text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] hover:bg-[var(--theme-border)] transition-all cursor-pointer"
                 >
                   Export Markdown
                 </button>
@@ -635,7 +635,7 @@ const currentTranscript = messages
 
           <button 
             onClick={() => setShowShareModal(true)} 
-            className="px-2.5 py-1 text-[12px] font-semibold text-gray-400 hover:text-white hover:bg-white/[0.03] rounded-md transition-colors"
+            className="px-2.5 py-1 text-[12px] font-semibold text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] hover:bg-white/[0.03] rounded-md transition-colors"
           >
             Share
           </button>
@@ -644,8 +644,8 @@ const currentTranscript = messages
             onClick={onToggleDocuments} 
             className={`px-2.5 py-1 text-[12px] font-semibold rounded-md transition-colors border ${
               showDocuments 
-                ? 'text-white bg-white/[0.06] border-white/10' 
-                : 'text-gray-400 border-transparent hover:text-white hover:bg-white/[0.03]'
+                ? 'text-[var(--theme-text)] bg-white/[0.06] border-[var(--theme-border)]' 
+                : 'text-[var(--theme-text-muted)] border-transparent hover:text-[var(--theme-text)] hover:bg-white/[0.03]'
             }`}
           >
             Docs
@@ -655,8 +655,8 @@ const currentTranscript = messages
             onClick={onToggleNotes} 
             className={`px-2.5 py-1 text-[12px] font-semibold rounded-md transition-colors border ${
               showNotes 
-                ? 'text-white bg-white/[0.06] border-white/10' 
-                : 'text-gray-400 border-transparent hover:text-white hover:bg-white/[0.03]'
+                ? 'text-[var(--theme-text)] bg-white/[0.06] border-[var(--theme-border)]' 
+                : 'text-[var(--theme-text-muted)] border-transparent hover:text-[var(--theme-text)] hover:bg-white/[0.03]'
             }`}
           >
             Notes
@@ -670,9 +670,9 @@ const currentTranscript = messages
       {/* Vault Setup Modal */}
       {showVaultSetupModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[999] flex items-center justify-center p-4">
-          <div className="w-full max-w-sm bg-[#0c0c0e] border border-white/10 rounded-2xl p-6 shadow-2xl animate-in zoom-in-95 duration-200">
+          <div className="w-full max-w-sm bg-[var(--theme-surface)] border border-[var(--theme-border)] rounded-2xl p-6 shadow-2xl animate-in zoom-in-95 duration-200">
             <h3 className="font-bold text-xs uppercase tracking-widest text-indigo-400 mb-2">Configure Secure Vault</h3>
-            <p className="text-[11px] text-gray-500 mb-4 leading-relaxed font-medium">
+            <p className="text-[11px] text-[var(--theme-text-muted)] mb-4 leading-relaxed font-medium">
               Secure this workspace with Zero-Knowledge client-side AES-256 encryption. Your passphrase never leaves this browser.
             </p>
             
@@ -684,7 +684,7 @@ const currentTranscript = messages
                   value={vaultSetupPassphrase} 
                   onChange={(e) => setVaultSetupPassphrase(e.target.value)} 
                   placeholder="Min 6 characters..." 
-                  className="w-full bg-[#18181b] border border-white/5 rounded-lg px-3 py-2 text-[12px] text-white focus:border-indigo-500 focus:ring-0 outline-none"
+                  className="w-full bg-[#18181b] border border-[var(--theme-border)] rounded-lg px-3 py-2 text-[12px] text-[var(--theme-text)] focus:border-indigo-500 focus:ring-0 outline-none"
                 />
               </div>
               <div>
@@ -694,7 +694,7 @@ const currentTranscript = messages
                   value={vaultSetupConfirm} 
                   onChange={(e) => setVaultSetupConfirm(e.target.value)} 
                   placeholder="Confirm passphrase..." 
-                  className="w-full bg-[#18181b] border border-white/5 rounded-lg px-3 py-2 text-[12px] text-white focus:border-indigo-500 focus:ring-0 outline-none"
+                  className="w-full bg-[#18181b] border border-[var(--theme-border)] rounded-lg px-3 py-2 text-[12px] text-[var(--theme-text)] focus:border-indigo-500 focus:ring-0 outline-none"
                 />
               </div>
             </div>
@@ -706,7 +706,7 @@ const currentTranscript = messages
                   setVaultSetupPassphrase("");
                   setVaultSetupConfirm("");
                 }} 
-                className="px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase text-gray-500 hover:text-white transition-colors cursor-pointer"
+                className="px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] transition-colors cursor-pointer"
               >
                 Cancel
               </button>
@@ -724,9 +724,9 @@ const currentTranscript = messages
       {/* Vault Unlock Modal */}
       {showVaultUnlockModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[999] flex items-center justify-center p-4">
-          <div className="w-full max-w-sm bg-[#0c0c0e] border border-white/10 rounded-2xl p-6 shadow-2xl animate-in zoom-in-95 duration-200">
+          <div className="w-full max-w-sm bg-[var(--theme-surface)] border border-[var(--theme-border)] rounded-2xl p-6 shadow-2xl animate-in zoom-in-95 duration-200">
             <h3 className="font-bold text-xs uppercase tracking-widest text-indigo-400 mb-2">Decrypt Secure Vault</h3>
-            <p className="text-[11px] text-gray-500 mb-4 leading-relaxed font-medium">
+            <p className="text-[11px] text-[var(--theme-text-muted)] mb-4 leading-relaxed font-medium">
               This workspace is encrypted. Enter your passphrase to decrypt chat logs.
             </p>
             
@@ -737,7 +737,7 @@ const currentTranscript = messages
                 value={unlockPassphrase} 
                 onChange={(e) => setUnlockPassphrase(e.target.value)} 
                 placeholder="Passphrase..." 
-                className="w-full bg-[#18181b] border border-white/5 rounded-lg px-3 py-2 text-[12px] text-white focus:border-indigo-500 focus:ring-0 outline-none"
+                className="w-full bg-[#18181b] border border-[var(--theme-border)] rounded-lg px-3 py-2 text-[12px] text-[var(--theme-text)] focus:border-indigo-500 focus:ring-0 outline-none"
                 onKeyDown={(e) => { if (e.key === 'Enter') handleUnlockVault(); }}
               />
             </div>
@@ -748,7 +748,7 @@ const currentTranscript = messages
                   setShowVaultUnlockModal(false);
                   setUnlockPassphrase("");
                 }} 
-                className="px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase text-gray-500 hover:text-white transition-colors cursor-pointer"
+                className="px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] transition-colors cursor-pointer"
               >
                 Cancel
               </button>
@@ -773,17 +773,17 @@ const currentTranscript = messages
             <div key={msg.id} className={`flex gap-3 w-full ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-3 duration-300 ease-out`}>
               {msg.role === 'assistant' && (
                 <div className="w-6 h-6 rounded bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/10">
-                  <span className="text-[10px] font-black text-white">L</span>
+                  <span className="text-[10px] font-black text-[var(--theme-text)]">L</span>
                 </div>
               )}
               
               <div className={`flex flex-col gap-1 max-w-[85%] group relative ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
                 <div className="flex items-center gap-2 px-1">
-                  <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">{msg.role === 'user' ? 'You' : 'Lexicon'}</span>
+                  <span className="text-[9px] font-black text-[var(--theme-text-muted)] uppercase tracking-widest">{msg.role === 'user' ? 'You' : 'Lexicon'}</span>
                   {!isLocked && (
                     <button 
                       onClick={() => handleCopy(msg.id, isEncryptedPayload ? (decryptedCache[msg.id] || "") : msg.content)}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-white/5 text-gray-500 hover:text-white cursor-pointer"
+                      className="opacity-0 group-hover:opacity-100 transition-opacity p-0.5 rounded hover:bg-[var(--theme-border)] text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] cursor-pointer"
                       title="Copy message"
                     >
                       {copiedId === msg.id ? (
@@ -802,8 +802,8 @@ const currentTranscript = messages
 
                 <div className={`text-[13px] leading-relaxed flex flex-col gap-2 p-4 rounded-2xl border transition-all duration-300 shadow-sm ${
                   msg.role === 'user' 
-                    ? 'bg-white/[0.02] border-white/[0.05] text-gray-200 hover:border-white/[0.08]' 
-                    : 'bg-[var(--theme-surface)]/40 border-[var(--theme-border)] text-gray-300 hover:border-white/[0.08]'
+                    ? 'bg-white/[0.02] border-[var(--theme-border)] text-[var(--theme-text)] hover:border-[var(--theme-border)]' 
+                    : 'bg-[var(--theme-surface)]/40 border-[var(--theme-border)] text-[var(--theme-text)] hover:border-[var(--theme-border)]'
                 }`}>
                   {isLocked ? (
                     <div className="font-mono text-[10px] text-indigo-400 bg-indigo-950/20 border border-indigo-500/10 px-3 py-2 rounded-lg relative overflow-hidden group/payload select-none">
@@ -830,7 +830,7 @@ const currentTranscript = messages
                       <div className="w-1.5 h-3 bg-indigo-500 rounded-full" />
                       <span className="text-[9px] font-black text-indigo-400 uppercase tracking-widest">Neural Synthesis</span>
                     </div>
-                    <p className="text-[10px] text-gray-400 font-medium leading-relaxed italic">
+                    <p className="text-[10px] text-[var(--theme-text-muted)] font-medium leading-relaxed italic">
                       This response was synthesized across multiple research threads for maximum factual density.
                     </p>
                   </div>
@@ -838,7 +838,7 @@ const currentTranscript = messages
               </div>
 
               {msg.role === 'user' && (
-                <div className="w-6 h-6 rounded bg-white flex items-center justify-center shrink-0 shadow-lg shadow-white/5 border border-white/10">
+                <div className="w-6 h-6 rounded bg-white flex items-center justify-center shrink-0 shadow-lg shadow-white/5 border border-[var(--theme-border)]">
                   <span className="text-[10px] font-black text-black">U</span>
                 </div>
               )}
@@ -848,10 +848,10 @@ const currentTranscript = messages
         {isLoading && (
           <div className="flex gap-3 justify-start animate-pulse">
             <div className="w-6 h-6 rounded bg-gray-800 flex items-center justify-center shrink-0">
-              <span className="text-[10px] font-black text-gray-500 font-sans">L</span>
+              <span className="text-[10px] font-black text-[var(--theme-text-muted)] font-sans">L</span>
             </div>
             <div className="flex flex-col gap-1 max-w-[85%]">
-              <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest px-1">Lexicon</span>
+              <span className="text-[9px] font-black text-[var(--theme-text-muted)] uppercase tracking-widest px-1">Lexicon</span>
               <div className="bg-[var(--theme-surface)]/40 border border-[var(--theme-border)] p-4 rounded-2xl flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 bg-gray-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                 <span className="w-1.5 h-1.5 bg-gray-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -866,7 +866,7 @@ const currentTranscript = messages
       {showScrollBottom && (
         <button
           onClick={scrollToBottom}
-          className="absolute bottom-20 right-8 z-30 p-2.5 rounded-full bg-[#18181b] border border-white/10 hover:border-white/20 hover:bg-white/[0.04] text-gray-400 hover:text-white transition-all shadow-xl animate-in fade-in duration-200 cursor-pointer"
+          className="absolute bottom-20 right-8 z-30 p-2.5 rounded-full bg-[#18181b] border border-[var(--theme-border)] hover:border-[var(--theme-border)] hover:bg-white/[0.04] text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] transition-all shadow-xl animate-in fade-in duration-200 cursor-pointer"
           title="Scroll to bottom"
         >
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="animate-bounce">
@@ -883,9 +883,9 @@ const currentTranscript = messages
       {/* Input panel with Character limit indicators */}
       <div className="px-4 pb-4">
         <div className="max-w-2xl mx-auto">
-          <div className="relative flex items-center gap-1.5 p-1.5 bg-[#18181b] border border-white/5 rounded-lg focus-within:border-white/10 transition-all shadow-xl">
+          <div className="relative flex items-center gap-1.5 p-1.5 bg-[#18181b] border border-[var(--theme-border)] rounded-lg focus-within:border-[var(--theme-border)] transition-all shadow-xl">
             <input type="file" ref={fileInputRef} onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])} accept=".pdf" className="hidden" />
-            <button onClick={() => fileInputRef.current?.click()} className="w-7 h-7 rounded hover:bg-white/5 flex items-center justify-center text-gray-500 hover:text-white transition-all cursor-pointer">
+            <button onClick={() => fileInputRef.current?.click()} className="w-7 h-7 rounded hover:bg-[var(--theme-border)] flex items-center justify-center text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] transition-all cursor-pointer">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
             </button>
             
@@ -897,7 +897,7 @@ const currentTranscript = messages
               maxLength={maxChars}
               placeholder={isLocked ? "Unlock E2EE Vault to submit queries..." : "Ask..."} 
               disabled={isLocked}
-              className="flex-1 bg-transparent border-none text-[13px] text-white placeholder-gray-700 focus:ring-0 px-0.5 outline-none disabled:opacity-30 disabled:cursor-not-allowed" 
+              className="flex-1 bg-transparent border-none text-[13px] text-[var(--theme-text)] placeholder-gray-700 focus:ring-0 px-0.5 outline-none disabled:opacity-30 disabled:cursor-not-allowed" 
             />
 
             {/* Input character circular progression telemetry */}
@@ -924,7 +924,7 @@ const currentTranscript = messages
               </div>
             )}
 
-            <button onClick={toggleVoiceInput} className={`w-7 h-7 rounded transition-all cursor-pointer ${isListening ? 'text-red-500' : 'text-gray-500 hover:text-white hover:bg-white/5'}`}>
+            <button onClick={toggleVoiceInput} className={`w-7 h-7 rounded transition-all cursor-pointer ${isListening ? 'text-red-500' : 'text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] hover:bg-[var(--theme-border)]'}`}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path></svg>
             </button>
             <button onClick={handleSendMessage} disabled={isLoading || !query.trim() || query.length > maxChars || isLocked} className="w-7 h-7 rounded bg-white text-black hover:bg-gray-200 disabled:opacity-20 transition-all flex items-center justify-center cursor-pointer">
@@ -935,7 +935,7 @@ const currentTranscript = messages
         </div>
         <button
           onClick={handleExportToNotion}
-          className="px-4 py-2 text-sm font-bold rounded-xl bg-green-600 text-white hover:bg-green-700 transition-all"
+          className="px-4 py-2 text-sm font-bold rounded-xl bg-green-600 text-[var(--theme-text)] hover:bg-green-700 transition-all"
         >
           Export to Notion
         </button>
@@ -957,13 +957,13 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
   };
   
   return (
-    <div className="my-4 rounded-xl overflow-hidden border border-white/[0.06] bg-[#0c0c0e]/90 flex flex-col font-mono text-[12px] shadow-xl relative w-full animate-in fade-in duration-300">
+    <div className="my-4 rounded-xl overflow-hidden border border-[var(--theme-border)] bg-[var(--theme-surface)]/90 flex flex-col font-mono text-[12px] shadow-xl relative w-full animate-in fade-in duration-300">
       {/* Code Header Bar */}
-      <div className="flex items-center justify-between px-4 py-2 bg-[#09090b]/90 border-b border-white/[0.04] text-gray-500 text-[10px] select-none font-sans font-medium">
+      <div className="flex items-center justify-between px-4 py-2 bg-[var(--theme-bg)]/90 border-b border-[var(--theme-border)] text-[var(--theme-text-muted)] text-[10px] select-none font-sans font-medium">
         <span className="uppercase font-bold tracking-wider">{language || "code"}</span>
         <button 
           onClick={handleCopy}
-          className="flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-white/5 text-gray-500 hover:text-white transition-all font-sans font-semibold text-[10px] cursor-pointer"
+          className="flex items-center gap-1.5 px-2 py-1 rounded-md hover:bg-[var(--theme-border)] text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] transition-all font-sans font-semibold text-[10px] cursor-pointer"
         >
           {copied ? (
             <>
@@ -984,7 +984,7 @@ function CodeBlock({ code, language }: { code: string; language: string }) {
         </button>
       </div>
       {/* Code Content */}
-      <pre className="p-4 overflow-x-auto text-[11px] leading-relaxed text-gray-300 select-all whitespace-pre-wrap bg-black/10">
+      <pre className="p-4 overflow-x-auto text-[11px] leading-relaxed text-[var(--theme-text)] select-all whitespace-pre-wrap bg-black/10">
         <code>{code}</code>
       </pre>
     </div>
@@ -1001,14 +1001,14 @@ function parseInlineMarkdown(text: string): React.ReactNode[] {
   return parts.map((part, idx) => {
     if (part.startsWith('`') && part.endsWith('`')) {
       return (
-        <code key={idx} className="bg-white/[0.06] border border-white/[0.04] px-1 py-0.5 rounded text-[11px] font-mono text-indigo-400">
+        <code key={idx} className="bg-white/[0.06] border border-[var(--theme-border)] px-1 py-0.5 rounded text-[11px] font-mono text-indigo-400">
           {part.slice(1, -1)}
         </code>
       );
     } else if (part.startsWith('**') && part.endsWith('**')) {
-      return <strong key={idx} className="font-extrabold text-white">{part.slice(2, -2)}</strong>;
+      return <strong key={idx} className="font-extrabold text-[var(--theme-text)]">{part.slice(2, -2)}</strong>;
     } else if ((part.startsWith('*') && part.endsWith('*')) || (part.startsWith('_') && part.endsWith('_'))) {
-      return <em key={idx} className="italic text-gray-200">{part.slice(1, -1)}</em>;
+      return <em key={idx} className="italic text-[var(--theme-text)]">{part.slice(1, -1)}</em>;
     }
     return part;
   });
@@ -1030,7 +1030,7 @@ function parseBlocks(text: string): React.ReactNode[] {
     
     // Check for Horizontal Rule
     if (trimmed === "---" || trimmed === "***" || trimmed === "___") {
-      blocks.push(<hr key={`hr-${i}`} className="my-6 border-white/[0.06]" />);
+      blocks.push(<hr key={`hr-${i}`} className="my-6 border-[var(--theme-border)]" />);
       i++;
       continue;
     }
@@ -1043,11 +1043,11 @@ function parseBlocks(text: string): React.ReactNode[] {
         const headerText = match[2];
         const inlineContent = parseInlineMarkdown(headerText);
         if (level === 1) {
-          blocks.push(<h2 key={`h1-${i}`} className="text-base font-extrabold text-white mt-6 mb-3 border-b border-white/[0.04] pb-1.5 tracking-tight">{inlineContent}</h2>);
+          blocks.push(<h2 key={`h1-${i}`} className="text-base font-extrabold text-[var(--theme-text)] mt-6 mb-3 border-b border-[var(--theme-border)] pb-1.5 tracking-tight">{inlineContent}</h2>);
         } else if (level === 2) {
-          blocks.push(<h3 key={`h2-${i}`} className="text-sm font-bold text-white mt-5 mb-2 tracking-tight">{inlineContent}</h3>);
+          blocks.push(<h3 key={`h2-${i}`} className="text-sm font-bold text-[var(--theme-text)] mt-5 mb-2 tracking-tight">{inlineContent}</h3>);
         } else {
-          blocks.push(<h4 key={`h3-${i}`} className="text-[13px] font-semibold text-gray-200 mt-4 mb-1.5">{inlineContent}</h4>);
+          blocks.push(<h4 key={`h3-${i}`} className="text-[13px] font-semibold text-[var(--theme-text)] mt-4 mb-1.5">{inlineContent}</h4>);
         }
         i++;
         continue;
@@ -1079,7 +1079,7 @@ function parseBlocks(text: string): React.ReactNode[] {
         const match = itemTrim.match(/^[\*\-\•]\s+(.*)$/);
         if (!match) break;
         listItems.push(
-          <li key={`li-${i}`} className="text-[13px] leading-relaxed text-gray-300">
+          <li key={`li-${i}`} className="text-[13px] leading-relaxed text-[var(--theme-text)]">
             {parseInlineMarkdown(match[1])}
           </li>
         );
@@ -1101,7 +1101,7 @@ function parseBlocks(text: string): React.ReactNode[] {
         const match = itemTrim.match(/^(\d+)\.\s+(.*)$/);
         if (!match) break;
         listItems.push(
-          <li key={`li-${i}`} className="text-[13px] leading-relaxed text-gray-300">
+          <li key={`li-${i}`} className="text-[13px] leading-relaxed text-[var(--theme-text)]">
             {parseInlineMarkdown(match[2])}
           </li>
         );
@@ -1141,13 +1141,13 @@ function parseBlocks(text: string): React.ReactNode[] {
         const rows = hasHeader ? tableLines.slice(1) : tableLines;
         
         blocks.push(
-          <div key={`table-wrapper-${i}`} className="overflow-hidden my-5 w-full rounded-xl border border-white/[0.06] bg-[#0c0c0e]/80 shadow-lg backdrop-blur-md">
+          <div key={`table-wrapper-${i}`} className="overflow-hidden my-5 w-full rounded-xl border border-[var(--theme-border)] bg-[var(--theme-surface)]/80 shadow-lg backdrop-blur-md">
             <table className="w-full border-collapse text-[12px] text-left">
               {headers.length > 0 && (
                 <thead>
-                  <tr className="bg-white/[0.03] border-b border-white/[0.08]">
+                  <tr className="bg-white/[0.03] border-b border-[var(--theme-border)]">
                     {headers.map((h, hIdx) => (
-                      <th key={hIdx} className="px-4 py-3 font-bold text-white border-r border-white/[0.05] last:border-r-0 tracking-wide uppercase text-[10px]">
+                      <th key={hIdx} className="px-4 py-3 font-bold text-[var(--theme-text)] border-r border-[var(--theme-border)] last:border-r-0 tracking-wide uppercase text-[10px]">
                         {parseInlineMarkdown(h)}
                       </th>
                     ))}
@@ -1156,9 +1156,9 @@ function parseBlocks(text: string): React.ReactNode[] {
               )}
               <tbody>
                 {rows.map((row, rIdx) => (
-                  <tr key={rIdx} className="border-b border-white/[0.04] last:border-b-0 hover:bg-white/[0.01] transition-colors">
+                  <tr key={rIdx} className="border-b border-[var(--theme-border)] last:border-b-0 hover:bg-white/[0.01] transition-colors">
                     {row.map((cell, cIdx) => (
-                      <td key={cIdx} className="px-4 py-2.5 border-r border-white/[0.05] last:border-r-0 text-gray-300">
+                      <td key={cIdx} className="px-4 py-2.5 border-r border-[var(--theme-border)] last:border-r-0 text-[var(--theme-text)]">
                         {parseInlineMarkdown(cell)}
                       </td>
                     ))}
@@ -1174,7 +1174,7 @@ function parseBlocks(text: string): React.ReactNode[] {
     
     // Default: normal Paragraph
     blocks.push(
-      <p key={`p-${i}`} className="text-[13px] leading-relaxed text-gray-300 my-2.5">
+      <p key={`p-${i}`} className="text-[13px] leading-relaxed text-[var(--theme-text)] my-2.5">
         {parseInlineMarkdown(line)}
       </p>
     );

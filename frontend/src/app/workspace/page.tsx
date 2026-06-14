@@ -41,13 +41,14 @@ import ShortcutsCheatSheet from "@/components/ShortcutsCheatSheet";
       { name: 'Resume Opt', collectionId: 'Career' },
       { name: 'Stock Analysis', collectionId: 'Finance' }
     ]);
-    const [activeWorkspace, setActiveWorkspace] = useState(() => {
-      if (typeof window !== 'undefined') {
-        const saved = localStorage.getItem('lexicon-active-workspace');
-        if (saved) return saved;
+    const [activeWorkspace, setActiveWorkspace] = useState("Neural Networks");
+    
+    useEffect(() => {
+      const saved = localStorage.getItem('lexicon-active-workspace');
+      if (saved) {
+        setActiveWorkspace(saved);
       }
-      return "Neural Networks";
-    });
+    }, []);
     
     const [workspaceData, setWorkspaceData] = useState<Record<string, WorkspaceData>>({
       "Neural Networks": { documents: [], messages: [{ id: "1", role: "assistant", content: "Focusing on Deep Learning architectures." }], collectionId: 'Deep Learning' },
@@ -127,7 +128,7 @@ import ShortcutsCheatSheet from "@/components/ShortcutsCheatSheet";
       : workspaces;
 
     return (
-      <div className="flex h-screen w-full bg-[#09090b] overflow-hidden">
+      <div className="flex h-screen w-full bg-[var(--theme-bg)] text-[var(--theme-text)] overflow-hidden">
         <Sidebar 
           workspaces={filteredWorkspaces}
           activeWorkspace={activeWorkspace} 
