@@ -10,6 +10,7 @@ type Document = {
 };
 
 type RightSidebarProps = {
+  workspaceName: string;
   activeTab: "docs" | "notes";
   setActiveTab: (tab: "docs" | "notes") => void;
   documents: Document[];
@@ -18,7 +19,7 @@ type RightSidebarProps = {
   onClose: () => void;
 };
 
-export default function RightSidebar({ activeTab, setActiveTab, documents, setDocuments, onContextUpdate, onClose }: RightSidebarProps) {
+export default function RightSidebar({ workspaceName, activeTab, setActiveTab, documents, setDocuments, onContextUpdate, onClose }: RightSidebarProps) {
   return (
     <aside className="w-72 border-l border-white/[0.04] bg-[#09090b] h-full flex flex-col shrink-0">
       <div className="h-10 border-b border-white/[0.04] flex items-center px-4 justify-between bg-[#09090b]/50">
@@ -57,7 +58,7 @@ export default function RightSidebar({ activeTab, setActiveTab, documents, setDo
             isEmbedded 
           />
         ) : (
-          <SmartNotes onClose={onClose} isEmbedded />
+          <SmartNotes workspaceName={workspaceName} onClose={onClose} isEmbedded />
         )}
       </div>
     </aside>

@@ -1,8 +1,9 @@
 "use client";
-import { useState } from "react";
 
-export default function SmartNotes({ onClose, isEmbedded }: { onClose: () => void, isEmbedded?: boolean }) {
-  const [note, setNote] = useState("# Research Notes\n\nStart typing your insights here...");
+import { useNoteSync } from "../hooks/useNoteSync";
+
+export default function SmartNotes({ workspaceName, onClose, isEmbedded }: { workspaceName: string, onClose: () => void, isEmbedded?: boolean }) {
+  const { content: note, updateContent: setNote, syncState } = useNoteSync({ workspaceName });
 
   const content = (
     <div className="flex-1 flex flex-col p-6 h-full">
@@ -28,7 +29,17 @@ export default function SmartNotes({ onClose, isEmbedded }: { onClose: () => voi
       </div>
       
       <div className="mt-4 flex justify-between items-center px-2">
-        <span className="text-[10px] font-bold text-gray-600 uppercase">{note.length} chars</span>
+        <div className="flex gap-4 items-center">
+          <span className="text-[10px] font-bold text-gray-600 uppercase">{note.length} chars</span>
+          <span className={`text-[10px] font-bold uppercase ${
+            syncState === 'synced' ? 'text-green-500' :
+            syncState === 'syncing' ? 'text-blue-500' :
+            syncState === 'conflict' ? 'text-yellow-500' :
+            syncState === 'offline' ? 'text-red-500' : 'text-gray-500'
+          }`}>
+            {syncState}
+          </span>
+        </div>
         <button className="text-[10px] font-bold text-gray-400 hover:text-white transition-colors uppercase tracking-widest">
           Export
         </button>

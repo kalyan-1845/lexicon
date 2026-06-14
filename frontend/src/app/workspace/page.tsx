@@ -112,6 +112,7 @@ export default function Workspace() {
       />
       {showRightSidebar && (
         <RightSidebar 
+          workspaceName={activeWorkspace}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           documents={workspaceData[activeWorkspace]?.documents || []}

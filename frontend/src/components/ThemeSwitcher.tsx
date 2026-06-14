@@ -7,13 +7,6 @@ export default function ThemeSwitcher() {
   const [theme, setTheme] = useState<Theme>("obsidian");
   const [isOpen, setIsOpen] = useState(false);
 
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("lexicon-theme") as Theme;
-    if (savedTheme) {
-      applyTheme(savedTheme);
-    }
-  }, []);
-
   const applyTheme = (newTheme: Theme) => {
     const root = document.documentElement;
     root.classList.remove("theme-obsidian", "theme-cyberpunk", "theme-emerald", "theme-abyss");
@@ -23,6 +16,16 @@ export default function ThemeSwitcher() {
     setTheme(newTheme);
     localStorage.setItem("lexicon-theme", newTheme);
   };
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("lexicon-theme") as Theme;
+    if (savedTheme) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      applyTheme(savedTheme);
+    }
+  }, []);
+
+
 
   const themes: { id: Theme; name: string; color: string; accent: string }[] = [
     { id: "obsidian", name: "Obsidian", color: "bg-[#09090b]", accent: "bg-indigo-500" },

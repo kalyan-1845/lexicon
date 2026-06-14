@@ -2,8 +2,13 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
-from app.api import upload, chat
+from app.api import upload, chat, notes
+from app.core.database import engine, Base
+from app.models import user, note
 import time
+
+# Create database tables
+Base.metadata.create_all(bind=engine)
 from collections import defaultdict
 
 class RateLimitMiddleware(BaseHTTPMiddleware):
@@ -58,6 +63,7 @@ app.add_middleware(RateLimitMiddleware, limit=60, window=60)
 # Register Routers
 app.include_router(upload.router, prefix="/api/upload", tags=["Uploads"])
 app.include_router(chat.router, prefix="/api/chat", tags=["Chat"])
+app.include_router(notes.router, prefix="/api/notes", tags=["Notes"])
 
 @app.get("/")
 def read_root():
