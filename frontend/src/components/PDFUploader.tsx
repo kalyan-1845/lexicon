@@ -6,6 +6,7 @@ type Document = {
   size: number; 
   status: string;
   text?: string;
+  thumbnail?: string;
 };
 
 type PDFUploaderProps = {
@@ -30,18 +31,19 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://localhost:8000/api/upload/pdf", {
+      const response = await fetch("http://127.0.0.1:8000/api/upload/pdf", {
         method: "POST",
         body: formData,
       });
       if (!response.ok) throw new Error("Upload failed");
       const data = await response.json();
       
-      setDocuments([{ 
-        ...newDoc, 
-        status: `Parsed (${data.extracted_character_count} chars)`,
-        text: data.full_text
-      }, ...documents]);
+      setDocuments([{
+  ...newDoc,
+  status: `Parsed (${data.extracted_character_count} chars)`,
+  text: data.full_text,
+  thumbnail: data.thumbnail
+}, ...documents]);
       
       if (onContextUpdate && data.full_text) {
         onContextUpdate(data.full_text);
@@ -57,7 +59,7 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
   const handleSummarize = async (doc: Document) => {
     if (!doc.text) return;
     try {
-      const response = await fetch("http://localhost:8000/api/chat/summarize", {
+      const response = await fetch("http://127.0.0.1:8000/api/chat/summarize", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: doc.text }),
@@ -104,11 +106,7 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
       <div className="mt-6 flex-1 overflow-y-auto space-y-3">
         {documents.map((doc, idx) => (
           <div key={idx} className="p-2.5 rounded-lg bg-white/[0.01] border border-white/[0.04] flex items-center gap-2.5 group hover:bg-white/[0.02] transition-all">
-             <div className="w-7 h-7 rounded bg-red-500/10 flex items-center justify-center shrink-0 border border-red-500/5">
-               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-red-500/60">
-                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-               </svg>
-             </div>
+             
              <div className="flex flex-col overflow-hidden flex-1">
                <span className="text-[11px] font-semibold text-gray-300 truncate">{doc.name}</span>
                <span className="text-[9px] font-bold text-gray-600 uppercase tracking-tighter">{doc.status}</span>

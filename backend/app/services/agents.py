@@ -54,25 +54,35 @@ class AgentService:
             f"Synthesize the final answer. Be concise and authoritative."
         )
 
-        # Stream the final response
+        
+        
+# Stream the final response
         try:
-            completion = await llm.stream_chat(
+            completion = llm.stream_chat(
                 messages=[
                     {"role": "system", "content": "You are Lexicon AI. Provide the final unified answer."},
                     {"role": "user", "content": final_prompt}
                 ],
                 temperature=0.6
             )
-            
+
             async for chunk in completion:
                 if chunk:
                     yield f"data: {json.dumps({'content': chunk})}\n\n"
+
         except Exception as e:
             yield f"data: {json.dumps({'error': str(e)})}\n\n"
 
     def _format_status(self, agent: str, message: str) -> str:
         return f"data: {json.dumps({'status': message, 'agent': agent})}\n\n"
 
-    async def run_researcher(self, query: str, context: str | None = None) -> Dict[str, Any]:
+    async def run_researcher(
+        self,
+        query: str,
+        context: str | None = None
+    ) -> Dict[str, Any]:
         """Researcher agent focuses on data extraction and fact-finding."""
-        return {"agent": "Researcher", "content": "Deprecated in favor of streaming workflow."}
+        return {
+            "agent": "Researcher",
+            "content": "Deprecated in favor of streaming workflow."
+        }

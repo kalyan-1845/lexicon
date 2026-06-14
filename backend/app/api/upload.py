@@ -8,6 +8,8 @@ router = APIRouter()
 # Temporary storage directory for uploaded PDFs
 UPLOAD_DIR = "app/storage/uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+THUMBNAIL_DIR = "app/storage/thumbnails"
+os.makedirs(THUMBNAIL_DIR, exist_ok=True)
 
 @router.delete("/delete/{filename}")
 async def delete_file(filename: str):
@@ -19,30 +21,36 @@ async def delete_file(filename: str):
 
 @router.post("/pdf")
 async def upload_file(file: UploadFile = File(...)):
-    if not file.filename.endswith('.pdf'):
+    if not file.filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Only PDF files are allowed")
-    
+
     file_path = os.path.join(UPLOAD_DIR, file.filename)
-    
+
     try:
-        # Save the uploaded file locally
+        # Save PDF
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
-            
-        # Extract text using PyMuPDF
+
+        # Extract text
         doc = fitz.open(file_path)
         extracted_text = ""
+
         for page in doc:
             extracted_text += page.get_text()
-            
-        # TODO: Integrate LangChain to chunk and store the text in pgvector
-        # For now, we return the character count and a preview as a proof of success
-        
-        # Simulated OCR extraction for scanned documents
+
+        # Generate thumbnail from first page
+        first_page = doc[0]
+        pix = first_page.get_pixmap(matrix=fitz.Matrix(0.3, 0.3))
+
+        thumbnail_name = f"{file.filename}.png"
+        thumbnail_path = os.path.join(THUMBNAIL_DIR, thumbnail_name)
+
+        pix.save(thumbnail_path)
+
         ocr_status = "Skipped (Searchable)"
         if "scanned" in file.filename.lower():
             ocr_status = "Success (OCR Applied)"
-        
+
         return {
             "filename": file.filename,
             "ocr_status": ocr_status,
@@ -50,10 +58,15 @@ async def upload_file(file: UploadFile = File(...)):
             "message": "File successfully uploaded and parsed.",
             "extracted_character_count": len(extracted_text),
             "full_text": extracted_text,
+            "thumbnail": thumbnail_name,
             "preview": extracted_text[:200] + "..." if len(extracted_text) > 200 else extracted_text
         }
-        
+
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"An error occurred while processing the PDF: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"An error occurred while processing the PDF: {str(e)}"
+        )
+
     finally:
         file.file.close()
