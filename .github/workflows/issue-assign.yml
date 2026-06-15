@@ -1,0 +1,74 @@
+name: Issue Assigner & Unassigner
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  handle_assignment:
+    # Do not run on pull request comments, only on issues
+    if: ${{ !github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Handle Assignment or Unassignment
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const commentBody = context.payload.comment.body.trim().toLowerCase();
+            const commenter = context.payload.comment.user.login;
+            const issueNumber = context.issue.number;
+            
+            if (commentBody.includes('/assign')) {
+              // Get current issue details to check if it's already assigned
+              const issue = await github.rest.issues.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber
+              });
+              
+              // If already assigned to someone else
+              if (issue.data.assignees && issue.data.assignees.length > 0) {
+                const activeAssignees = issue.data.assignees.map(a => `@${a.login}`).join(', ');
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issueNumber,
+                  body: `⚠️ This issue is already assigned to ${activeAssignees}. If you'd like to work on it, please wait until they release it or the assignment expires.`
+                });
+                return;
+              }
+              
+              // Assign the issue
+              await github.rest.issues.addAssignees({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                assignees: [commenter]
+              });
+              
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                body: `🎉 Hi @${commenter}, you have been successfully assigned to this issue! Please refer to the [CONTRIBUTING.md](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/CONTRIBUTING.md) for guidelines. We look forward to your contribution! 🚀`
+              });
+            } else if (commentBody.includes('/unassign')) {
+              // Unassign the issue
+              await github.rest.issues.removeAssignees({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                assignees: [commenter]
+              });
+              
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                body: `👋 Hi @${commenter}, you have been successfully unassigned from this issue.`
+              });
+            }
