@@ -9,7 +9,7 @@ class UserProfile(Base):
     full_name = Column(String)
     preferences = Column(JSON, default={})
     memory_context = Column(String, default="")  # Long-term agent memory
-    returned_results= clolumn(JSON ,default-[])
+    returned_results = Column(JSON, default=[])
 
 class WorkspaceMember(Base):
     __tablename__ = "workspace_members"

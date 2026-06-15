@@ -92,7 +92,7 @@ class MemoryService:
             if not profile:
                 return ""
 
-            return profile.memory_context or ""
+            result = profile.memory_context or ""
             cache.set_memory(user_id, result)
             return result
 
