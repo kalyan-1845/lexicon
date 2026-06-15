@@ -2,6 +2,7 @@ import asyncio
 import json
 from typing import List, Dict, Any, AsyncGenerator
 from app.services.llm_factory import llm
+from app.services.cache_service import cache  
 
 class AgentService:
     async def run_streaming_workflow(self, query: str, context: str | None = None) -> AsyncGenerator[str, None]:
@@ -12,7 +13,6 @@ class AgentService:
         
         # Phase 1: Research
         yield self._format_status("Researcher", "Scanning document context and extracting factual nodes...")
-        await asyncio.sleep(1.2) # Simulate research depth
         
         research_prompt = (
             f"You are the RESEARCHER agent. Extract core facts, key metrics, and supporting evidence for: '{query}'.\n"
@@ -22,18 +22,19 @@ class AgentService:
             "2. Critical Arguments & Claims\n"
             "3. Contextual Caveats or Technical Specs"
         )
-        
-        research_content = await llm.chat(
+        research_content = cache.get_embedding("researcher", f"{query}:{(context or '')[:500]}")
+        if research_content is None:
+            research_content = await llm.chat(
             messages=[
                 {"role": "system", "content": "You are a precise data extraction agent. Be factual, objective, and structured. Identify exact details, numbers, and core claims from the context."},
                 {"role": "user", "content": research_prompt}
             ],
             temperature=0.1
         )
+        cache.set_embedding("researcher", f"{query}:{(context or '')[:500]}", research_content)
         
         # Phase 2: Analysis
         yield self._format_status("Analyst", "Critiquing evidence, resolving gaps, and synthesizing insights...")
-        await asyncio.sleep(1.0) # Simulate cognitive load
         
         analysis_prompt = (
             f"As the ANALYST, critically evaluate and synthesize the research findings for the user query: '{query}'\n\n"
@@ -43,13 +44,16 @@ class AgentService:
             "- Structural Synthesis (How should this be structured in the final report? Suggest headings/tables)"
         )
         
-        analysis_content = await llm.chat(
+        analysis_content = cache.get_embedding("analyst", research_content[:1000])
+        if analysis_content is None:
+            analysis_content = await llm.chat(
             messages=[
                 {"role": "system", "content": "You are a sophisticated analytical agent. Critical, logical, and deep. Identify hidden relationships, verify evidence, and propose structural layouts for synthesis."},
                 {"role": "user", "content": analysis_prompt}
             ],
             temperature=0.3
         )
+        cache.set_embedding("analyst", research_content[:1000], analysis_content)
         
         # Phase 3: Final Synthesis & Streaming
         yield self._format_status("Lexicon", "Synthesizing master response into markdown panel...")

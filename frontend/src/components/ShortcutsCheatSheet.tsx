@@ -10,20 +10,28 @@ export default function ShortcutsCheatSheet() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Toggle with ? or Ctrl+/
-      if ((e.ctrlKey || e.metaKey) && e.key === "/") {
-        e.preventDefault();
-        setIsOpen((prev) => !prev);
-      }
-      if (e.key === "Escape") {
-        setIsOpen(false);
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
 
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    
+
+    if ((e.ctrlKey || e.metaKey) && e.key === "/") {
+      e.preventDefault();
+      
+      setIsOpen(true);
+    }
+
+    if (e.key === "Escape") {
+      setIsOpen(false);
+    }
+  };
+
+  window.addEventListener("keydown", handleKeyDown);
+
+  return () => {
+    window.removeEventListener("keydown", handleKeyDown);
+  };
+}, []);
   const shortcuts: Shortcut[] = [
     { keys: ["Ctrl", "/"], description: "Toggle Shortcuts Guide" },
     { keys: ["Ctrl", "K"], description: "Open Command Palette" },
