@@ -1,4 +1,6 @@
 "use client";
+import PresencePill from "@/components/PresencePill";
+import { useWorkspacePresence } from "@/hooks/useWorkspacePresence";
 import { useState, useRef, useEffect } from "react";
 import ShareModal from "@/components/ShareModal";
 import AgentWorkflow from "@/components/AgentWorkflow";
@@ -92,7 +94,7 @@ export default function ChatArea({
   const [showVaultSetupModal, setShowVaultSetupModal] = useState(false);
   const [vaultSetupPassphrase, setVaultSetupPassphrase] = useState("");
   const [vaultSetupConfirm, setVaultSetupConfirm] = useState("");
-  
+  const { users, isConnected } = useWorkspacePresence(workspaceName ?? null);
   const [showVaultUnlockModal, setShowVaultUnlockModal] = useState(false);
   const [unlockPassphrase, setUnlockPassphrase] = useState("");
 
@@ -561,6 +563,7 @@ const currentTranscript = messages
           </button>
           <h1 className="text-[13px] font-bold text-[var(--theme-text)] tracking-tight">{workspaceName || 'General'}</h1>
           <div className="w-1.5 h-1.5 rounded-full bg-green-500/80 shadow-[0_0_8px_rgba(34,197,94,0.5)]" />
+          <PresencePill users={users} isConnected={isConnected} />
           <div className="flex items-center gap-1.5 ml-1.5 px-2 py-0.5 rounded bg-white/[0.03] border border-[var(--theme-border)]">
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-[var(--theme-text-muted)]">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
