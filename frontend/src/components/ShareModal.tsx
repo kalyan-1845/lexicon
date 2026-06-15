@@ -43,9 +43,9 @@ export default function ShareModal({ onClose }: { onClose: () => void }) {
       <div className="fixed inset-0" onClick={onClose} />
       
       <div className="relative w-full max-w-sm surface rounded-2xl shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-300">
-        <div className="flex items-center justify-between p-4 border-b border-white/[0.04]">
-          <h2 className="text-xs font-bold text-gray-400 uppercase tracking-widest">Workspace Sharing</h2>
-          <button onClick={onClose} className="text-gray-600 hover:text-white transition-colors">
+        <div className="flex items-center justify-between p-4 border-b border-[var(--theme-border)]">
+          <h2 className="text-xs font-bold text-[var(--theme-text-muted)] uppercase tracking-widest">Workspace Sharing</h2>
+          <button onClick={onClose} className="text-gray-600 hover:text-[var(--theme-text)] transition-colors">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -57,13 +57,13 @@ export default function ShareModal({ onClose }: { onClose: () => void }) {
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-0.5">
               <span className="text-[13px] font-semibold text-gray-100">Public Link Access</span>
-              <span className="text-[11px] text-gray-500">Allow anyone with the link to view</span>
+              <span className="text-[11px] text-[var(--theme-text-muted)]">Allow anyone with the link to view</span>
             </div>
             <button 
               onClick={handleTogglePublic}
               disabled={isLoading}
               className={`w-9 h-5 rounded-full transition-all flex items-center px-1 ${
-                isPublic ? 'bg-white' : 'bg-white/5 border border-white/10'
+                isPublic ? 'bg-white' : 'bg-[var(--theme-border)] border border-[var(--theme-border)]'
               } ${isLoading ? 'opacity-50 cursor-wait' : ''}`}
             >
               <div className={`w-3 h-3 rounded-full transition-all ${
@@ -73,12 +73,12 @@ export default function ShareModal({ onClose }: { onClose: () => void }) {
           </div>
 
           <div className={`space-y-3 transition-all duration-300 ${isPublic ? 'opacity-100' : 'opacity-40 grayscale pointer-events-none'}`}>
-            <div className="flex items-center gap-2 p-1.5 bg-[#18181b] border border-white/5 rounded-lg">
+            <div className="flex items-center gap-2 p-1.5 bg-[#18181b] border border-[var(--theme-border)] rounded-lg">
               <input 
                 type="text" 
                 readOnly 
                 value={shareUrl}
-                className="flex-1 bg-transparent border-none text-[12px] text-gray-400 focus:ring-0 truncate px-2"
+                className="flex-1 bg-transparent border-none text-[12px] text-[var(--theme-text-muted)] focus:ring-0 truncate px-2"
               />
               <button 
                 onClick={handleCopy}
@@ -96,7 +96,7 @@ export default function ShareModal({ onClose }: { onClose: () => void }) {
           </div>
         </div>
 
-        <div className="p-4 bg-white/[0.02] border-t border-white/[0.04] flex justify-end">
+        <div className="p-4 bg-white/[0.02] border-t border-[var(--theme-border)] flex justify-end">
           <button onClick={onClose} className="btn-secondary">Done</button>
         </div>
       </div>

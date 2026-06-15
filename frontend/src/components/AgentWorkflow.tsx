@@ -58,7 +58,7 @@ export default function AgentWorkflow({ activeAgent, statusMessage }: AgentWorkf
   }, [activeAgent, elapsed]);
 
   return (
-    <div className="flex flex-col gap-3 py-3 px-4 border-t border-b border-white/[0.03] bg-[#0c0c0e]/40 rounded-xl select-none relative w-full overflow-hidden">
+    <div className="flex flex-col gap-3 py-3 px-4 border-t border-b border-[var(--theme-border)] bg-[var(--theme-surface)]/40 rounded-xl select-none relative w-full overflow-hidden">
       {/* Visual Graphical Connector Line Layout */}
       <div className="flex items-center justify-between max-w-lg mx-auto w-full relative">
         {/* Horizontal Connector bar */}
@@ -77,8 +77,8 @@ export default function AgentWorkflow({ activeAgent, statusMessage }: AgentWorkf
                   isActive 
                     ? "bg-indigo-500/10 border-indigo-500/30 text-white scale-105 shadow-[0_0_15px_rgba(99,102,241,0.15)]" 
                     : isDone
-                      ? "bg-white/[0.02] border-white/10 text-gray-400"
-                      : "bg-[#09090b] border-white/[0.04] text-gray-600 scale-95"
+                      ? "bg-white/[0.02] border-[var(--theme-border)] text-gray-400"
+                      : "bg-[var(--theme-bg)] border-[var(--theme-border)] text-gray-600 scale-95"
                 }`}
               >
                 {/* Visual pulse indicator */}
@@ -96,7 +96,7 @@ export default function AgentWorkflow({ activeAgent, statusMessage }: AgentWorkf
                   <span className={`text-[10px] font-mono font-semibold px-2 py-0.2 rounded ml-1.5 border ${
                     isActive 
                       ? "bg-indigo-500/20 border-indigo-500/20 text-indigo-400 animate-pulse" 
-                      : "bg-white/[0.02] border-white/[0.04] text-gray-500"
+                      : "bg-white/[0.02] border-[var(--theme-border)] text-gray-500"
                   }`}>
                     {time}s
                   </span>
@@ -118,10 +118,10 @@ export default function AgentWorkflow({ activeAgent, statusMessage }: AgentWorkf
 
       {/* Dynamic Cognitive Profile Expander Dialog */}
       {expandedAgent && (
-        <div className="mt-3 p-4 bg-white/[0.01] border border-white/[0.04] rounded-xl animate-in fade-in slide-in-from-top-2 duration-300 relative text-left">
+        <div className="mt-3 p-4 bg-white/[0.01] border border-[var(--theme-border)] rounded-xl animate-in fade-in slide-in-from-top-2 duration-300 relative text-left">
           <button 
             onClick={() => setExpandedAgent(null)}
-            className="absolute top-3 right-3 p-1 text-gray-500 hover:text-white transition-colors cursor-pointer"
+            className="absolute top-3 right-3 p-1 text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] transition-colors cursor-pointer"
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -134,9 +134,9 @@ export default function AgentWorkflow({ activeAgent, statusMessage }: AgentWorkf
               <div className="flex items-center gap-2 mb-0.5">
                 <div className="w-1.5 h-4 bg-indigo-500 rounded-full" />
                 <span className="text-[13px] font-bold text-indigo-400">{agent.name} Profile</span>
-                <span className="text-[10px] text-gray-500 font-bold uppercase">({agent.label})</span>
+                <span className="text-[10px] text-[var(--theme-text-muted)] font-bold uppercase">({agent.label})</span>
               </div>
-              <p className="text-[12px] text-gray-400 font-medium leading-relaxed">
+              <p className="text-[12px] text-[var(--theme-text-muted)] font-medium leading-relaxed">
                 {agent.description}
               </p>
             </div>
