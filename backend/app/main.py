@@ -2,9 +2,10 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
-from app.api import upload, chat, citations
+from app.api import upload, chat, citations,documents
 import time
 from collections import defaultdict
+from app.api import documents
 
 import json
 
@@ -104,6 +105,7 @@ app.add_middleware(PrefixStrippingMiddleware, prefix="/_/backend")
 app.include_router(upload.router, prefix="/api/upload", tags=["Uploads"])
 app.include_router(chat.router, prefix="/api/chat", tags=["Chat"])
 app.include_router(citations.router, prefix="/api/citations", tags=["Citations"])
+app.include_router(documents.router, prefix="/api/documents")
 
 @app.get("/")
 def read_root():
