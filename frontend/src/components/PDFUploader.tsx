@@ -9,6 +9,7 @@ type Document = {
   size: number; 
   status: string;
   text?: string;
+  thumbnail?: string;
 };
 
 type PDFUploaderProps = {
@@ -42,19 +43,23 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
     const formData = new FormData();
     formData.append("file", file);
 
-    const xhr = new XMLHttpRequest();
-    xhrRef.current = xhr;
-
-    // Track upload progress dynamically
-    xhr.upload.onprogress = (event) => {
-      if (event.lengthComputable) {
-        const percent = Math.round((event.loaded / event.total) * 100);
-        setUploadProgress(percent);
-        setDocuments(documents.map(d => 
-          d.name === file.name 
-            ? { ...d, status: `Uploading (${percent}%)...` } 
-            : d
-        ));
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/upload/pdf", {
+        method: "POST",
+        body: formData,
+      });
+      if (!response.ok) throw new Error("Upload failed");
+      const data = await response.json();
+      
+      setDocuments([{
+  ...newDoc,
+  status: `Parsed (${data.extracted_character_count} chars)`,
+  text: data.full_text,
+  thumbnail: data.thumbnail
+}, ...documents]);
+      
+      if (onContextUpdate && data.full_text) {
+        onContextUpdate(data.full_text);
       }
     };
 
@@ -121,7 +126,7 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
   const handleSummarize = async (doc: Document) => {
     if (!doc.text) return;
     try {
-      const response = await fetch(getApiUrl("/api/chat/summarize"), {
+      const response = await fetch("http://127.0.0.1:8000/api/chat/summarize", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: doc.text }),
