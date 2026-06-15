@@ -13,12 +13,14 @@ type Document = {
 
 type PDFUploaderProps = {
   documents: Document[];
-  setDocuments: (docs: Document[]) => void;
+  setDocuments: React.Dispatch<React.SetStateAction<Document[]>>;
   onContextUpdate?: (text: string | null) => void;
   isEmbedded?: boolean;
 };
 
 export default function PDFUploader({ documents, setDocuments, onContextUpdate, isEmbedded }: PDFUploaderProps) {
+  console.log("DOCUMENTS =", documents);
+console.log("IS ARRAY =", Array.isArray(documents));
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [selectedDoc, setSelectedDoc] = useState<Document | null>(null);
@@ -36,7 +38,14 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
     setIsUploading(true);
     setUploadProgress(0);
     const newDoc = { name: file.name, size: file.size, status: "Uploading (0%)..." };
-    setDocuments([newDoc, ...documents]);
+    setDocuments(prev => {
+  const safePrev = Array.isArray(prev) ? prev : [];
+
+  return [
+    newDoc,
+    ...safePrev
+  ];
+});
     showToast(`Uploading document: ${file.name}`, "info");
 
     const formData = new FormData();
@@ -45,40 +54,50 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
     const xhr = new XMLHttpRequest();
     xhrRef.current = xhr;
 
+
     // Track upload progress dynamically
     xhr.upload.onprogress = (event) => {
       if (event.lengthComputable) {
         const percent = Math.round((event.loaded / event.total) * 100);
         setUploadProgress(percent);
-        setDocuments(documents.map(d => 
-          d.name === file.name 
-            ? { ...d, status: `Uploading (${percent}%)...` } 
-            : d
-        ));
+        setDocuments(prev => {
+  const safePrev = Array.isArray(prev) ? prev : [];
+
+  return safePrev.map(d =>
+    d.name === file.name
+      ? { ...d, status: `Uploading (${percent}%)...` }
+      : d
+  );
+});
       }
     };
 
-    xhr.onload = () => {
+    xhr.onload = ()=> {
       if (xhr.status === 200) {
         try {
-          const data = JSON.parse(xhr.responseText);
-          setDocuments(documents.map(d => 
-            d.name === file.name 
-              ? { 
-                  ...d, 
-                  status: `Parsed (${data.extracted_character_count} chars)`,
-                  text: data.full_text
-                } 
-              : d
-          ));
-          if (onContextUpdate && data.full_text) {
-            onContextUpdate(data.full_text);
-          }
+           const data = JSON.parse(xhr.responseText);
+          setDocuments(prev => {
+  const safePrev = Array.isArray(prev) ? prev : [];
+
+  return safePrev.map(d =>
+    d.name === file.name
+      ? {
+          ...d,
+          status: `Parsed (${data.extracted_character_count} chars)`,
+          text: data.full_text
+        }
+      : d
+  );
+});
+          fetchDocuments();
+            onContextUpdate?.(data.full_text); 
+          
           showToast(`Successfully parsed and indexed: ${file.name}`, "success");
         } catch {
           handleError();
         }
-      } else {
+      }
+      else {
         handleError();
       }
       cleanup();
@@ -90,16 +109,24 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
     };
 
     xhr.onabort = () => {
-      setDocuments(documents.filter(d => d.name !== file.name));
+    setDocuments(prev => {
+  const safePrev = Array.isArray(prev) ? prev : [];
+  return safePrev.filter(d => d.name !== file.name);
+});
       showToast(`Upload cancelled: ${file.name}`, "warning");
       cleanup();
     };
 
     const handleError = () => {
-      setDocuments(documents.map(d => 
-        d.name === file.name ? { ...d, status: "Upload Failed" } : d
-      ));
-      showToast(`Failed to upload: ${file.name}`, "error");
+     setDocuments(prev => {
+  const safePrev = Array.isArray(prev) ? prev : [];
+
+  return safePrev.map(d =>
+    d.name === file.name
+      ? { ...d, status: "Upload Failed" }
+      : d
+  );
+});
     };
 
     const cleanup = () => {
@@ -176,8 +203,22 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
         </span>
       </button>
 
-      <div className="mt-5 flex-1 overflow-y-auto space-y-3">
-        {documents.map((doc, idx) => (
+      <div className="mt-5 flex-1 overflow-y-auto">
+  {documents.length === 0 ? (
+    <div className="flex flex-col items-center justify-center h-full text-center px-4">
+      <div className="text-5xl mb-4">📄</div>
+
+      <h3 className="text-gray-300 font-semibold">
+        No Documents Yet
+      </h3>
+
+      <p className="text-gray-500 text-sm mt-2 max-w-[220px]">
+        Upload a PDF to start building your knowledge base.
+      </p>
+    </div>
+  ) : (
+    <div className="space-y-3">
+        {(Array.isArray(documents) ? documents : []).map((doc, idx) => (
           <div key={idx} className="p-3 rounded-xl bg-white/[0.01] border border-white/[0.04] flex items-center gap-3 group hover:bg-white/[0.02] transition-all">
              <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0 border border-red-500/5">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-red-500/60">
@@ -189,8 +230,7 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
                 <span className="text-[10px] font-semibold text-gray-500">{doc.status}</span>
                {doc.status.startsWith('Uploading') && uploadProgress !== null && (
                  <div className="w-full bg-white/5 rounded-full h-1 mt-1.5 overflow-hidden">
-                   <div 
-                     className="bg-indigo-500 h-full rounded-full transition-all duration-300" 
+                   <div className="bg-indigo-500 h-full rounded-full transition-all duration-300" 
                      style={{ width: `${uploadProgress}%` }}
                    />
                  </div>
@@ -229,6 +269,9 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
           </div>
         ))}
       </div>
+    )}
+      </div>
+      
       <PDFMetadataModal isOpen={selectedDoc !== null} onClose={() => setSelectedDoc(null)} document={selectedDoc || { name: '', size: 0, status: '' }} />
       {summaryData && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[999] flex items-center justify-center p-4">

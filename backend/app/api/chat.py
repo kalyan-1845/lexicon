@@ -101,12 +101,10 @@ async def summarize_document(request: SummarizeRequest):
     except Exception as e:
         print(f"Error calling Groq API for summary: {e}")
         raise HTTPException(status_code=500, detail=f"Summarization error: {str(e)}")
-
 class ShareRequest(BaseModel):
-    workspace_name: str
-    is_public: bool
-    if is_public:
-        password:str/None=None
+    is_public: bool = False
+    password: str | None = None
+   
 
 @router.post("/share")
 async def share_workspace(request: ShareRequest, req: Request):

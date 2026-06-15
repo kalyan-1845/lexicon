@@ -164,7 +164,16 @@
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             documents={workspaceData[activeWorkspace]?.documents || []}
-            setDocuments={(docs) => updateWorkspaceData({ documents: docs })}
+            setDocuments={(value) => {
+  const docs =
+    typeof value === "function"
+      ? value(workspaceData[activeWorkspace]?.documents || [])
+      : value;
+
+  updateWorkspaceData({
+    documents: Array.isArray(docs) ? docs : []
+  });
+}}
             onContextUpdate={setActiveContext}
             onClose={() => setShowRightSidebar(false)}
           />
