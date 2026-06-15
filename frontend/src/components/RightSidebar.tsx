@@ -10,15 +10,17 @@ type Document = {
 };
 
 type RightSidebarProps = {
+  workspaceName: string;
   activeTab: "docs" | "notes";
   setActiveTab: (tab: "docs" | "notes") => void;
   documents: Document[];
   setDocuments: (docs: Document[]) => void;
   onContextUpdate: (text: string | null) => void;
   onClose: () => void;
+  onToggleSidebar?: () => void;
 };
 
-export default function RightSidebar({ activeTab, setActiveTab, documents, setDocuments, onContextUpdate, onClose }: RightSidebarProps) {
+export default function RightSidebar({ workspaceName, activeTab, setActiveTab, documents, setDocuments, onContextUpdate, onClose, onToggleSidebar }: RightSidebarProps) {
   return (
     <>
       {/* Mobile Backdrop Overlay */}
@@ -64,7 +66,7 @@ export default function RightSidebar({ activeTab, setActiveTab, documents, setDo
             isEmbedded 
           />
         ) : (
-          <SmartNotes onClose={onClose} isEmbedded />
+          <SmartNotes workspaceName={workspaceName} onClose={onClose} isEmbedded />
         )}
       </div>
     </aside>

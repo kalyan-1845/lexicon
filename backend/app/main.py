@@ -2,7 +2,8 @@ from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
-from app.api import upload, chat, citations
+from app.api import upload, chat, citations, notes
+from app.models import note
 from app.websocket_manager import ConnectionManager
 from app.services.cache_service import cache
 from app.core.database import engine, Base
@@ -123,7 +124,7 @@ app.add_middleware(PrefixStrippingMiddleware, prefix="/_/backend")
 # Register Routers
 app.include_router(upload.router, prefix="/api/upload", tags=["Uploads"])
 app.include_router(chat.router, prefix="/api/chat", tags=["Chat"])
-app.include_router(citations.router, prefix="/api/citations", tags=["Citations"])
+app.include_router(notes.router, prefix="/api/notes", tags=["Notes"])
 
 @app.websocket("/ws/{workspace_id}")
 async def websocket_endpoint(websocket: WebSocket, workspace_id: str):

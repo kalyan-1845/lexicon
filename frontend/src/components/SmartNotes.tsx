@@ -1,19 +1,19 @@
 "use client";
-import { useState } from "react";
 
-export default function SmartNotes({ isEmbedded }: { onClose?: () => void, isEmbedded?: boolean }) {
-  const [note, setNote] = useState("# Research Notes\n\nStart typing your insights here...");
+import { useState } from "react";
+import { useNoteSync } from "../hooks/useNoteSync";
+
+export default function SmartNotes({ workspaceName, onClose, isEmbedded }: { workspaceName: string, onClose: () => void, isEmbedded?: boolean }) {
+  const { content: note, updateContent: setNote, syncState } = useNoteSync({ workspaceName });
   const [tab, setTab] = useState<"write" | "preview">("write");
 
   const handleExportNotes = () => {
-    const blob = new Blob([note], { type: "text/markdown" });
+    const blob = new Blob([note], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "lexicon-notes.md";
-    document.body.appendChild(a);
+    a.download = `notes-${workspaceName.replace(/\\s+/g, "-").toLowerCase()}.md`;
     a.click();
-    document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 
@@ -61,7 +61,17 @@ export default function SmartNotes({ isEmbedded }: { onClose?: () => void, isEmb
       </div>
       
       <div className="mt-4 flex justify-between items-center px-2 shrink-0">
-        <span className="text-[11px] font-semibold text-[var(--theme-text-muted)]">{note.length} characters</span>
+        <div className="flex gap-4 items-center">
+          <span className="text-[11px] font-semibold text-[var(--theme-text-muted)]">{note.length} characters</span>
+          <span className={`text-[11px] font-semibold ${
+            syncState === 'synced' ? 'text-green-500' :
+            syncState === 'syncing' ? 'text-blue-500' :
+            syncState === 'conflict' ? 'text-yellow-500' :
+            syncState === 'offline' ? 'text-red-500' : 'text-gray-500'
+          }`}>
+            {syncState}
+          </span>
+        </div>
         <button onClick={handleExportNotes} className="text-[11px] font-semibold text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] transition-colors cursor-pointer">
           Export Notes
         </button>

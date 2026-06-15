@@ -43,23 +43,16 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
     const formData = new FormData();
     formData.append("file", file);
 
-    try {
-      const response = await fetch("http://127.0.0.1:8000/api/upload/pdf", {
-        method: "POST",
-        body: formData,
-      });
-      if (!response.ok) throw new Error("Upload failed");
-      const data = await response.json();
-      
-      setDocuments([{
-  ...newDoc,
-  status: `Parsed (${data.extracted_character_count} chars)`,
-  text: data.full_text,
-  thumbnail: data.thumbnail
-}, ...documents]);
-      
-      if (onContextUpdate && data.full_text) {
-        onContextUpdate(data.full_text);
+    const xhr = new XMLHttpRequest();
+    xhrRef.current = xhr;
+
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable) {
+        const percentComplete = Math.round((event.loaded / event.total) * 100);
+        setUploadProgress(percentComplete);
+        setDocuments(documents.map(d => 
+          d.name === file.name ? { ...d, status: `Uploading (${percentComplete}%)...` } : d
+        ));
       }
     };
 
@@ -72,7 +65,8 @@ export default function PDFUploader({ documents, setDocuments, onContextUpdate, 
               ? { 
                   ...d, 
                   status: `Parsed (${data.extracted_character_count} chars)`,
-                  text: data.full_text
+                  text: data.full_text,
+                  thumbnail: data.thumbnail
                 } 
               : d
           ));
