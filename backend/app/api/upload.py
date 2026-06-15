@@ -3,20 +3,40 @@ import fitz  # PyMuPDF
 import os
 import shutil
 
+from app.api.schemas import DeleteFileResponse, UploadPDFResponse
+
 router = APIRouter()
 
 # Temporary storage directory for uploaded PDFs
 UPLOAD_DIR = "app/storage/uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
-@router.delete("/delete/{filename}")
+@router.delete(
+    "/delete/{filename}",
+    response_model=DeleteFileResponse,
+    summary="Delete an uploaded file",
+    description="Removes an uploaded PDF from the workspace's storage library by its filename.",
+    responses={
+        404: {"description": "File not found in the storage directory"}
+    }
+)
 async def delete_file(filename: str):
     file_path = os.path.join(UPLOAD_DIR, filename)
     if os.path.exists(file_path):
         os.remove(file_path)
-        return {"message": f"File {filename} deleted successfully"}
+        return DeleteFileResponse(message=f"File {filename} deleted successfully")
     raise HTTPException(status_code=404, detail="File not found")
-@router.post("/pdf")
+
+@router.post(
+    "/pdf",
+    response_model=UploadPDFResponse,
+    summary="Upload and parse a PDF document",
+    description="Uploads a PDF file, extracts its text content in-memory, and checks for scanned text formatting (applying mock OCR).",
+    responses={
+        400: {"description": "Invalid file type. Only PDF files are allowed."},
+        500: {"description": "Internal server error during PDF parsing."}
+    }
+)
 async def upload_file(file: UploadFile = File(...)):
     if not file.filename.endswith('.pdf'):
         raise HTTPException(status_code=400, detail="Only PDF files are allowed")

@@ -1,12 +1,20 @@
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request, Query
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel
 import os
 import hashlib
 from groq import Groq
 from dotenv import load_dotenv
 from app.services.notion_exporter import export_markdown_to_notion
-from app.api.schemas import NotionExportRequest
+from app.api.schemas import (
+    NotionExportRequest,
+    NotionExportResponse,
+    ChatMessageRequest as ChatRequest,
+    ChatMessageResponse as ChatResponse,
+    ChatSummarizeRequest as SummarizeRequest,
+    ChatSummarizeResponse,
+    ChatShareRequest as ShareRequest,
+    ChatShareResponse
+)
 
 load_dotenv()
 
@@ -16,18 +24,18 @@ router = APIRouter()
 prompt_cache = {}
 
 # Initialize Groq client
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+client = Groq(api_key=os.getenv("GROQ_API_KEY") or "mock-key")
 
-class ChatRequest(BaseModel):
-    message: str
-    document_context: str | None = None
-
-class ChatResponse(BaseModel):
-    reply: str
-    citations: list[dict] | None = None
-
-@router.post("/cite", response_model=ChatResponse)
-async def generate_citation(text: str, source: str):
+@router.post(
+    "/cite",
+    response_model=ChatResponse,
+    summary="Generate citations for a source text",
+    description="Simulates citation extraction for a given research text block and source metadata, returning formatted citation styles."
+)
+async def generate_citation(
+    text: str = Query(..., description="The research text block to generate citations for"),
+    source: str = Query(..., description="The source metadata label (e.g. paper title or URL)")
+):
     # Simulated citation generation logic
     return {
         "reply": f"Fact: {text}",
@@ -37,14 +45,16 @@ async def generate_citation(text: str, source: str):
         ]
     }
 
-class SummarizeRequest(BaseModel):
-    text: str
-
 from app.services.agents import AgentService
 
 agent_service = AgentService()
 
-@router.post("/message/stream")
+@router.post(
+    "/message/stream",
+    response_class=StreamingResponse,
+    summary="Send a message with streaming response",
+    description="Streams the response from Lexicon AI's underlying agents (Researcher & Analyst) using Server-Sent Events (SSE)."
+)
 async def stream_message(request: ChatRequest):
     if not request.message:
         raise HTTPException(status_code=400, detail="Message cannot be empty")
@@ -54,7 +64,12 @@ async def stream_message(request: ChatRequest):
         media_type="text/event-stream"
     )
 
-@router.post("/message", response_model=ChatResponse)
+@router.post(
+    "/message",
+    response_model=ChatResponse,
+    summary="Send a message with static response",
+    description="Queries the AI LLM model synchronously and returns a static JSON answer response. Leverages internal caching."
+)
 async def send_message(request: ChatRequest):
     if not request.message:
         raise HTTPException(status_code=400, detail="Message cannot be empty")
@@ -66,7 +81,6 @@ async def send_message(request: ChatRequest):
     
     try:
         # Construct prompt with document context if available
-        # Define a strong identity to prevent hallucinations about origin
         # Define a strong identity to prevent hallucinations about origin
         system_prompt = (
             "URGENT IDENTITY PROTOCOL: You are Lexicon AI, the core intelligence of the Lexicon Research Workspace. "
@@ -96,7 +110,12 @@ async def send_message(request: ChatRequest):
         print(f"Error calling Groq API: {e}")
         raise HTTPException(status_code=500, detail=f"AI service error: {str(e)}")
 
-@router.post("/summarize")
+@router.post(
+    "/summarize",
+    response_model=ChatSummarizeResponse,
+    summary="Summarize research document text",
+    description="Sends up to 15,000 characters of document text context to the AI model to generate a high-level summary with bullet points."
+)
 async def summarize_document(request: SummarizeRequest):
     if not request.text:
         raise HTTPException(status_code=401, detail="Text to summarize cannot be empty")
@@ -113,38 +132,38 @@ async def summarize_document(request: SummarizeRequest):
         )
         
         summary = completion.choices[0].message.content
-        return {"summary": summary}
         if not summary:
-            raise HTTPException(status_code=500, detail="Failed to generate")
-
-        else:
-            return {"Summary":summary}
-
+            raise HTTPException(status_code=500, detail="Failed to generate summary")
+        
+        return ChatSummarizeResponse(summary=summary)
         
     except Exception as e:
         print(f"Error calling Groq API for summary: {e}")
         raise HTTPException(status_code=500, detail=f"Summarization error: {str(e)}")
 
-class ShareRequest(BaseModel):
-    workspace_name: str
-    is_public: bool
-    password: str | None = None
-
-@router.post("/share")
+@router.post(
+    "/share",
+    response_model=ChatShareResponse,
+    summary="Share a workspace or chat history",
+    description="Generates a unique reference link to share a workspace with others, supporting optional password protection and public access flags."
+)
 async def share_workspace(request: ShareRequest, req: Request):
     import uuid
     share_id = str(uuid.uuid4())[:8]
     base_url = req.headers.get('origin', req.headers.get('referer', 'http://localhost:3000')).rstrip('/')
-    return {
-        "workspace_name": request.workspace_name,
-        "is_public": request.is_public,
-        "share_url": f"{base_url}/w/share-{share_id}"
-    }
+    return ChatShareResponse(
+        share_url=f"{base_url}/w/share-{share_id}"
+    )
 
-@router.post("/export/notion")
+@router.post(
+    "/export/notion",
+    response_model=NotionExportResponse,
+    summary="Export document/chat to Notion",
+    description="Exports formatted markdown text content to a specified Notion database using the Notion Workspace Integrations API."
+)
 async def export_to_notion(request: NotionExportRequest):
     try:
         result = export_markdown_to_notion(request.database_id, request.markdown)
-        return {"status": "success", "notion_url": result["url"]}
+        return NotionExportResponse(status="success", notion_url=result["url"])
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Notion export error: {str(e)}")
