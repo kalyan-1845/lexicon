@@ -13,7 +13,18 @@ def sanitize_cite_key(name: str) -> str:
     clean = re.sub(r'[^a-zA-Z0-9]', '', name.lower())
     return clean[:15] if clean else "document"
 
-@router.get("/export", response_class=PlainTextResponse)
+@router.get(
+    "/export",
+    response_class=PlainTextResponse,
+    summary="Export library citations in BibTeX format",
+    description="Reads all uploaded PDFs, extracts document metadata (title, author, creation date), and compiles a downloadable BibTeX (.bib) bibliography file.",
+    responses={
+        200: {
+            "description": "A raw BibTeX bibliography text file",
+            "content": {"text/plain": {"example": "@article{citekey,\n  author = {John Doe},\n  title = {A Study of AI},\n  journal = {Lexicon AI Research Library},\n  year = {2026}\n}"}}
+        }
+    }
+)
 async def export_citations():
     # Ensure upload directory exists
     if not os.path.exists(UPLOAD_DIR):

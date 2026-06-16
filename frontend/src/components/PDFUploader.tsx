@@ -222,7 +222,7 @@ console.log("IS ARRAY =", Array.isArray(documents));
               <div key={idx} className="p-3 rounded-xl bg-white/[0.01] border border-[var(--theme-border)] flex items-center gap-3 group hover:bg-white/[0.02] transition-all">
              <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0 border border-red-500/5">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-red-500/60">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                 </svg>
              </div>
              <div className="flex flex-col overflow-hidden flex-1">
