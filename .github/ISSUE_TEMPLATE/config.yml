@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/kalyan-1845/lexicon/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 📖 Wiki & Documentation
+    url: https://github.com/kalyan-1845/lexicon/wiki
+    about: Find implementation details and usage guides

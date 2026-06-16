@@ -18,7 +18,6 @@ async def delete_file(filename: str):
         os.remove(file_path)
         return {"message": f"File {filename} deleted successfully"}
     raise HTTPException(status_code=404, detail="File not found")
-
 @router.post("/pdf")
 async def upload_file(file: UploadFile = File(...)):
     if not file.filename.endswith(".pdf"):
@@ -55,7 +54,7 @@ async def upload_file(file: UploadFile = File(...)):
             "filename": file.filename,
             "ocr_status": ocr_status,
             "status": "success",
-            "message": "File successfully uploaded and parsed.",
+            "message": "File successfully uploaded and parsed in-memory.",
             "extracted_character_count": len(extracted_text),
             "full_text": extracted_text,
             "thumbnail": thumbnail_name,

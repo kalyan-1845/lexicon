@@ -30,7 +30,7 @@ const Logo: React.FC<LogoProps> = ({ size = 32, className = "", variant = "full"
       </div>
       
       {variant === "full" && (
-        <span className="font-black text-xl tracking-tighter text-white uppercase bg-clip-text">
+        <span className="font-black text-xl tracking-tighter text-[var(--theme-text)] uppercase bg-clip-text">
           Lexicon
         </span>
       )}
