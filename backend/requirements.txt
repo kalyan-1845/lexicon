@@ -16,6 +16,8 @@ psycopg2-binary
 python-multipart
 PyMuPDF
 groq
+pytest
+httpx
 redis
 hiredis
 notion-client
