@@ -7,6 +7,7 @@ type Document = {
   size: number; 
   status: string;
   text?: string;
+  thumbnail?: string;
 };
 
 type RightSidebarProps = {
@@ -14,7 +15,7 @@ type RightSidebarProps = {
   activeTab: "docs" | "notes";
   setActiveTab: (tab: "docs" | "notes") => void;
   documents: Document[];
-  setDocuments: (docs: Document[]) => void;
+  setDocuments: (action: Document[] | ((prev: Document[]) => Document[])) => void;
   onContextUpdate: (text: string | null) => void;
   onClose: () => void;
   onToggleSidebar?: () => void;

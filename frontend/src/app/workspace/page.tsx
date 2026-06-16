@@ -10,6 +10,7 @@ import ShortcutsCheatSheet from "@/components/ShortcutsCheatSheet";
     size: number; 
     status: string;
     text?: string;
+    thumbnail?: string;
   };
 
   type Message = {
@@ -158,7 +159,11 @@ import ShortcutsCheatSheet from "@/components/ShortcutsCheatSheet";
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           documents={workspaceData[activeWorkspace]?.documents || []}
-          setDocuments={(docs) => updateWorkspaceData({ documents: docs })}
+          setDocuments={(action) => {
+            const currentDocs = workspaceData[activeWorkspace]?.documents || [];
+            const newDocs = typeof action === 'function' ? action(currentDocs) : action;
+            updateWorkspaceData({ documents: newDocs });
+          }}
           onContextUpdate={setActiveContext}
           onToggleSidebar={() => setShowLeftSidebar(true)}
           onClose={() => setShowRightSidebar(false)}

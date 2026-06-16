@@ -14,7 +14,7 @@ type Document = {
 
 type PDFUploaderProps = {
   documents: Document[];
-  setDocuments: React.Dispatch<React.SetStateAction<Document[]>>;
+  setDocuments: (action: Document[] | ((prev: Document[]) => Document[])) => void;
   onContextUpdate?: (text: string | null) => void;
   isEmbedded?: boolean;
 };
@@ -88,7 +88,6 @@ console.log("IS ARRAY =", Array.isArray(documents));
                 : d
             );
           });
-          fetchDocuments();
           if (onContextUpdate && data.full_text) {
             onContextUpdate(data.full_text);
           }
