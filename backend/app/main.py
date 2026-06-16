@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 from fastapi.openapi.utils import get_openapi
 from fastapi.security import APIKeyHeader
 from starlette.middleware.base import BaseHTTPMiddleware
-from app.api import upload, chat, citations, notes
+from app.api import upload, chat, citations, notes, documents
 from app.api.schemas import RootResponse, HealthResponse
 from app.websocket_manager import ConnectionManager
 from app.services.cache_service import cache
@@ -17,6 +17,7 @@ import os
 import time
 import json
 from collections import defaultdict
+from app.api import documents
 
 # Initialize database schemas
 Base.metadata.create_all(bind=engine)
@@ -202,6 +203,8 @@ app.add_middleware(PrefixStrippingMiddleware, prefix="/_/backend")
 # Register Routers
 app.include_router(upload.router, prefix="/api/upload", tags=["Uploads"])
 app.include_router(chat.router, prefix="/api/chat", tags=["Chat"])
+app.include_router(citations.router, prefix="/api/citations", tags=["Citations"])
+app.include_router(documents.router, prefix="/api/documents")
 app.include_router(notes.router, prefix="/api/notes", tags=["Notes"])
 
 @app.websocket("/ws/{workspace_id}")

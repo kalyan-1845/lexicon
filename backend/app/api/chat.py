@@ -178,7 +178,6 @@ async def summarize_document(request: SummarizeRequest):
     except Exception as e:
         print(f"Error calling Groq API for summary: {e}")
         raise HTTPException(status_code=500, detail=f"Summarization error: {str(e)}")
-
 @router.post(
     "/share",
     response_model=ChatShareResponse,
