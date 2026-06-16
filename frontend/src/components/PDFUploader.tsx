@@ -9,6 +9,7 @@ type Document = {
   size: number; 
   status: string;
   text?: string;
+  thumbnail?: string;
 };
 
 type PDFUploaderProps = {
@@ -54,44 +55,43 @@ console.log("IS ARRAY =", Array.isArray(documents));
     const xhr = new XMLHttpRequest();
     xhrRef.current = xhr;
 
-
     // Track upload progress dynamically
     xhr.upload.onprogress = (event) => {
       if (event.lengthComputable) {
         const percent = Math.round((event.loaded / event.total) * 100);
         setUploadProgress(percent);
         setDocuments(prev => {
-  const safePrev = Array.isArray(prev) ? prev : [];
-
-  return safePrev.map(d =>
-    d.name === file.name
-      ? { ...d, status: `Uploading (${percent}%)...` }
-      : d
-  );
-});
+          const safePrev = Array.isArray(prev) ? prev : [];
+          return safePrev.map(d =>
+            d.name === file.name
+              ? { ...d, status: `Uploading (${percent}%)...` }
+              : d
+          );
+        });
       }
     };
 
     xhr.onload = ()=> {
       if (xhr.status === 200) {
         try {
-           const data = JSON.parse(xhr.responseText);
+          const data = JSON.parse(xhr.responseText);
           setDocuments(prev => {
-  const safePrev = Array.isArray(prev) ? prev : [];
-
-  return safePrev.map(d =>
-    d.name === file.name
-      ? {
-          ...d,
-          status: `Parsed (${data.extracted_character_count} chars)`,
-          text: data.full_text
-        }
-      : d
-  );
-});
+            const safePrev = Array.isArray(prev) ? prev : [];
+            return safePrev.map(d =>
+              d.name === file.name
+                ? {
+                    ...d,
+                    status: `Parsed (${data.extracted_character_count} chars)`,
+                    text: data.full_text,
+                    thumbnail: data.thumbnail
+                  }
+                : d
+            );
+          });
           fetchDocuments();
-            onContextUpdate?.(data.full_text); 
-          
+          if (onContextUpdate && data.full_text) {
+            onContextUpdate(data.full_text);
+          }
           showToast(`Successfully parsed and indexed: ${file.name}`, "success");
         } catch {
           handleError();
@@ -148,7 +148,7 @@ console.log("IS ARRAY =", Array.isArray(documents));
   const handleSummarize = async (doc: Document) => {
     if (!doc.text) return;
     try {
-      const response = await fetch(getApiUrl("/api/chat/summarize"), {
+      const response = await fetch("http://127.0.0.1:8000/api/chat/summarize", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: doc.text }),
@@ -165,7 +165,7 @@ console.log("IS ARRAY =", Array.isArray(documents));
   const content = (
     <div className="flex-1 flex flex-col p-6 overflow-hidden">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="font-extrabold text-[12px] text-gray-400">Knowledge Base</h2>
+        <h2 className="font-extrabold text-[12px] text-[var(--theme-text-muted)]">Knowledge Base</h2>
         <div className="flex items-center gap-2">
           {documents.length > 0 && (
             <button 
@@ -176,7 +176,7 @@ console.log("IS ARRAY =", Array.isArray(documents));
               Export BibTeX
             </button>
           )}
-          <span className="text-[11px] font-bold text-gray-500 bg-white/[0.02] px-2 py-0.5 rounded border border-white/[0.04]">{documents.length}</span>
+          <span className="text-[11px] font-bold text-[var(--theme-text-muted)] bg-white/[0.02] px-2 py-0.5 rounded border border-[var(--theme-border)]">{documents.length}</span>
         </div>
       </div>
       
@@ -185,9 +185,9 @@ console.log("IS ARRAY =", Array.isArray(documents));
       <button 
         disabled={isUploading}
         onClick={() => fileInputRef.current?.click()} 
-        className={`w-full py-3.5 border border-dashed border-white/5 rounded-xl flex flex-col items-center justify-center gap-1 transition-all group shrink-0 ${isUploading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/[0.01]'}`}
+        className={`w-full py-3.5 border border-dashed border-[var(--theme-border)] rounded-xl flex flex-col items-center justify-center gap-1 transition-all group shrink-0 ${isUploading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-white/[0.01]'}`}
       >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`text-gray-500 transition-colors ${isUploading ? 'animate-spin' : 'group-hover:text-white'}`}>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className={`text-[var(--theme-text-muted)] transition-colors ${isUploading ? 'animate-spin' : 'group-hover:text-[var(--theme-text)]'}`}>
           {isUploading ? (
             <path d="M21 12a9 9 0 1 1-6.219-8.56" />
           ) : (
@@ -198,39 +198,40 @@ console.log("IS ARRAY =", Array.isArray(documents));
             </>
           )}
         </svg>
-        <span className="text-[12px] font-semibold text-gray-400 group-hover:text-white transition-colors">
+        <span className="text-[12px] font-semibold text-[var(--theme-text-muted)] group-hover:text-[var(--theme-text)] transition-colors">
           {isUploading ? 'Uploading...' : 'Add Document'}
         </span>
       </button>
 
       <div className="mt-5 flex-1 overflow-y-auto">
-  {documents.length === 0 ? (
-    <div className="flex flex-col items-center justify-center h-full text-center px-4">
-      <div className="text-5xl mb-4">📄</div>
+        {(Array.isArray(documents) ? documents : []).length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full text-center px-4">
+            <div className="text-5xl mb-4">📄</div>
 
-      <h3 className="text-gray-300 font-semibold">
-        No Documents Yet
-      </h3>
+            <h3 className="text-gray-300 font-semibold">
+              No Documents Yet
+            </h3>
 
-      <p className="text-gray-500 text-sm mt-2 max-w-[220px]">
-        Upload a PDF to start building your knowledge base.
-      </p>
-    </div>
-  ) : (
-    <div className="space-y-3">
-        {(Array.isArray(documents) ? documents : []).map((doc, idx) => (
-          <div key={idx} className="p-3 rounded-xl bg-white/[0.01] border border-white/[0.04] flex items-center gap-3 group hover:bg-white/[0.02] transition-all">
+            <p className="text-gray-500 text-sm mt-2 max-w-[220px]">
+              Upload a PDF to start building your knowledge base.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {(Array.isArray(documents) ? documents : []).map((doc, idx) => (
+              <div key={idx} className="p-3 rounded-xl bg-white/[0.01] border border-[var(--theme-border)] flex items-center gap-3 group hover:bg-white/[0.02] transition-all">
              <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0 border border-red-500/5">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-red-500/60">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                 </svg>
              </div>
              <div className="flex flex-col overflow-hidden flex-1">
-                <span className="text-[12px] font-semibold text-gray-300 truncate">{doc.name}</span>
-                <span className="text-[10px] font-semibold text-gray-500">{doc.status}</span>
+                <span className="text-[12px] font-semibold text-[var(--theme-text)] truncate">{doc.name}</span>
+                <span className="text-[10px] font-semibold text-[var(--theme-text-muted)]">{doc.status}</span>
                {doc.status.startsWith('Uploading') && uploadProgress !== null && (
-                 <div className="w-full bg-white/5 rounded-full h-1 mt-1.5 overflow-hidden">
-                   <div className="bg-indigo-500 h-full rounded-full transition-all duration-300" 
+                 <div className="w-full bg-[var(--theme-border)] rounded-full h-1 mt-1.5 overflow-hidden">
+                   <div 
+                     className="bg-indigo-500 h-full rounded-full transition-all duration-300"
                      style={{ width: `${uploadProgress}%` }}
                    />
                  </div>
@@ -240,7 +241,7 @@ console.log("IS ARRAY =", Array.isArray(documents));
                <div className="flex gap-1 shrink-0">
                  <button 
                    onClick={cancelUpload} 
-                   className="w-6 h-6 rounded hover:bg-white/5 flex items-center justify-center text-gray-500 hover:text-red-400 transition-colors"
+                   className="w-6 h-6 rounded hover:bg-[var(--theme-border)] flex items-center justify-center text-[var(--theme-text-muted)] hover:text-red-400 transition-colors"
                    title="Cancel Upload"
                  >
                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -252,15 +253,15 @@ console.log("IS ARRAY =", Array.isArray(documents));
              )}
              {doc.status.startsWith('Parsed') && (
                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-all shrink-0">
-                 <button onClick={() => setSelectedDoc(doc)} className="w-6 h-6 rounded hover:bg-white/5 flex items-center justify-center">
-                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-gray-600 hover:text-white">
+                 <button onClick={() => setSelectedDoc(doc)} className="w-6 h-6 rounded hover:bg-[var(--theme-border)] flex items-center justify-center">
+                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-gray-600 hover:text-[var(--theme-text)]">
                      <circle cx="12" cy="12" r="10"></circle>
                      <line x1="12" y1="16" x2="12" y2="12"></line>
                      <line x1="12" y1="8" x2="12.01" y2="8"></line>
                    </svg>
                  </button>
-                 <button onClick={() => handleSummarize(doc)} className="w-6 h-6 rounded hover:bg-white/5 flex items-center justify-center">
-                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-gray-600 hover:text-white">
+                 <button onClick={() => handleSummarize(doc)} className="w-6 h-6 rounded hover:bg-[var(--theme-border)] flex items-center justify-center">
+                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-gray-600 hover:text-[var(--theme-text)]">
                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                    </svg>
                  </button>
@@ -275,22 +276,22 @@ console.log("IS ARRAY =", Array.isArray(documents));
       <PDFMetadataModal isOpen={selectedDoc !== null} onClose={() => setSelectedDoc(null)} document={selectedDoc || { name: '', size: 0, status: '' }} />
       {summaryData && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[999] flex items-center justify-center p-4">
-          <div className="w-full max-w-lg bg-[#0c0c0e] border border-white/10 rounded-2xl p-6 shadow-2xl animate-in zoom-in-95 duration-200 max-h-[80vh] flex flex-col">
+          <div className="w-full max-w-lg bg-[var(--theme-surface)] border border-[var(--theme-border)] rounded-2xl p-6 shadow-2xl animate-in zoom-in-95 duration-200 max-h-[80vh] flex flex-col">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xs font-bold uppercase tracking-widest text-indigo-400">AI Summary</h3>
-              <button onClick={() => setSummaryData(null)} className="p-1 text-gray-500 hover:text-white transition-colors cursor-pointer">
+              <button onClick={() => setSummaryData(null)} className="p-1 text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] transition-colors cursor-pointer">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <line x1="18" y1="6" x2="6" y2="18"></line>
                   <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
               </button>
             </div>
-            <p className="text-[11px] font-semibold text-gray-500 mb-3">{summaryData.name}</p>
-            <div className="flex-1 overflow-y-auto text-[13px] text-gray-300 leading-relaxed whitespace-pre-wrap">
+            <p className="text-[11px] font-semibold text-[var(--theme-text-muted)] mb-3">{summaryData.name}</p>
+            <div className="flex-1 overflow-y-auto text-[13px] text-[var(--theme-text)] leading-relaxed whitespace-pre-wrap">
               {summaryData.summary}
             </div>
             <div className="mt-4 flex justify-end">
-              <button onClick={() => setSummaryData(null)} className="px-4 py-1.5 rounded-lg bg-white/[0.05] border border-white/10 text-[11px] font-bold text-gray-400 hover:text-white transition-colors cursor-pointer">Close</button>
+              <button onClick={() => setSummaryData(null)} className="px-4 py-1.5 rounded-lg bg-white/[0.05] border border-[var(--theme-border)] text-[11px] font-bold text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] transition-colors cursor-pointer">Close</button>
             </div>
           </div>
         </div>
@@ -301,7 +302,7 @@ console.log("IS ARRAY =", Array.isArray(documents));
   if (isEmbedded) return content;
 
   return (
-    <aside className="w-72 border-l border-white/[0.04] bg-[#09090b] h-full flex flex-col shrink-0">
+    <aside className="w-72 border-l border-[var(--theme-border)] bg-[var(--theme-bg)] h-full flex flex-col shrink-0">
       {content}
     </aside>
   );

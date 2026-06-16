@@ -20,7 +20,32 @@ build/
 .DS_Store
 Thumbs.db
 
-# Untracked leaderboard boost files
+# Admin & management scripts (internal use only)
+add_points.py
 boost_leaderboard.py
-nsoc_boost_collab_progress.txt
+manage_contributors.py
+process_prs.ps1
+create_issues.ps1
+create_unmerged_prs.py
+get_authors.py
+nsoc_followup.py
+ping_pending.py
+post_discussions.ps1
+prepare_issue.py
+
+# Temp data files
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!vercel.json
+!docker-compose.yml
+issue_body.txt
 nsoc_boost_progress.txt
+nsoc_boost_collab_progress.txt
+NSOC_CONTRIBUTIONS.md
+
+# Auto-generated / internal tracking files
+.attributed_pulse_*
+.neural_activity
+.local/

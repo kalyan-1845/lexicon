@@ -53,24 +53,26 @@
   }
 
   .theme-light {
-    --theme-bg: #fafafa;
-    --theme-surface: #ffffff;
-    --theme-surface-light: #f4f4f5;
-    --theme-accent: #2563eb;
-    --theme-accent-rgb: 37, 99, 235;
+    --theme-bg: #ffffff;
+    --theme-surface: #f4f4f5;
+    --theme-surface-light: #fafafa;
+    --theme-accent: #4f46e5;
+    --theme-accent-rgb: 79, 70, 229;
     --theme-border: rgba(0, 0, 0, 0.06);
     --theme-text: #18181b;
     --theme-text-muted: #71717a;
+    --theme-text-primary: #18181b;
+    --theme-text-secondary: #52525b;
   }
   
-  body, aside, .bg-\[\#09090b\], .bg-\[\#09090b\]\/80, .bg-\[\#0a0a0b\], .bg-\[\#09090b\]\/50 {
+  body, aside, .bg-\[\#09090b\], .bg-\[\#09090b\]\/80, .bg-\[\#0a0a0b\], .bg-\[\#09090b\]\/50, .bg-\[\#09090b\]\/90 {
     background-color: var(--theme-bg) !important;
     border-color: var(--theme-border) !important;
     color: var(--theme-text) !important;
     transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s ease, color 0.4s ease;
   }
 
-  .bg-\[\#0c0c0e\]\/80, .bg-\[\#0c0c0e\]\/50, .bg-white\/\[0\.01\], .bg-white\/\[0\.02\], .bg-\[\#0c0c0e\], .bg-\[\#0d0d0f\], .bg-\[\#0c0c0e\]\/90, .bg-\[\#0c0c0e\]\/40, .bg-\[\#0c0c0e\]\/98 {
+  .bg-\[\#0c0c0e\]\/80, .bg-\[\#0c0c0e\]\/50, .bg-white\/\[0\.01\], .bg-white\/\[0\.02\], .bg-\[\#0c0c0e\], .bg-\[\#0d0d0f\], .bg-\[\#0c0c0e\]\/90, .bg-\[\#0c0c0e\]\/40, .bg-\[\#0c0c0e\]\/98, .bg-\[\#0c0c0e\]\/95 {
     background-color: var(--theme-surface) !important;
     border-color: var(--theme-border) !important;
     transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.4s ease;
@@ -99,6 +101,16 @@
   .theme-light input::placeholder, 
   .theme-light textarea::placeholder {
     color: #8e8e93 !important;
+  }
+  .theme-light .mix-blend-screen {
+    mix-blend-mode: multiply !important;
+    filter: invert(1) brightness(0.2) !important;
+  }
+  .theme-light .bg-white\/5 {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+  }
+  .theme-light .bg-white\/10 {
+    background-color: rgba(0, 0, 0, 0.08) !important;
   }
 
   .text-indigo-400, .text-indigo-500, .text-purple-400 {
@@ -134,7 +146,7 @@
   }
 
   /* Borders mapping to theme borders */
-  .border-white\/\[0\.04\], .border-white\/\[0\.06\], .border-white\/10, .border-white\/5, .border-white\/\[0\.05\], .border-white\/\[0\.03\] {
+  .border-white\/\[0\.04\], .border-white\/\[0\.06\], .border-white\/10, .border-white\/5, .border-white\/\[0\.05\], .border-white\/\[0\.03\], .border-white\/\[0\.08\] {
     border-color: var(--theme-border) !important;
     transition: border-color 0.4s ease;
   }

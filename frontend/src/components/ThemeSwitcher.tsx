@@ -26,6 +26,16 @@ export default function ThemeSwitcher() {
     return () => cancelAnimationFrame(id);
   }, [applyTheme]);
 
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("lexicon-theme") as Theme;
+    if (savedTheme) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      applyTheme(savedTheme);
+    }
+  }, []);
+
+
+
   const themes: { id: Theme; name: string; color: string; accent: string }[] = [
     { id: "obsidian", name: "Obsidian", color: "bg-[#09090b]", accent: "bg-indigo-500" },
     { id: "cyberpunk", name: "Cyberpunk", color: "bg-[#0c0012]", accent: "bg-[#ff007f]" },

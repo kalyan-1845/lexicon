@@ -1,66 +1,132 @@
 # Contributing to Lexicon AI
 
-First off, thank you for considering contributing to Lexicon AI! It's people like you that make Lexicon AI such a great tool.
+Thank you for your interest in contributing to **Lexicon AI**! We welcome contributions from developers of all skill levels. This guide will help you get started.
 
 ## 🌟 NSoC'26 Contributors
 
-Welcome to Lexicon's NSoC'26 program! Follow these steps to contribute:
+Lexicon AI is proudly participating in **Nexus Spring of Code 2026**. If you're an NSoC participant, check our [open issues](https://github.com/kalyan-1845/lexicon/issues) for tasks labeled with difficulty levels:
 
-### How to Get Assigned
-1. Browse our [open issues](https://github.com/kalyan-1845/lexicon/issues) labeled `nsoc26`
-2. Comment `/assign` on the issue you want to work on
-3. Wait for the bot to confirm your assignment
-4. You can have a maximum of **3 active assignments** at a time
+| Label | Difficulty | Points |
+|-------|-----------|--------|
+| `level1` | 🟢 Beginner — UI tweaks, docs, small fixes | 3 pts |
+| `level2` | 🟡 Intermediate — API, logic, features | 5 pts |
+| `level3` | 🔴 Advanced — Architecture, AI, performance | 10 pts |
 
-### Submitting Your PR
-1. Fork the repository and create a new branch
-2. Make your changes following our code style
-3. Use the **NSoC PR template** when creating your pull request
-4. Reference the issue number in your PR (e.g., `Closes #123`)
-5. Add the appropriate level label (`level-1`, `level-2`, or `level-3`)
+### Claiming an Issue
 
-### Points System
-| Level | Points | Difficulty |
-|-------|--------|------------|
-| Level 1 | 3 pts | Beginner - UI tweaks, docs, small fixes |
-| Level 2 | 5 pts | Intermediate - API, logic, features |
-| Level 3 | 10 pts | Advanced - Architecture, security, performance |
+1. Comment on the issue you'd like to work on and request assignment.
+2. Wait for a maintainer to assign it to you before starting.
+3. **One issue per contributor at a time** — please complete your current task before claiming another.
 
-## Open Source Contribution Areas
+---
 
-### Beginner Issues
-- UI fixes
-- Responsive design
-- README improvements
-- Dark mode
-- Animations
-- Bug fixes
+## 🚀 Getting Started
 
-### Intermediate Issues
-- API integrations
-- Authentication
-- PDF parser
-- Search system
-- AI pipelines
+### 1. Fork & Clone
 
-### Advanced Issues
-- Multi-agent systems
-- AI memory architecture
-- Vector database optimization
-- Real-time collaboration
-- AI workflow engine
+```bash
+git clone https://github.com/<your-username>/lexicon.git
+cd lexicon
+```
 
-## Contribution Guidelines
-1. Fork the repository
-2. Create feature branches (`git checkout -b feature/AmazingFeature`)
-3. Follow clean commit messages
-4. Submit pull requests with screenshots
-5. Maintain documentation quality
+### 2. Set Up Your Environment
 
-### Coding Standards
-- **React/Next.js**: Use functional components, hooks, and strictly adhere to TypeScript typings.
-- **Python/FastAPI**: Follow PEP 8 standards, use Pydantic for validation, and use type hinting.
-- **Styling**: Use Tailwind CSS for all UI components to maintain a consistent, premium design. Avoid ad-hoc CSS.
+```bash
+# Frontend
+cd frontend
+npm install
 
-## Final Vision
-Build an open-source AI ecosystem where productivity, research, and intelligent automation come together in one modern collaborative workspace.
+# Backend
+cd ../backend
+pip install -r requirements.txt
+```
+
+### 3. Create a Feature Branch
+
+Use a descriptive branch name that reflects your change:
+
+```bash
+git checkout -b feat/your-feature-name    # For new features
+git checkout -b fix/your-bug-fix          # For bug fixes
+git checkout -b docs/your-doc-update      # For documentation
+```
+
+### 4. Make Your Changes
+
+- Write clean, readable code.
+- Follow the existing code style and conventions in the project.
+- Add comments where logic is non-obvious.
+- Test your changes locally before submitting.
+
+### 5. Commit Your Changes
+
+Write clear, descriptive commit messages using [Conventional Commits](https://www.conventionalcommits.org/):
+
+```bash
+git commit -m "feat(chat): add message retry button"
+git commit -m "fix(ui): resolve sidebar overlap on mobile"
+git commit -m "docs: update API endpoint documentation"
+```
+
+### 6. Push & Open a Pull Request
+
+```bash
+git push origin feat/your-feature-name
+```
+
+Then open a Pull Request on GitHub against the `main` branch. Fill out the PR template completely.
+
+---
+
+## 📐 Code Standards
+
+### Frontend (Next.js / TypeScript)
+- Use **TypeScript** for all new components.
+- Follow the existing component patterns in `src/components/`.
+- Use **TailwindCSS** for styling — avoid inline styles.
+- Ensure responsive design works on mobile, tablet, and desktop.
+
+### Backend (Python / FastAPI)
+- Follow **PEP 8** style guidelines.
+- Use **type hints** on all function signatures.
+- Add docstrings to public functions and classes.
+- Handle errors gracefully with appropriate HTTP status codes.
+
+---
+
+## 🔍 Pull Request Guidelines
+
+- **One PR per feature/fix** — keep changes focused and reviewable.
+- **Link the related issue** in your PR description (e.g., `Closes #123`).
+- **Describe your changes** clearly in the PR body.
+- **Include screenshots** for any UI changes.
+- **Ensure the build passes** — run `npm run build` in the frontend before submitting.
+
+---
+
+## 🐛 Reporting Bugs
+
+Use the [Bug Report template](https://github.com/kalyan-1845/lexicon/issues/new?template=bug_report.yml) and include:
+- Steps to reproduce the issue
+- Expected vs. actual behavior
+- Browser/OS information
+- Screenshots or error logs if applicable
+
+---
+
+## 💡 Suggesting Features
+
+Use the [Feature Request template](https://github.com/kalyan-1845/lexicon/issues/new?template=feature_request.yml) and describe:
+- The problem you're trying to solve
+- Your proposed solution
+- Any alternatives you've considered
+
+---
+
+## 📜 License
+
+By contributing, you agree that your contributions will be licensed under the [MIT License](LICENSE).
+
+---
+
+Thank you for helping make Lexicon AI better! 🎉

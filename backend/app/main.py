@@ -1,13 +1,24 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
-from app.api import upload, chat, citations,documents
+from app.api import upload, chat, citations, notes, documents
+from app.models import note
+from app.websocket_manager import ConnectionManager
+from app.services.cache_service import cache
+from app.core.database import engine, Base
+from app.models import user
+from app.models import chat as chat_model
 import time
+import json
 from collections import defaultdict
 from app.api import documents
 
-import json
+# Initialize database schemas
+Base.metadata.create_all(bind=engine)
+
+manager = ConnectionManager()
+
 
 class RateLimitMiddleware:
     def __init__(self, app, limit: int = 60, window: int = 60):
@@ -27,8 +38,17 @@ class RateLimitMiddleware:
             await self.app(scope, receive, send)
             return
             
-        client = scope.get("client")
-        client_ip = client[0] if client else "unknown"
+        # Get client IP, checking x-forwarded-for for proxies like Vercel
+        client_ip = None
+        for header_name, header_value in scope.get("headers", []):
+            if header_name == b"x-forwarded-for":
+                client_ip = header_value.decode("utf-8").split(",")[0].strip()
+                break
+        
+        if not client_ip:
+            client = scope.get("client")
+            client_ip = client[0] if client else "unknown"
+            
         current_time = time.time()
         
         # Clean up old requests outside window
@@ -106,6 +126,19 @@ app.include_router(upload.router, prefix="/api/upload", tags=["Uploads"])
 app.include_router(chat.router, prefix="/api/chat", tags=["Chat"])
 app.include_router(citations.router, prefix="/api/citations", tags=["Citations"])
 app.include_router(documents.router, prefix="/api/documents")
+app.include_router(notes.router, prefix="/api/notes", tags=["Notes"])
+
+@app.websocket("/ws/{workspace_id}")
+async def websocket_endpoint(websocket: WebSocket, workspace_id: str):
+    await manager.connect(workspace_id, websocket)
+    try:
+        while True:
+            data = await websocket.receive_text()
+            # Broadcast to all clients in the workspace
+            await manager.broadcast(workspace_id, f"Message: {data}")
+    except WebSocketDisconnect:
+        manager.disconnect(workspace_id, websocket)
+        await manager.broadcast(workspace_id, "A user disconnected")
 
 @app.get("/")
 def read_root():
@@ -113,4 +146,7 @@ def read_root():
 
 @app.get("/health")
 def health_check():
-    return {"status": "healthy"}
+    return {
+        "status": "healthy",
+        "cache": "connected" if cache.is_available else "unavailable (fallback active)",
+    }

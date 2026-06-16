@@ -67,11 +67,11 @@ export default function CommandPalette() {
         onClick={() => setIsOpen(false)}
         aria-hidden="true"
       />
-      <div className="relative w-full max-w-xl bg-[#0c0c0e]/95 border border-white/10 rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col backdrop-blur-md animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-xl bg-[var(--theme-surface)]/95 border border-[var(--theme-border)] rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.6)] overflow-hidden flex flex-col backdrop-blur-md animate-in fade-in zoom-in-95 duration-200">
         
         {/* Search Header Input */}
-        <div className="flex items-center px-4 border-b border-white/[0.04]">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-gray-500">
+        <div className="flex items-center px-4 border-b border-[var(--theme-border)]">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-[var(--theme-text-muted)]">
             <circle cx="11" cy="11" r="8"></circle>
             <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
           </svg>
@@ -82,13 +82,13 @@ export default function CommandPalette() {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleInputKeyDown}
             placeholder="Search workspace, documents, or type a command..."
-            className="flex-1 bg-transparent border-none px-4 py-3.5 text-[13px] text-gray-200 focus:outline-none placeholder-gray-600 focus:ring-0"
+            className="flex-1 bg-transparent border-none px-4 py-3.5 text-[13px] text-[var(--theme-text)] focus:outline-none placeholder-gray-600 focus:ring-0"
           />
-          <span className="text-[9px] font-black text-gray-500 bg-white/[0.04] px-1.5 py-0.5 rounded border border-white/[0.05]">ESC</span>
+          <span className="text-[9px] font-black text-[var(--theme-text-muted)] bg-white/[0.04] px-1.5 py-0.5 rounded border border-[var(--theme-border)]">ESC</span>
         </div>
 
         {/* Filter Toolbar Tabs */}
-        <div className="flex gap-1 px-4 py-1.5 border-b border-white/[0.04] bg-white/[0.01]">
+        <div className="flex gap-1 px-4 py-1.5 border-b border-[var(--theme-border)] bg-white/[0.01]">
           {(["all", "docs", "chats", "commands"] as FilterType[]).map((f) => (
             <button
               key={f}
@@ -128,7 +128,7 @@ export default function CommandPalette() {
                           setQuery(term);
                           saveSearch(term);
                         }}
-                        className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-gray-400 hover:bg-white/[0.03] hover:text-white transition-all text-left"
+                        className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-[var(--theme-text-muted)] hover:bg-white/[0.03] hover:text-[var(--theme-text)] transition-all text-left"
                       >
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="text-gray-700">
                           <circle cx="12" cy="12" r="10"></circle>
@@ -155,7 +155,7 @@ export default function CommandPalette() {
                       window.dispatchEvent(new CustomEvent('lexicon-action', { detail: { type: 'upload-pdf' } }));
                     }, 100);
                   }}
-                  className="w-full flex items-center gap-3 px-2.5 py-2 rounded-lg text-[11px] font-semibold text-gray-300 hover:bg-white/[0.03] hover:text-white transition-all text-left"
+                  className="w-full flex items-center gap-3 px-2.5 py-2 rounded-lg text-[11px] font-semibold text-[var(--theme-text)] hover:bg-white/[0.03] hover:text-[var(--theme-text)] transition-all text-left"
                 >
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-indigo-400">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -176,7 +176,7 @@ export default function CommandPalette() {
                       window.dispatchEvent(new CustomEvent('lexicon-action', { detail: { type: 'new-chat' } }));
                     }, 100);
                   }}
-                  className="w-full flex items-center gap-3 px-2.5 py-2 rounded-lg text-[11px] font-semibold text-gray-300 hover:bg-white/[0.03] hover:text-white transition-all text-left"
+                  className="w-full flex items-center gap-3 px-2.5 py-2 rounded-lg text-[11px] font-semibold text-[var(--theme-text)] hover:bg-white/[0.03] hover:text-[var(--theme-text)] transition-all text-left"
                 >
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-purple-400">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
@@ -188,22 +188,22 @@ export default function CommandPalette() {
               {/* Commands */}
               {showCommands && (
                 <>
-                  <div className="w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-[11px] font-semibold text-gray-400 hover:bg-white/[0.03] hover:text-white transition-all text-left">
+                  <div className="w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-[11px] font-semibold text-[var(--theme-text-muted)] hover:bg-white/[0.03] hover:text-[var(--theme-text)] transition-all text-left">
                     <div className="flex items-center gap-3">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-gray-500">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-[var(--theme-text-muted)]">
                         <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
                         <line x1="6" y1="8" x2="6.01" y2="8"></line>
                         <line x1="10" y1="8" x2="14" y2="8"></line>
                       </svg>
                       <span>Keyboard Shortcuts Panel</span>
                     </div>
-                    <span className="text-[9px] font-bold text-gray-600 bg-white/[0.02] border border-white/[0.05] px-1 py-0.2 rounded">?</span>
+                    <span className="text-[9px] font-bold text-gray-600 bg-white/[0.02] border border-[var(--theme-border)] px-1 py-0.2 rounded">?</span>
                   </div>
                 </>
               )}
             </>
           ) : (
-            <div className="px-4 py-8 text-center text-xs text-gray-500 font-semibold">
+            <div className="px-4 py-8 text-center text-xs text-[var(--theme-text-muted)] font-semibold">
               No results found for &quot;{query}&quot;
             </div>
           )}
