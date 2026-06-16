@@ -20,7 +20,7 @@ export default function SettingsPage() {
   const [isLocalMode, setIsLocalMode] = useState(false);
 
   return (
-    <div className="flex h-screen bg-[#09090b] text-white">
+    <div className="flex h-screen bg-[var(--theme-bg)] text-[var(--theme-text)]">
       <Sidebar 
         workspaces={activeCollection ? workspaces.filter(w => w.collectionId === activeCollection) : workspaces}
         activeWorkspace={activeWorkspace}
@@ -47,23 +47,23 @@ export default function SettingsPage() {
         <div className="max-w-2xl mx-auto">
           <header className="mb-12">
             <h1 className="text-3xl font-bold tracking-tight mb-2">System Settings</h1>
-            <p className="text-gray-500 font-medium">Configure your research engines and identity.</p>
+            <p className="text-[var(--theme-text-muted)] font-medium">Configure your research engines and identity.</p>
           </header>
 
           <section className="space-y-8">
-            <div className="p-6 bg-[#0c0c0e] border border-white/[0.04] rounded-xl">
-              <h2 className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-6">Inference Engine</h2>
+            <div className="p-6 bg-[var(--theme-surface)] border border-[var(--theme-border)] rounded-xl">
+              <h2 className="text-sm font-bold uppercase tracking-widest text-[var(--theme-text-muted)] mb-6">Inference Engine</h2>
               
               <div className="space-y-6">
-                <div className="flex items-center justify-between p-4 rounded-lg bg-white/[0.02] border border-white/5">
+                <div className="flex items-center justify-between p-4 rounded-lg bg-white/[0.02] border border-[var(--theme-border)]">
                   <div>
-                    <h3 className="font-bold text-gray-200">Model Provider</h3>
-                    <p className="text-xs text-gray-500">Choose the AI engine for your research.</p>
+                    <h3 className="font-bold text-[var(--theme-text)]">Model Provider</h3>
+                    <p className="text-xs text-[var(--theme-text-muted)]">Choose the AI engine for your research.</p>
                   </div>
                   <select 
                     value={modelProvider}
                     onChange={(e) => setModelProvider(e.target.value)}
-                    className="bg-[#09090b] border border-white/10 rounded px-3 py-1.5 text-sm outline-none focus:ring-1 focus:ring-indigo-500"
+                    className="bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded px-3 py-1.5 text-sm outline-none focus:ring-1 focus:ring-indigo-500"
                   >
                     <option value="groq">Groq Cloud (Fast)</option>
                     <option value="ollama">Ollama (Local/Private)</option>
@@ -78,16 +78,16 @@ export default function SettingsPage() {
                     placeholder="Enter key..."
                     value={apiKey}
                     onChange={(e) => setApiKey(e.target.value)}
-                    className="w-full bg-[#09090b] border border-white/10 rounded-lg px-4 py-2.5 text-sm outline-none focus:border-white/20 transition-all"
+                    className="w-full bg-[var(--theme-bg)] border border-[var(--theme-border)] rounded-lg px-4 py-2.5 text-sm outline-none focus:border-[var(--theme-border)] transition-all"
                   />
                 </div>
               </div>
             </div>
 
-            <div className="p-6 bg-[#0c0c0e] border border-white/[0.04] rounded-xl flex items-center justify-between">
+            <div className="p-6 bg-[var(--theme-surface)] border border-[var(--theme-border)] rounded-xl flex items-center justify-between">
               <div>
-                <h3 className="font-bold text-gray-200">Strict Local Mode</h3>
-                <p className="text-xs text-gray-500">Disable all cloud features for maximum privacy.</p>
+                <h3 className="font-bold text-[var(--theme-text)]">Strict Local Mode</h3>
+                <p className="text-xs text-[var(--theme-text-muted)]">Disable all cloud features for maximum privacy.</p>
               </div>
               <button 
                 onClick={() => setIsLocalMode(!isLocalMode)}
@@ -98,7 +98,7 @@ export default function SettingsPage() {
             </div>
 
             <div className="flex justify-end gap-3 pt-4">
-              <button className="px-6 py-2 text-sm font-bold text-gray-500 hover:text-white transition-colors">Discard</button>
+              <button className="px-6 py-2 text-sm font-bold text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] transition-colors">Discard</button>
               <button className="px-6 py-2 bg-white text-black text-sm font-bold rounded-lg hover:bg-gray-200 transition-all">Save Changes</button>
             </div>
           </section>

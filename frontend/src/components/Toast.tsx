@@ -51,7 +51,7 @@ export default function ToastContainer() {
   return (
     <div className="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 max-w-sm w-full pointer-events-none">
       {toasts.map((toast) => {
-        let bgColor = "bg-[#0c0c0e]/95 border-white/10";
+        let bgColor = "bg-[var(--theme-surface)]/95 border-[var(--theme-border)]";
         let iconColor = "text-indigo-400";
         let iconPath = (
           <path d="M12 16h.01M12 8v5m9-1a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -87,13 +87,13 @@ export default function ToastContainer() {
               {iconPath}
             </svg>
             
-            <div className="flex-1 text-[11.5px] font-medium text-gray-200 leading-normal">
+            <div className="flex-1 text-[11.5px] font-medium text-[var(--theme-text)] leading-normal">
               {toast.message}
             </div>
 
             <button
               onClick={() => removeToast(toast.id)}
-              className="text-gray-500 hover:text-white transition-colors p-0.5 rounded-lg hover:bg-white/5"
+              className="text-[var(--theme-text-muted)] hover:text-[var(--theme-text)] transition-colors p-0.5 rounded-lg hover:bg-[var(--theme-border)]"
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path d="M6 18L18 6M6 6l12 12" />

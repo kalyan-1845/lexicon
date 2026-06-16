@@ -18,3 +18,4 @@ PyMuPDF
 groq
 redis
 hiredis
+notion-client

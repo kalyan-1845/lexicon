@@ -25,7 +25,7 @@ export default function KnowledgeLibrary() {
   const [search, setSearch] = useState("");
 
   return (
-    <div className="flex h-screen bg-[#09090b] text-white">
+    <div className="flex h-screen bg-[var(--theme-bg)] text-[var(--theme-text)]">
       <Sidebar 
         workspaces={activeCollection ? workspaces.filter(w => w.collectionId === activeCollection) : workspaces}
         activeWorkspace={activeWorkspace}
@@ -53,7 +53,7 @@ export default function KnowledgeLibrary() {
           <header className="mb-12 flex justify-between items-end">
             <div>
               <h1 className="text-3xl font-bold tracking-tight mb-2">Knowledge Library</h1>
-              <p className="text-gray-500 font-medium">Search and manage all indexed research documents.</p>
+              <p className="text-[var(--theme-text-muted)] font-medium">Search and manage all indexed research documents.</p>
             </div>
             <div className="relative">
               <input 
@@ -61,20 +61,20 @@ export default function KnowledgeLibrary() {
                 placeholder="Search library..." 
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="bg-[#0c0c0e] border border-white/5 rounded-lg px-4 py-2 text-sm focus:ring-1 focus:ring-indigo-500/50 outline-none w-64 transition-all"
+                className="bg-[var(--theme-surface)] border border-[var(--theme-border)] rounded-lg px-4 py-2 text-sm focus:ring-1 focus:ring-indigo-500/50 outline-none w-64 transition-all"
               />
             </div>
           </header>
 
-          <div className="bg-[#0c0c0e] border border-white/[0.04] rounded-xl overflow-hidden">
+          <div className="bg-[var(--theme-surface)] border border-[var(--theme-border)] rounded-xl overflow-hidden">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-white/[0.04] bg-white/[0.02]">
-                  <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest">Document Name</th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest">Workspace</th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest">Size</th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest">Date Added</th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest text-right">Actions</th>
+                <tr className="border-b border-[var(--theme-border)] bg-white/[0.02]">
+                  <th className="px-6 py-4 text-[10px] font-bold text-[var(--theme-text-muted)] uppercase tracking-widest">Document Name</th>
+                  <th className="px-6 py-4 text-[10px] font-bold text-[var(--theme-text-muted)] uppercase tracking-widest">Workspace</th>
+                  <th className="px-6 py-4 text-[10px] font-bold text-[var(--theme-text-muted)] uppercase tracking-widest">Size</th>
+                  <th className="px-6 py-4 text-[10px] font-bold text-[var(--theme-text-muted)] uppercase tracking-widest">Date Added</th>
+                  <th className="px-6 py-4 text-[10px] font-bold text-[var(--theme-text-muted)] uppercase tracking-widest text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/[0.02]">
@@ -86,12 +86,12 @@ export default function KnowledgeLibrary() {
                           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                           <polyline points="14 2 14 8 20 8"></polyline>
                         </svg>
-                        <span className="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors">{doc.name}</span>
+                        <span className="text-sm font-semibold text-[var(--theme-text)] group-hover:text-[var(--theme-text)] transition-colors">{doc.name}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-xs font-medium text-gray-500">{doc.workspace}</td>
-                    <td className="px-6 py-4 text-xs font-medium text-gray-500">{doc.size}</td>
-                    <td className="px-6 py-4 text-xs font-medium text-gray-500">{doc.date}</td>
+                    <td className="px-6 py-4 text-xs font-medium text-[var(--theme-text-muted)]">{doc.workspace}</td>
+                    <td className="px-6 py-4 text-xs font-medium text-[var(--theme-text-muted)]">{doc.size}</td>
+                    <td className="px-6 py-4 text-xs font-medium text-[var(--theme-text-muted)]">{doc.date}</td>
                     <td className="px-6 py-4 text-right">
                       <button className="text-[10px] font-black text-gray-700 hover:text-red-500 uppercase tracking-tighter transition-colors">Delete</button>
                     </td>

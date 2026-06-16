@@ -123,52 +123,48 @@ import ShortcutsCheatSheet from "@/components/ShortcutsCheatSheet";
     };
 
     const filteredWorkspaces = activeCollection 
-      ? workspaces.filter(w => w.collectionId === activeCollection)
+      ? workspaces.filter(w => w.collectionId === activeCollection) 
       : workspaces;
 
-    return (
-      <div className="flex h-screen w-full bg-[#09090b] overflow-hidden">
-        <Sidebar 
-          workspaces={filteredWorkspaces}
-          activeWorkspace={activeWorkspace} 
-          onWorkspaceChange={(name) => {
-            setActiveWorkspace(name);
-            setShowLeftSidebar(false);
-          }}
-          onAddWorkspace={handleAddWorkspace}
-          collections={collections}
-          activeCollection={activeCollection}
-          onCollectionChange={(c) => setActiveCollection(c === activeCollection ? null : c)}
-          onAddCollection={() => {
-            const name = prompt("Enter collection name:");
-            if (name) setCollections([...collections, name]);
-          }}
-          showMobileSidebar={showLeftSidebar}
-          onMobileSidebarClose={() => setShowLeftSidebar(false)}
-        />
-        <ChatArea 
+  return (
+    <div className="flex h-screen w-full bg-[#09090b] overflow-hidden">
+      <Sidebar 
+        workspaces={filteredWorkspaces}
+        activeWorkspace={activeWorkspace} 
+        onWorkspaceChange={setActiveWorkspace}
+        onAddWorkspace={handleAddWorkspace}
+        collections={collections}
+        activeCollection={activeCollection}
+        onCollectionChange={(c) => setActiveCollection(c === activeCollection ? null : c)}
+        onAddCollection={() => {
+          const name = prompt("Enter collection name:");
+          if (name) setCollections([...collections, name]);
+        }}
+      />
+      <ChatArea 
+        workspaceName={activeWorkspace}
+        messages={workspaceData[activeWorkspace]?.messages || []}
+        setMessages={(msgs) => updateWorkspaceData({ messages: msgs })}
+        onToggleNotes={() => toggleTab("notes")} 
+        showNotes={showRightSidebar && activeTab === "notes"}
+        onToggleDocuments={() => toggleTab("docs")}
+        showDocuments={showRightSidebar && activeTab === "docs"}
+        documentContext={activeContext}
+        onContextUpdate={setActiveContext}
+      />
+      {showRightSidebar && (
+        <RightSidebar 
           workspaceName={activeWorkspace}
-          messages={workspaceData[activeWorkspace]?.messages || []}
-          setMessages={(msgs) => updateWorkspaceData({ messages: msgs })}
-          onToggleNotes={() => toggleTab("notes")} 
-          showNotes={showRightSidebar && activeTab === "notes"}
-          onToggleDocuments={() => toggleTab("docs")}
-          showDocuments={showRightSidebar && activeTab === "docs"}
-          documentContext={activeContext}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          documents={workspaceData[activeWorkspace]?.documents || []}
+          setDocuments={(docs) => updateWorkspaceData({ documents: docs })}
           onContextUpdate={setActiveContext}
           onToggleSidebar={() => setShowLeftSidebar(true)}
+          onClose={() => setShowRightSidebar(false)}
         />
-        {showRightSidebar && (
-          <RightSidebar
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            documents={workspaceData[activeWorkspace]?.documents || []}
-            setDocuments={(docs) => updateWorkspaceData({ documents: docs })}
-            onContextUpdate={setActiveContext}
-            onClose={() => setShowRightSidebar(false)}
-          />
-        )}
-        <ShortcutsCheatSheet />
+      )}
+      <ShortcutsCheatSheet />
       </div>
     );
   }

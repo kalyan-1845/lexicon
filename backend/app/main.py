@@ -3,16 +3,23 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.openapi.utils import get_openapi
 from fastapi.security import APIKeyHeader
-from app.api import upload, chat, citations
+from starlette.middleware.base import BaseHTTPMiddleware
+from app.api import upload, chat, citations, notes
 from app.api.schemas import RootResponse, HealthResponse
 from app.websocket_manager import ConnectionManager
 from app.services.cache_service import cache
+from app.core.database import engine, Base
+from app.models import user
+from app.models import chat as chat_model
+from app.models import note
 
 import os
-
 import time
 import json
 from collections import defaultdict
+
+# Initialize database schemas
+Base.metadata.create_all(bind=engine)
 
 manager = ConnectionManager()
 
@@ -36,6 +43,10 @@ tags_metadata = [
     {
         "name": "Chat",
         "description": "Interaction with Lexicon AI, summarizing documents, sharing messages, full-text message search, and exporting to Notion.",
+    },
+    {
+        "name": "Notes",
+        "description": "Operations with collaborative and smart notes.",
     },
     {
         "name": "Citations",
@@ -92,18 +103,6 @@ def custom_openapi():
     return app.openapi_schema
 
 app.openapi = custom_openapi
-
-@app.websocket("/ws/{workspace_id}")
-async def websocket_endpoint(websocket: WebSocket, workspace_id: str):
-    await manager.connect(workspace_id, websocket)
-    try:
-        while True:
-            data = await websocket.receive_text()
-            # Broadcast to all clients in the workspace
-            await manager.broadcast(workspace_id, f"Message: {data}")
-    except WebSocketDisconnect:
-        manager.disconnect(workspace_id, websocket)
-        await manager.broadcast(workspace_id, "A user disconnected")
 
 class RateLimitMiddleware:
     def __init__(self, app, limit: int = 60, window: int = 60):
@@ -203,7 +202,19 @@ app.add_middleware(PrefixStrippingMiddleware, prefix="/_/backend")
 # Register Routers
 app.include_router(upload.router, prefix="/api/upload", tags=["Uploads"])
 app.include_router(chat.router, prefix="/api/chat", tags=["Chat"])
-app.include_router(citations.router, prefix="/api/citations", tags=["Citations"])
+app.include_router(notes.router, prefix="/api/notes", tags=["Notes"])
+
+@app.websocket("/ws/{workspace_id}")
+async def websocket_endpoint(websocket: WebSocket, workspace_id: str):
+    await manager.connect(workspace_id, websocket)
+    try:
+        while True:
+            data = await websocket.receive_text()
+            # Broadcast to all clients in the workspace
+            await manager.broadcast(workspace_id, f"Message: {data}")
+    except WebSocketDisconnect:
+        manager.disconnect(workspace_id, websocket)
+        await manager.broadcast(workspace_id, "A user disconnected")
 
 @app.get(
     "/",
