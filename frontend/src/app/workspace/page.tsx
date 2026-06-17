@@ -4,13 +4,7 @@ import Sidebar from "@/components/Sidebar";
 import ChatArea from "@/components/ChatArea";
 import RightSidebar from "@/components/RightSidebar";
 import ShortcutsCheatSheet from "@/components/ShortcutsCheatSheet";
-
-  type Document = { 
-    name: string; 
-    size: number; 
-    status: string;
-    text?: string;
-  };
+import { type Document } from "@/components/PDFUploader";
 
   type Message = {
     id: string;

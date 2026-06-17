@@ -1,13 +1,6 @@
 "use client";
-import PDFUploader from "./PDFUploader";
+import PDFUploader, { Document } from "./PDFUploader";
 import SmartNotes from "./SmartNotes";
-
-type Document = { 
-  name: string; 
-  size: number; 
-  status: string;
-  text?: string;
-};
 
 type RightSidebarProps = {
   activeTab: "docs" | "notes";

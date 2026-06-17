@@ -141,8 +141,7 @@ def read_root():
 
 @app.get("/health")
 def health_check():
-    return {"status": "healthy"}
-
-app.include_router(chat.router, prefix="/api/chat")
-    return {"status": "healthy",
-        "cache": "connected" if cache.is_available else "unavailable (fallback active)",}
+    return {
+        "status": "healthy",
+        "cache": "connected" if cache.is_available else "unavailable (fallback active)"
+    }
