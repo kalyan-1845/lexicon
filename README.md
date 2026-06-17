@@ -73,6 +73,99 @@
 
 🌙 **Dark Mode & Theming** — Beautiful, responsive interface with dynamic theme switching.
 
+## 🔌 WebSocket Collaboration
+
+Lexicon supports real-time workspace presence using WebSockets.
+
+### Endpoint
+
+```text
+/ws/{workspace_id}
+```
+
+Example:
+
+```text
+ws://localhost:8000/ws/my-workspace
+```
+
+### Message Format
+
+All WebSocket messages use JSON.
+
+### Client → Server Events
+
+#### join
+
+Sent immediately after a successful connection.
+
+```json
+{
+  "type": "join",
+  "userId": "user-123",
+  "name": "Alice"
+}
+```
+
+### Server → Client Events
+
+#### user_joined
+
+Broadcast when a user joins the workspace.
+
+```json
+{
+  "type": "user_joined",
+  "userId": "user-123",
+  "name": "Alice"
+}
+```
+
+#### user_left
+
+Broadcast when a user leaves the workspace.
+
+```json
+{
+  "type": "user_left",
+  "userId": "user-123",
+  "name": "Alice"
+}
+```
+
+#### presence_sync
+
+Sent to synchronize all active users currently connected to the workspace.
+
+```json
+{
+  "type": "presence_sync",
+  "users": [
+    {
+      "userId": "user-123",
+      "name": "Alice"
+    }
+  ]
+}
+```
+
+### Connection Flow
+
+1. Client connects to `/ws/{workspace_id}`.
+2. Client sends a `join` event.
+3. Server broadcasts a `user_joined` event.
+4. Server synchronizes active users through `presence_sync`.
+5. When a user disconnects, a `user_left` event is broadcast.
+
+### Active Presence
+
+The frontend presence hook tracks:
+
+- Connected users
+- Join/leave notifications
+- Workspace member synchronization
+- Reconnection handling
+
 ---
 
 ## 🏗️ Architecture
@@ -101,25 +194,25 @@ graph TD
     style Crew fill:#1e40af,stroke:#1e3a8a,color:#fff
 ```
 
-| Agent | Role | Responsibility |
-|-------|------|----------------|
-| 📖 **The Scholar** | Research & Ingestion | Parses uploaded documents, performs semantic search, indexes scientific literature |
-| 🔬 **The Analyst** | Validation & Critique | Validates factual consistency, resolves contradictions, maps citation networks |
-| ✍️ **The Composer** | Synthesis & Output | Formulates final markdown insight documents with academic rigor |
+| Agent               | Role                  | Responsibility                                                                     |
+| ------------------- | --------------------- | ---------------------------------------------------------------------------------- |
+| 📖 **The Scholar**  | Research & Ingestion  | Parses uploaded documents, performs semantic search, indexes scientific literature |
+| 🔬 **The Analyst**  | Validation & Critique | Validates factual consistency, resolves contradictions, maps citation networks     |
+| ✍️ **The Composer** | Synthesis & Output    | Formulates final markdown insight documents with academic rigor                    |
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology | Purpose |
-|-------|-----------|---------|
-| **Frontend** | Next.js 14, TypeScript, TailwindCSS | Responsive UI with App Router |
-| **Backend** | FastAPI (Python 3.10+) | Async REST API with SSE streaming |
-| **Vector Store** | ChromaDB | Semantic embeddings & retrieval |
-| **AI Orchestration** | CrewAI + LangChain | Multi-agent workflow management |
-| **Local LLM** | Ollama | Privacy-first local inference |
-| **Database** | PostgreSQL + pgvector | Persistent storage with vector support |
-| **Deployment** | Vercel + Docker | Cloud & containerized deployment |
+| Layer                | Technology                          | Purpose                                |
+| -------------------- | ----------------------------------- | -------------------------------------- |
+| **Frontend**         | Next.js 14, TypeScript, TailwindCSS | Responsive UI with App Router          |
+| **Backend**          | FastAPI (Python 3.10+)              | Async REST API with SSE streaming      |
+| **Vector Store**     | ChromaDB                            | Semantic embeddings & retrieval        |
+| **AI Orchestration** | CrewAI + LangChain                  | Multi-agent workflow management        |
+| **Local LLM**        | Ollama                              | Privacy-first local inference          |
+| **Database**         | PostgreSQL + pgvector               | Persistent storage with vector support |
+| **Deployment**       | Vercel + Docker                     | Cloud & containerized deployment       |
 
 ---
 
@@ -177,6 +270,7 @@ docker-compose up --build
 ```
 
 This launches:
+
 - **Frontend** → `localhost:3000`
 - **Backend API** → `localhost:8000`
 - **PostgreSQL + pgvector** → `localhost:5432`
@@ -249,10 +343,10 @@ We love contributions! Lexicon AI is part of **NSoC'26** (Nexus Spring of Code 2
 
 Check our [open issues](https://github.com/kalyan-1845/lexicon/issues) for NSoC-labeled tasks with difficulty levels:
 
-| Level | Points | Difficulty |
-|-------|--------|------------|
-| 🟢 Level 1 | 3 pts | Beginner — UI tweaks, docs, small fixes |
-| 🟡 Level 2 | 5 pts | Intermediate — API, logic, features |
+| Level      | Points | Difficulty                               |
+| ---------- | ------ | ---------------------------------------- |
+| 🟢 Level 1 | 3 pts  | Beginner — UI tweaks, docs, small fixes  |
+| 🟡 Level 2 | 5 pts  | Intermediate — API, logic, features      |
 | 🔴 Level 3 | 10 pts | Advanced — Architecture, AI, performance |
 
 > 📖 Read our [Contributing Guide](CONTRIBUTING.md) for detailed instructions.
@@ -261,16 +355,16 @@ Check our [open issues](https://github.com/kalyan-1845/lexicon/issues) for NSoC-
 
 ## 🗺️ Roadmap
 
-| Phase | Status | Highlights |
-|-------|--------|------------|
-| Phase 1: Foundation | ✅ Complete | Core RAG engine, PDF upload |
-| Phase 2: Professional UI | ✅ Complete | Premium design, workspace isolation |
-| Phase 3: Intelligence | ✅ Complete | Multi-agent logic, plugin ecosystem |
-| Phase 4: Enterprise | ✅ Complete | Mobile responsive, data export |
-| Phase 5: Production | ✅ Complete | Database, security hardening |
-| Phase 6-9: Advanced AI | ✅ Complete | Chain-of-thought, citations, streaming |
-| Phase 10: Dynamic Intelligence | ✅ Complete | Brand identity, unified async engine |
-| Phase 11: Collaborative Ecosystem | 🚧 In Progress | Real-time collaboration features |
+| Phase                             | Status         | Highlights                             |
+| --------------------------------- | -------------- | -------------------------------------- |
+| Phase 1: Foundation               | ✅ Complete    | Core RAG engine, PDF upload            |
+| Phase 2: Professional UI          | ✅ Complete    | Premium design, workspace isolation    |
+| Phase 3: Intelligence             | ✅ Complete    | Multi-agent logic, plugin ecosystem    |
+| Phase 4: Enterprise               | ✅ Complete    | Mobile responsive, data export         |
+| Phase 5: Production               | ✅ Complete    | Database, security hardening           |
+| Phase 6-9: Advanced AI            | ✅ Complete    | Chain-of-thought, citations, streaming |
+| Phase 10: Dynamic Intelligence    | ✅ Complete    | Brand identity, unified async engine   |
+| Phase 11: Collaborative Ecosystem | 🚧 In Progress | Real-time collaboration features       |
 
 > 📖 See the full [Roadmap](roadmap.md) for details.
 

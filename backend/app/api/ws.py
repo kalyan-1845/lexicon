@@ -40,8 +40,69 @@ manager = ConnectionManager()
 
 @router.websocket("/ws/{workspace_id}")
 async def websocket_endpoint(websocket: WebSocket, workspace_id: str):
-    await manager.connect(websocket, workspace_id)
-    try:
+
+ """
+WebSocket Endpoint: /ws/{workspace_id}
+
+ Provides real-time workspace presence and collaboration updates.
+
+Connection:
+ws://<host>/ws/{workspace_id}
+
+## Client Events
+
+1. join
+   Sent when a user connects.
+
+{
+"type": "join",
+"userId": "user-123",
+"name": "Alice"
+}
+
+## Server Events
+
+1. user_joined
+   Broadcast when a user joins.
+
+{
+"type": "user_joined",
+"userId": "user-123",
+"name": "Alice"
+}
+
+2. user_left
+   Broadcast when a user disconnects.
+
+{
+"type": "user_left",
+"userId": "user-123",
+"name": "Alice"
+}
+
+3. presence_sync
+   Sent after connection to synchronize active users.
+
+{
+"type": "presence_sync",
+"users": [
+{
+"userId": "user-123",
+"name": "Alice"
+}
+]
+}
+
+Notes:
+
+* Connections are scoped per workspace_id.
+* Messages are exchanged as JSON payloads.
+* Invalid JSON payloads are ignored.
+
+  """
+
+ await manager.connect(websocket, workspace_id)
+ try:
         while True:
             data = await websocket.receive_text()
             try:
@@ -50,7 +111,7 @@ async def websocket_endpoint(websocket: WebSocket, workspace_id: str):
                 await manager.broadcast(workspace_id, message_data)
             except json.JSONDecodeError:
                 pass
-    except WebSocketDisconnect:
+ except WebSocketDisconnect:
         manager.disconnect(websocket, workspace_id)
         # Broadcast that a user left
         if workspace_id in manager.active_connections:
