@@ -1,7 +1,7 @@
 "use client";
 import PresencePill from "@/components/PresencePill";
 import { useWorkspacePresence } from "@/hooks/useWorkspacePresence";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, memo } from "react";
 import ShareModal from "@/components/ShareModal";
 import AgentWorkflow from "@/components/AgentWorkflow";
 import ClearHistoryModal from "@/components/ClearHistoryModal";
@@ -59,7 +59,7 @@ async function hashPassphrase(passphrase: string): Promise<string> {
   return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-export default function ChatArea({ 
+export default memo(function ChatArea({ 
   workspaceName,
   messages,
   setMessages,
@@ -946,7 +946,7 @@ const currentTranscript = messages
       </div>
     </div>
   );
-}
+});
 
 // Custom sub-components and helper functions to parse and format code/bold/ticks markdown features
 function CodeBlock({ code, language }: { code: string; language: string }) {
@@ -1221,7 +1221,9 @@ function formatMessageContent(content: string) {
 
 export function WorkspaceChat({ workspaceId }: { workspaceId: string }) {
   useEffect(() => {
-    const ws = new WebSocket(`ws://localhost:8000/api/chat/ws/${workspaceId}`);
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+    const wsUrl = backendUrl.replace(/^http/, "ws") + `/api/chat/ws/${workspaceId}`;
+    const ws = new WebSocket(wsUrl);
 
     ws.onopen = () => console.log("Connected to workspace");
     ws.onmessage = (event) => console.log("Message:", event.data);

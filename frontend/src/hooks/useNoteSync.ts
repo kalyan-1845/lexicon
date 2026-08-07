@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { getApiUrl } from '@/utils/api';
 
 type SyncState = 'synced' | 'syncing' | 'offline' | 'conflict' | 'error';
 
@@ -27,7 +28,7 @@ export function useNoteSync({ workspaceName }: UseNoteSyncProps) {
     
     const fetchNote = async () => {
       try {
-        const res = await fetch(`http://localhost:8000/api/notes/${encodeURIComponent(workspaceName)}`);
+        const res = await fetch(getApiUrl(`/api/notes/${encodeURIComponent(workspaceName)}`));
         if (res.ok) {
           const data = await res.json();
           if (isMounted) {
@@ -61,7 +62,7 @@ export function useNoteSync({ workspaceName }: UseNoteSyncProps) {
     const updatedAt = Date.now() / 1000;
 
     try {
-      const res = await fetch(`http://localhost:8000/api/notes/${encodeURIComponent(workspaceName)}/sync`, {
+      const res = await fetch(getApiUrl(`/api/notes/${encodeURIComponent(workspaceName)}/sync`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

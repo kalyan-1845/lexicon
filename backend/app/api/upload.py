@@ -82,6 +82,7 @@ async def process_single_pdf(file: UploadFile):
             "filename": file.filename,
             "status": "success",
             "status_code": 200,
+            "message": "File successfully uploaded and parsed in-memory.",
             "ocr_status": ocr_status,
             "extracted_character_count": len(extracted_text),
             "full_text": extracted_text,

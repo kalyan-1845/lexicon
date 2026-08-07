@@ -11,6 +11,24 @@ class AgentService:
         Yields JSON strings formatted as SSE data.
         """
         
+        # Bypass multi-agent workflow if there is no document context
+        if not context or not context.strip():
+            yield self._format_status("Lexicon", "Thinking...")
+            try:
+                completion = llm.stream_chat(
+                    messages=[
+                        {"role": "system", "content": "You are Lexicon AI, a helpful, precise, and professional AI assistant. Answer the user's questions directly and accurately. Do not force an executive summary format unless explicitly asked."},
+                        {"role": "user", "content": query}
+                    ],
+                    temperature=0.7
+                )
+                async for chunk in completion:
+                    if chunk:
+                        yield f"data: {json.dumps({'content': chunk})}\n\n"
+            except Exception as e:
+                yield f"data: {json.dumps({'error': str(e)})}\n\n"
+            return
+
         # Phase 1: Research
         yield self._format_status("Researcher", "Scanning document context and extracting factual nodes...")
         
